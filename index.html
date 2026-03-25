@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
+  <title>Brick Ball — 70 Levels | High Paddle + Network Error</title>
+  <style>
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #0a0f1e;
+      font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 20;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .skyBg {
+      background: linear-gradient(145deg, #0b2b3b, #1a4a6f);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sun {
+      position: absolute;
+      top: 8%;
+      right: 10%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #ffdd99, #ffaa33);
+      border-radius: 50%;
+      box-shadow: 0 0 40px #ffaa44;
+    }
+
+    .mountains {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 38%;
+      background: linear-gradient(to top, #2c5a3e, #1d442c);
+      clip-path: polygon(0% 100%, 6% 72%, 18% 86%, 32% 58%, 48% 78%, 68% 52%, 84% 73%, 100% 44%, 100% 100%);
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(70px, 85px));
+      gap: 12px;
+      justify-content: center;
+      max-height: 65vh;
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 48px;
+    }
+
+    .lvlBox {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #2c3e66, #1a2a48);
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.05s linear;
+      box-shadow: 0 6px 0 #0f1a2a;
+      border: 1px solid #ffb34777;
+    }
+
+    .lvlBox:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #0f1a2a;
+    }
+
+    .locked {
+      background: #4a5568 !important;
+      cursor: not-allowed;
+      opacity: 0.55;
+      filter: grayscale(0.3);
+      box-shadow: 0 4px 0 #2d3748;
+    }
+
+    .hud {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      display: flex;
+      gap: 16px;
+      z-index: 90;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+      font-family: monospace;
+      border: 1px solid #ffb347;
+    }
+
+    .hud span:first-child {
+      margin-right: 6px;
+      color: #ffcc88;
+    }
+
+    .hud span:last-child {
+      color: #ffaa55;
+      font-size: 22px;
+      font-weight: 900;
+      margin-left: 4px;
+    }
+
+    .right-hud {
+      left: auto;
+      right: 12px;
+    }
+
+    button {
+      background: #ff9800;
+      border: none;
+      border-radius: 60px;
+      font-weight: 800;
+      padding: 10px 28px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.07s linear;
+      box-shadow: 0 5px 0 #b45f06;
+      color: #1e2a2e;
+      font-family: inherit;
+      touch-action: manipulation;
+    }
+
+    button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #b45f06;
+    }
+
+    .reward-card,
+    .gameover-card,
+    .levelcomplete-card,
+    .network-card {
+      background: linear-gradient(145deg, #f39c12, #e67e22);
+      padding: 25px 30px;
+      border-radius: 50px;
+      text-align: center;
+      border: 3px solid gold;
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+      min-width: 280px;
+      margin: 20px;
+    }
+
+    .network-card {
+      background: linear-gradient(145deg, #e63946, #c92a2a);
+      border-color: #ffaa66;
+    }
+
+    .network-card h2 {
+      color: white;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .reward-card textarea {
+      width: 100%;
+      background: #2d2f36;
+      color: #ffd966;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid #ffcc66;
+      border-radius: 20px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: monospace;
+      resize: none;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .copy-btn {
+      background: #2ecc71;
+      color: #1e2a2e;
+      margin-top: 6px;
+      padding: 10px 28px;
+      font-size: 18px;
+    }
+
+    .gameover-card {
+      background: #1e2a2e;
+      border-color: #ff8855;
+    }
+
+    .gameover-card h1 {
+      font-size: 48px;
+      color: #ff8855;
+    }
+
+    .levelcomplete-card {
+      background: linear-gradient(145deg, #1f6e43, #0e4f2e);
+    }
+
+    .levelcomplete-card h1 {
+      font-size: 44px;
+      color: gold;
+    }
+
+    @media (max-width: 600px) {
+      .level-grid {
+        grid-template-columns: repeat(4, minmax(70px, 80px));
+        gap: 10px;
+      }
+      .lvlBox {
+        font-size: 18px;
+      }
+      button {
+        padding: 8px 20px;
+        font-size: 16px;
+      }
+      .reward-card textarea {
+        font-size: 14px;
+        padding: 10px;
+      }
+      .network-card h2 {
+        font-size: 28px;
+      }
+    }
+  </style>
+  <!-- Adsgram SDK -->
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+</head>
+<body oncontextmenu="return false;">
+<canvas id="game"></canvas>
+
+<!-- START SCREEN -->
+<div class="overlay skyBg" id="startOverlay">
+  <div class="sun"></div>
+  <div class="mountains"></div>
+  <button id="openLevelSelect" style="background:#ffb347;font-size:26px;padding:14px 45px;">🎮 START GAME</button>
+  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 70 LEVELS | HIGH SPEED | HIGH PADDLE ✨</div>
+</div>
+
+<!-- LEVEL SELECT -->
+<div class="overlay hidden" id="levelOverlay">
+  <div class="sun"></div>
+  <div class="mountains"></div>
+  <div class="level-grid" id="levelGrid"></div>
+  <button id="backToStartFromLevels" style="margin-top:20px;background:#e67e22;">🏠 MAIN MENU</button>
+</div>
+
+<!-- IN-GAME HUD -->
+<div class="hud"><span>💎 SCORE</span><span id="score">0</span></div>
+<div class="hud right-hud"><span>⚡ BALLS</span><span id="ballsCount">1</span></div>
+
+<!-- GAME OVER -->
+<div class="overlay hidden" id="gameOverOverlay">
+  <div class="gameover-card">
+    <h1>💀 GAME OVER</h1>
+    <button id="restartBtn" style="background:#27ae60;">🔄 RESTART LEVEL</button>
+    <button id="backBtn" style="background:#e67e22;">📁 LEVELS</button>
+  </div>
+</div>
+
+<!-- LEVEL COMPLETE -->
+<div class="overlay hidden" id="levelCompleteOverlay">
+  <div class="levelcomplete-card">
+    <h1>✨ LEVEL CLEARED!</h1>
+    <button id="nextLevelBtn" style="background:#f39c12;">➡ NEXT LEVEL</button>
+    <button id="levelsBtn" style="background:#3498db;">📋 LEVEL SELECT</button>
+  </div>
+</div>
+
+<!-- NETWORK ERROR OVERLAY -->
+<div class="overlay hidden" id="networkErrorOverlay">
+  <div class="network-card">
+    <h2>⚠️ NETWORK ERROR ⚠️</h2>
+    <p style="color:white;font-size:18px;">No internet connection detected!</p>
+    <p style="color:#ffdd99;font-size:14px;margin:10px 0;">Please check your connection and try again.</p>
+    <button id="networkRetryBtn" style="background:#27ae60;margin-top:15px;">🔄 RETRY</button>
+    <button id="networkExitBtn" style="background:#e63946;margin-top:10px;">🚪 EXIT GAME</button>
+  </div>
+</div>
+
+<!-- FINAL REWARD FOR LEVEL 70 -->
+<div class="overlay hidden" id="rewardOverlay">
+  <div class="reward-card">
+    <h2>🏆 GRAND MASTER REWARD 🏆</h2>
+    <p style="color:white;font-size:18px;">Congratulations! You conquered all 70 levels!</p>
+    <p style="color:#ffd966;font-size:14px;">Your exclusive 7-digit reward code:</p>
+    <textarea id="rewardCode" rows="1" readonly></textarea>
+    <button id="copyRewardBtn" class="copy-btn">📋 COPY CODE</button>
+    <button id="rewardBackBtn" style="background:#555; margin-top:15px;">🔙 MAIN MENU</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- NETWORK MONITORING ----------
+    let isOnline = navigator.onLine;
+    let gamePausedForNetwork = false;
+    let savedGameStateBeforeNetwork = null;
+    
+    function checkNetworkAndShowError() {
+      if (!navigator.onLine) {
+        isOnline = false;
+        // If game is currently running, pause and save state
+        if (currentScreen === "game" && running && !gamePausedForNetwork) {
+          gamePausedForNetwork = true;
+          savedGameStateBeforeNetwork = {
+            running: running,
+            currentLevel: currentLevel,
+            score: score,
+            balls: JSON.parse(JSON.stringify(balls)),
+            bricks: JSON.parse(JSON.stringify(bricks)),
+            paddleX: paddle.x,
+            paddleY: paddle.y
+          };
+          running = false;
+          changeScreen("network_error");
+        } else if (currentScreen !== "network_error") {
+          changeScreen("network_error");
+        }
+      } else {
+        isOnline = true;
+        // If coming back online and we were in network error screen
+        if (currentScreen === "network_error" && gamePausedForNetwork) {
+          // Restore game state
+          if (savedGameStateBeforeNetwork) {
+            currentLevel = savedGameStateBeforeNetwork.currentLevel;
+            score = savedGameStateBeforeNetwork.score;
+            balls = savedGameStateBeforeNetwork.balls;
+            bricks = savedGameStateBeforeNetwork.bricks;
+            paddle.x = savedGameStateBeforeNetwork.paddleX;
+            paddle.y = savedGameStateBeforeNetwork.paddleY;
+            running = true;
+            gamePausedForNetwork = false;
+            savedGameStateBeforeNetwork = null;
+            updateHUD();
+            changeScreen("game");
+          } else {
+            changeScreen("start");
+          }
+        } else if (currentScreen === "network_error" && !gamePausedForNetwork) {
+          changeScreen("start");
+        }
+      }
+    }
+    
+    // Listen to online/offline events
+    window.addEventListener('online', () => {
+      console.log("Network connected");
+      checkNetworkAndShowError();
+    });
+    
+    window.addEventListener('offline', () => {
+      console.log("Network disconnected");
+      checkNetworkAndShowError();
+    });
+    
+    // Periodic network check (every 2 seconds)
+    setInterval(() => {
+      if (navigator.onLine !== isOnline) {
+        checkNetworkAndShowError();
+      }
+    }, 2000);
+    
+    // ---------- ADSGRAM INTERSTITIAL ADS ----------
+    let adController = null;
+    let isAdLoading = false;
+    
+    // Initialize Adsgram
+    function initAds() {
+      try {
+        if (window.Adsgram) {
+          adController = window.Adsgram.init({ blockId: "int-25869" });
+          console.log("Adsgram initialized");
+        } else {
+          console.log("Adsgram SDK not loaded yet, retrying...");
+          setTimeout(initAds, 500);
+        }
+      } catch(e) {
+        console.log("Ads init error:", e);
+      }
+    }
+    
+    // Show interstitial ad with promise
+    function showInterstitialAd() {
+      return new Promise((resolve) => {
+        if (!adController || isAdLoading) {
+          resolve();
+          return;
+        }
+        
+        isAdLoading = true;
+        
+        try {
+          adController.show().then(() => {
+            console.log("Ad shown successfully");
+            isAdLoading = false;
+            resolve();
+          }).catch((err) => {
+            console.log("Ad error:", err);
+            isAdLoading = false;
+            resolve();
+          });
+        } catch(e) {
+          console.log("Ad show exception:", e);
+          isAdLoading = false;
+          resolve();
+        }
+      });
+    }
+    
+    // Ad flags
+    let hasShownStartAd = false;
+    
+    async function showStartAdIfNeeded() {
+      if (!hasShownStartAd && navigator.onLine) {
+        hasShownStartAd = true;
+        await showInterstitialAd();
+      }
+    }
+    
+    let gameOverAdShown = false;
+    async function showGameOverAd() {
+      if (!gameOverAdShown && navigator.onLine) {
+        gameOverAdShown = true;
+        await showInterstitialAd();
+      }
+    }
+    
+    let levelCompleteAdShown = false;
+    async function showLevelCompleteAd() {
+      if (!levelCompleteAdShown && navigator.onLine) {
+        levelCompleteAdShown = true;
+        await showInterstitialAd();
+      }
+    }
+    
+    function resetAdFlags() {
+      gameOverAdShown = false;
+      levelCompleteAdShown = false;
+    }
+    
+    // ---------- CANVAS ----------
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    let DPR = window.devicePixelRatio || 1;
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth * DPR;
+      canvas.height = window.innerHeight * DPR;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+    resizeCanvas();
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      if (currentScreen === "game") {
+        if (paddle) paddle.x = Math.min(Math.max(paddle.x, 0), canvas.width - paddle.w);
+        if (balls && balls.length && balls[0] && balls[0].stuck) {
+          balls[0].x = paddle.x + paddle.w / 2;
+        }
+      }
+    });
+
+    // ---------- AUDIO (lightweight) ----------
+    let soundEnabled = true;
+    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function safePlay(fn) { if (!soundEnabled) return; try { fn(); } catch(e) {} }
+    function playBrickHit() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=880; osc.frequency.exponentialRampToValueAtTime(380, audioCtx.currentTime+0.07); gain.gain.value=0.28; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.09); osc.start(); osc.stop(audioCtx.currentTime+0.09); }); }
+    function playPaddleHit() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=620; osc.frequency.exponentialRampToValueAtTime(360, audioCtx.currentTime+0.06); gain.gain.value=0.2; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.07); osc.start(); osc.stop(audioCtx.currentTime+0.07); }); }
+    function playLevelComplete() { safePlay(()=>{ [523,659,784,1047].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.32; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.25); osc.start(); osc.stop(audioCtx.currentTime+0.25); }, i*100); }); }); }
+    function playGameOver() { safePlay(()=>{ [392,349,330].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.3; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.4); osc.start(); osc.stop(audioCtx.currentTime+0.4); }, i*170); }); }); }
+    function playLaunch() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=350; osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime+0.12); gain.gain.value=0.24; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.13); osc.start(); osc.stop(audioCtx.currentTime+0.13); }); }
+    function playExtraBall() { safePlay(()=>{ [523,784,1047].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.type='sine'; osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.25; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.2); osc.start(); osc.stop(audioCtx.currentTime+0.2); }, i*70); }); }); }
+    function playFinalReward() { safePlay(()=>{ [523,659,784,1047,1318,1568].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.type='sine'; osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.4; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.35); osc.start(); osc.stop(audioCtx.currentTime+0.35); }, i*150); }); }); }
+    function playClick() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=700; osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime+0.05); gain.gain.value=0.16; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.06); osc.start(); osc.stop(audioCtx.currentTime+0.06); }); }
+    function resumeAudioCtx() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
+
+    // ---------- GLOBAL VARIABLES ----------
+    let currentScreen = "start";
+    let currentLevel = 1, score = 0;
+    let balls = [], bricks = [], running = false;
+    let paddle = { w: 140, h: 18, x: 0, y: 0 };
+    let maxLevels = 70;
+    let unlockedLevels = [1];
+    
+    // Stars background
+    let stars = [];
+    for(let i=0;i<120;i++) stars.push({ x:Math.random(), y:Math.random(), size:1+Math.random()*2 });
+    
+    // ---------- PROGRESS STORAGE ----------
+    function saveGameProgress() { 
+      localStorage.setItem('brickBall70pro', JSON.stringify({ 
+        unlocked: unlockedLevels, 
+        currentLevel: currentLevel
+      })); 
+    }
+    function loadGameProgress() { 
+      let d = localStorage.getItem('brickBall70pro'); 
+      if(d) { 
+        let p = JSON.parse(d); 
+        unlockedLevels = p.unlocked || [1]; 
+        currentLevel = p.currentLevel || 1;
+      } else { 
+        unlockedLevels = [1]; 
+        currentLevel = 1;
+      } 
+    }
+    
+    // Generate random 7-digit reward code
+    function generateRewardCode() {
+      let code = '';
+      for(let i = 0; i < 7; i++) {
+        code += Math.floor(Math.random() * 10);
+      }
+      return code;
+    }
+    
+    let level70RewardCode = generateRewardCode();
+    
+    // ---------- BRICK COUNT: EXACTLY 3 BRICKS ----------
+    function generateBricksForLevel(level) {
+      const targetCount = 3;
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2 - 90; // Moved bricks up a bit
+      let bricksArray = [];
+      
+      let brickW = 85;
+      let brickH = 28;
+      let totalWidth = brickW * 3 + 30;
+      let startX = cx - totalWidth / 2;
+      
+      for (let i = 0; i < targetCount; i++) {
+        let x = startX + i * (brickW + 15);
+        let y = cy;
+        let hue = (level * 25 + i * 120) % 360;
+        let color = `hsl(${hue}, 75%, 58%)`;
+        bricksArray.push({ x, y, w: brickW - 2, h: brickH - 2, alive: true, color });
+      }
+      return bricksArray;
+    }
+    
+    // ---------- HIGH SPEED SYSTEM ----------
+    function getBallBaseSpeed() {
+      let speed = 14 + (currentLevel * 0.12);
+      return Math.min(speed, 22);
+    }
+    
+    function updateHUD() {
+      document.getElementById('score').innerText = score;
+      document.getElementById('ballsCount').innerText = balls.length;
+    }
+    
+    // PADDLE POSITION - MUCH HIGHER (moved up significantly)
+    function resetPositions() {
+      paddle.x = canvas.width / 2 - paddle.w / 2;
+      paddle.y = canvas.height - 310; // Higher paddle position (was -110, now -210)
+      balls = [{ x: canvas.width / 2, y: paddle.y - 18, r: 7, vx: 0, vy: 0, stuck: true }];
+      updateHUD();
+    }
+    
+    function launchBall() {
+      if (!running) return;
+      for (let b of balls) {
+        if (b.stuck) {
+          let angle = (Math.random() * Math.PI / 2.4) - Math.PI / 4.8;
+          let sp = getBallBaseSpeed();
+          b.vx = Math.sin(angle) * sp;
+          b.vy = -Math.cos(angle) * sp;
+          b.stuck = false;
+          playLaunch();
+        }
+      }
+    }
+    
+    function tryAddExtraBall(x, y) {
+      if (Math.random() < 0.22) {
+        if (balls.length < 8) {
+          let newBall = {
+            x: x,
+            y: y,
+            r: 7,
+            vx: (Math.random() - 0.5) * (getBallBaseSpeed() * 0.9),
+            vy: -Math.abs(getBallBaseSpeed() * 0.8),
+            stuck: false
+          };
+          balls.push(newBall);
+          playExtraBall();
+          updateHUD();
+        }
+      }
+    }
+    
+    function showFinalReward() {
+      playFinalReward();
+      document.getElementById('rewardCode').value = level70RewardCode;
+      document.getElementById('rewardOverlay').classList.remove('hidden');
+      currentScreen = "reward";
+    }
+    
+    async function handleLevelComplete() {
+      running = false;
+      playLevelComplete();
+      
+      if (currentLevel < maxLevels && !unlockedLevels.includes(currentLevel + 1)) {
+        unlockedLevels.push(currentLevel + 1);
+        saveGameProgress();
+      }
+      
+      if (currentLevel === maxLevels) {
+        showFinalReward();
+      } else {
+        await showLevelCompleteAd();
+        document.getElementById('levelCompleteOverlay').classList.remove('hidden');
+      }
+    }
+    
+    async function handleGameOver() {
+      running = false;
+      playGameOver();
+      await showGameOverAd();
+      document.getElementById('gameOverOverlay').classList.remove('hidden');
+      changeScreen("gameover");
+    }
+    
+    function updateGame() {
+      if (currentScreen !== "game" || !running) return;
+      
+      for (let i = 0; i < balls.length; i++) {
+        let ball = balls[i];
+        if (ball.stuck) continue;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        
+        if (ball.x - ball.r <= 0) { ball.x = ball.r; ball.vx = -ball.vx; }
+        if (ball.x + ball.r >= canvas.width) { ball.x = canvas.width - ball.r; ball.vx = -ball.vx; }
+        if (ball.y - ball.r <= 0) { ball.y = ball.r; ball.vy = -ball.vy; }
+        
+        if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y - ball.r <= paddle.y + paddle.h &&
+            ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
+          let hitPos = (ball.x - paddle.x) / paddle.w;
+          let angle = (hitPos - 0.5) * 1.4;
+          let speed = Math.hypot(ball.vx, ball.vy);
+          ball.vx = Math.sin(angle) * speed;
+          ball.vy = -Math.abs(Math.cos(angle) * speed);
+          playPaddleHit();
+        }
+        
+        let brickHit = false;
+        for (let b of bricks) {
+          if (b.alive && ball.x + ball.r > b.x && ball.x - ball.r < b.x + b.w &&
+              ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h) {
+            b.alive = false;
+            brickHit = true;
+            
+            let overlapL = (ball.x + ball.r) - b.x;
+            let overlapR = (b.x + b.w) - (ball.x - ball.r);
+            let overlapT = (ball.y + ball.r) - b.y;
+            let overlapB = (b.y + b.h) - (ball.y - ball.r);
+            let minOverlap = Math.min(overlapL, overlapR, overlapT, overlapB);
+            if (minOverlap === overlapL || minOverlap === overlapR) ball.vx = -ball.vx;
+            else ball.vy = -ball.vy;
+            
+            score += 1;
+            updateHUD();
+            playBrickHit();
+            tryAddExtraBall(b.x + b.w / 2, b.y + b.h / 2);
+            break;
+          }
+        }
+        
+        if (ball.y + ball.r > canvas.height) {
+          balls.splice(i, 1);
+          i--;
+          if (balls.length === 0) {
+            handleGameOver();
+            return;
+          } else {
+            updateHUD();
+          }
+        }
+      }
+      
+      if (balls.length === 0 && running) {
+        handleGameOver();
+        return;
+      }
+      
+      if (bricks.length && bricks.every(b => !b.alive)) {
+        handleLevelComplete();
+      }
+    }
+    
+    // ---------- DRAWING ----------
+    function drawBackground() {
+      let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "#0a1030");
+      grad.addColorStop(1, "#17253b");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255,240,180,0.7)";
+      for (let s of stars) {
+        ctx.beginPath();
+        ctx.arc(s.x * canvas.width, s.y * canvas.height, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    
+    function drawGame() {
+      if (currentScreen !== "game") return;
+      drawBackground();
+      
+      for (let b of bricks) {
+        if (b.alive) {
+          ctx.fillStyle = b.color;
+          ctx.shadowBlur = 4;
+          ctx.shadowColor = "#00000066";
+          ctx.fillRect(b.x, b.y, b.w, b.h);
+          ctx.fillStyle = "#fff3cf";
+          ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, 4);
+        }
+      }
+      ctx.shadowBlur = 0;
+      
+      ctx.fillStyle = "#ffd966";
+      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+      ctx.fillStyle = "#ffe5a3";
+      ctx.fillRect(paddle.x + 4, paddle.y - 2, paddle.w - 8, 4);
+      
+      for (let ball of balls) {
+        ctx.fillStyle = "#ffaa66";
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(ball.x - 2, ball.y - 2, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "#ffaa66";
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      
+      ctx.font = "bold 16px monospace";
+      ctx.fillStyle = "#ffaa55";
+      ctx.fillText(`LEVEL ${currentLevel}`, canvas.width - 85, 45);
+      ctx.font = "bold 14px monospace";
+      ctx.fillStyle = "#ff8888";
+      ctx.fillText(`SPEED: ${getBallBaseSpeed().toFixed(1)}`, canvas.width - 85, 75);
+      
+      let remaining = bricks.filter(b => b.alive).length;
+      ctx.fillStyle = "#ffaa88";
+      ctx.fillText(`BRICKS: ${remaining}/3`, canvas.width - 85, 105);
+    }
+    
+    function changeScreen(scr) {
+      currentScreen = scr;
+      document.querySelectorAll('.overlay').forEach(el => el.classList.add('hidden'));
+      if (scr === "start") document.getElementById('startOverlay').classList.remove('hidden');
+      if (scr === "levels") { document.getElementById('levelOverlay').classList.remove('hidden'); buildLevelGrid(); }
+      if (scr === "game") { 
+        document.getElementById('gameOverOverlay').classList.add('hidden');
+        document.getElementById('levelCompleteOverlay').classList.add('hidden');
+      }
+      if (scr === "reward") document.getElementById('rewardOverlay').classList.remove('hidden');
+      if (scr === "gameover") document.getElementById('gameOverOverlay').classList.remove('hidden');
+      if (scr === "network_error") document.getElementById('networkErrorOverlay').classList.remove('hidden');
+    }
+    
+    async function startLevel() {
+      if (!navigator.onLine) {
+        changeScreen("network_error");
+        return;
+      }
+      await showStartAdIfNeeded();
+      resetAdFlags();
+      changeScreen("game");
+      running = true;
+      score = 0;
+      bricks = generateBricksForLevel(currentLevel);
+      resetPositions();
+      updateHUD();
+    }
+    
+    function buildLevelGrid() {
+      let grid = document.getElementById('levelGrid');
+      grid.innerHTML = '';
+      for (let i = 1; i <= maxLevels; i++) {
+        let box = document.createElement('div');
+        box.className = 'lvlBox';
+        box.innerText = i;
+        if (!unlockedLevels.includes(i)) box.classList.add('locked');
+        else box.addEventListener('click', async () => { 
+          playClick(); 
+          currentLevel = i; 
+          await startLevel();
+        });
+        grid.appendChild(box);
+      }
+    }
+    
+    // ---------- CONTROLS ----------
+    function onMove(clientX) {
+      if (currentScreen !== "game") return;
+      const rect = canvas.getBoundingClientRect();
+      let rawX = (clientX - rect.left) * (canvas.width / rect.width);
+      let newX = rawX - paddle.w / 2;
+      newX = Math.min(Math.max(newX, 0), canvas.width - paddle.w);
+      paddle.x = newX;
+      for (let b of balls) if (b.stuck) b.x = paddle.x + paddle.w / 2;
+    }
+    
+    canvas.addEventListener('mousemove', (e) => onMove(e.clientX));
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (e.touches[0]) onMove(e.touches[0].clientX); }, { passive: false });
+    canvas.addEventListener('click', () => { if (currentScreen === "game" && running) launchBall(); resumeAudioCtx(); });
+    canvas.addEventListener('touchstart', (e) => { if (currentScreen === "game" && running) launchBall(); resumeAudioCtx(); });
+    
+    // Button listeners
+    document.getElementById('openLevelSelect').onclick = async () => { 
+      if (!navigator.onLine) {
+        changeScreen("network_error");
+        return;
+      }
+      changeScreen("levels"); 
+      resumeAudioCtx();
+      await showStartAdIfNeeded();
+    };
+    document.getElementById('restartBtn').onclick = async () => { 
+      document.getElementById('gameOverOverlay').classList.add('hidden'); 
+      await startLevel();
+    };
+    document.getElementById('backBtn').onclick = () => { changeScreen("levels"); };
+    document.getElementById('nextLevelBtn').onclick = async () => { 
+      document.getElementById('levelCompleteOverlay').classList.add('hidden'); 
+      if (currentLevel < maxLevels) { 
+        currentLevel++; 
+        saveGameProgress(); 
+        await startLevel();
+      } else changeScreen("levels"); 
+    };
+    document.getElementById('levelsBtn').onclick = () => { changeScreen("levels"); };
+    document.getElementById('backToStartFromLevels').onclick = () => { changeScreen("start"); };
+    document.getElementById('rewardBackBtn').onclick = () => { changeScreen("start"); };
+    document.getElementById('copyRewardBtn').onclick = () => { 
+      let codeArea = document.getElementById('rewardCode'); 
+      codeArea.select(); 
+      document.execCommand('copy'); 
+      alert('🎉 7-Digit Reward Code Copied! 🎉'); 
+    };
+    
+    // Network error buttons
+    document.getElementById('networkRetryBtn').onclick = () => {
+      if (navigator.onLine) {
+        if (gamePausedForNetwork && savedGameStateBeforeNetwork) {
+          currentLevel = savedGameStateBeforeNetwork.currentLevel;
+          score = savedGameStateBeforeNetwork.score;
+          balls = savedGameStateBeforeNetwork.balls;
+          bricks = savedGameStateBeforeNetwork.bricks;
+          paddle.x = savedGameStateBeforeNetwork.paddleX;
+          paddle.y = savedGameStateBeforeNetwork.paddleY;
+          running = true;
+          gamePausedForNetwork = false;
+          savedGameStateBeforeNetwork = null;
+          updateHUD();
+          changeScreen("game");
+        } else {
+          changeScreen("start");
+        }
+      } else {
+        alert("Still no internet connection. Please connect and try again.");
+      }
+    };
+    
+    document.getElementById('networkExitBtn').onclick = () => {
+      gamePausedForNetwork = false;
+      savedGameStateBeforeNetwork = null;
+      changeScreen("start");
+    };
+    
+    document.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => { playClick(); resumeAudioCtx(); }));
+    
+    // Game loops
+    setInterval(() => { if (currentScreen === "game" && running) updateGame(); }, 16);
+    function animateDraw() { drawGame(); requestAnimationFrame(animateDraw); }
+    animateDraw();
+    
+    // Initialize
+    initAds();
+    loadGameProgress();
+    resumeAudioCtx();
+    changeScreen("start");
+    setInterval(saveGameProgress, 20000);
+    if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e => console.log);
+  })();
+</script>
+</body>
+</html>
