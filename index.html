@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
-  <title>Brick Ball — 70 Levels | High Paddle + Network Error</title>
+  <title>Brick Ball — 100 Levels | Grand Reward & Auto Reset</title>
   <style>
     * {
       -webkit-user-select: none;
@@ -274,7 +274,7 @@
   <div class="sun"></div>
   <div class="mountains"></div>
   <button id="openLevelSelect" style="background:#ffb347;font-size:26px;padding:14px 45px;">🎮 START GAME</button>
-  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 70 LEVELS | HIGH SPEED | HIGH PADDLE ✨</div>
+  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 100 LEVELS | HIGH SPEED | HIGH PADDLE | GRAND REWARD ✨</div>
 </div>
 
 <!-- LEVEL SELECT -->
@@ -318,15 +318,15 @@
   </div>
 </div>
 
-<!-- FINAL REWARD FOR LEVEL 70 -->
+<!-- FINAL REWARD FOR LEVEL 100 -->
 <div class="overlay hidden" id="rewardOverlay">
   <div class="reward-card">
     <h2>🏆 GRAND MASTER REWARD 🏆</h2>
-    <p style="color:white;font-size:18px;">Congratulations! You conquered all 70 levels!</p>
+    <p style="color:white;font-size:18px;">Congratulations! You conquered all 100 levels!</p>
     <p style="color:#ffd966;font-size:14px;">Your exclusive 7-digit reward code:</p>
     <textarea id="rewardCode" rows="1" readonly></textarea>
     <button id="copyRewardBtn" class="copy-btn">📋 COPY CODE</button>
-    <button id="rewardBackBtn" style="background:#555; margin-top:15px;">🔙 MAIN MENU</button>
+    <p style="color:#fff0b5; font-size:12px; margin-top:8px;">After copying, the game will reset automatically to Level 1.</p>
   </div>
 </div>
 
@@ -340,7 +340,6 @@
     function checkNetworkAndShowError() {
       if (!navigator.onLine) {
         isOnline = false;
-        // If game is currently running, pause and save state
         if (currentScreen === "game" && running && !gamePausedForNetwork) {
           gamePausedForNetwork = true;
           savedGameStateBeforeNetwork = {
@@ -359,9 +358,7 @@
         }
       } else {
         isOnline = true;
-        // If coming back online and we were in network error screen
         if (currentScreen === "network_error" && gamePausedForNetwork) {
-          // Restore game state
           if (savedGameStateBeforeNetwork) {
             currentLevel = savedGameStateBeforeNetwork.currentLevel;
             score = savedGameStateBeforeNetwork.score;
@@ -383,107 +380,49 @@
       }
     }
     
-    // Listen to online/offline events
-    window.addEventListener('online', () => {
-      console.log("Network connected");
-      checkNetworkAndShowError();
-    });
-    
-    window.addEventListener('offline', () => {
-      console.log("Network disconnected");
-      checkNetworkAndShowError();
-    });
-    
-    // Periodic network check (every 2 seconds)
-    setInterval(() => {
-      if (navigator.onLine !== isOnline) {
-        checkNetworkAndShowError();
-      }
-    }, 2000);
+    window.addEventListener('online', () => checkNetworkAndShowError());
+    window.addEventListener('offline', () => checkNetworkAndShowError());
+    setInterval(() => { if (navigator.onLine !== isOnline) checkNetworkAndShowError(); }, 2000);
     
     // ---------- ADSGRAM INTERSTITIAL ADS ----------
     let adController = null;
     let isAdLoading = false;
     
-    // Initialize Adsgram
     function initAds() {
       try {
         if (window.Adsgram) {
           adController = window.Adsgram.init({ blockId: "int-25869" });
-          console.log("Adsgram initialized");
         } else {
-          console.log("Adsgram SDK not loaded yet, retrying...");
           setTimeout(initAds, 500);
         }
-      } catch(e) {
-        console.log("Ads init error:", e);
-      }
+      } catch(e) { console.log("Ads init error"); }
     }
     
-    // Show interstitial ad with promise
     function showInterstitialAd() {
       return new Promise((resolve) => {
-        if (!adController || isAdLoading) {
-          resolve();
-          return;
-        }
-        
+        if (!adController || isAdLoading) { resolve(); return; }
         isAdLoading = true;
-        
         try {
-          adController.show().then(() => {
-            console.log("Ad shown successfully");
-            isAdLoading = false;
-            resolve();
-          }).catch((err) => {
-            console.log("Ad error:", err);
-            isAdLoading = false;
-            resolve();
-          });
-        } catch(e) {
-          console.log("Ad show exception:", e);
-          isAdLoading = false;
-          resolve();
-        }
+          adController.show().then(() => { isAdLoading = false; resolve(); })
+            .catch(() => { isAdLoading = false; resolve(); });
+        } catch(e) { isAdLoading = false; resolve(); }
       });
     }
     
-    // Ad flags
     let hasShownStartAd = false;
-    
     async function showStartAdIfNeeded() {
-      if (!hasShownStartAd && navigator.onLine) {
-        hasShownStartAd = true;
-        await showInterstitialAd();
-      }
+      if (!hasShownStartAd && navigator.onLine) { hasShownStartAd = true; await showInterstitialAd(); }
     }
-    
     let gameOverAdShown = false;
-    async function showGameOverAd() {
-      if (!gameOverAdShown && navigator.onLine) {
-        gameOverAdShown = true;
-        await showInterstitialAd();
-      }
-    }
-    
+    async function showGameOverAd() { if (!gameOverAdShown && navigator.onLine) { gameOverAdShown = true; await showInterstitialAd(); } }
     let levelCompleteAdShown = false;
-    async function showLevelCompleteAd() {
-      if (!levelCompleteAdShown && navigator.onLine) {
-        levelCompleteAdShown = true;
-        await showInterstitialAd();
-      }
-    }
-    
-    function resetAdFlags() {
-      gameOverAdShown = false;
-      levelCompleteAdShown = false;
-    }
+    async function showLevelCompleteAd() { if (!levelCompleteAdShown && navigator.onLine) { levelCompleteAdShown = true; await showInterstitialAd(); } }
+    function resetAdFlags() { gameOverAdShown = false; levelCompleteAdShown = false; }
     
     // ---------- CANVAS ----------
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     let DPR = window.devicePixelRatio || 1;
-    
     function resizeCanvas() {
       canvas.width = window.innerWidth * DPR;
       canvas.height = window.innerHeight * DPR;
@@ -493,15 +432,11 @@
     resizeCanvas();
     window.addEventListener('resize', () => {
       resizeCanvas();
-      if (currentScreen === "game") {
-        if (paddle) paddle.x = Math.min(Math.max(paddle.x, 0), canvas.width - paddle.w);
-        if (balls && balls.length && balls[0] && balls[0].stuck) {
-          balls[0].x = paddle.x + paddle.w / 2;
-        }
-      }
+      if (currentScreen === "game" && paddle) paddle.x = Math.min(Math.max(paddle.x, 0), canvas.width - paddle.w);
+      if (currentScreen === "game" && balls && balls[0] && balls[0].stuck) balls[0].x = paddle.x + paddle.w / 2;
     });
 
-    // ---------- AUDIO (lightweight) ----------
+    // ---------- AUDIO ----------
     let soundEnabled = true;
     let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function safePlay(fn) { if (!soundEnabled) return; try { fn(); } catch(e) {} }
@@ -515,60 +450,61 @@
     function playClick() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=700; osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime+0.05); gain.gain.value=0.16; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.06); osc.start(); osc.stop(audioCtx.currentTime+0.06); }); }
     function resumeAudioCtx() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
 
-    // ---------- GLOBAL VARIABLES ----------
+    // ---------- GLOBAL ----------
     let currentScreen = "start";
     let currentLevel = 1, score = 0;
     let balls = [], bricks = [], running = false;
     let paddle = { w: 140, h: 18, x: 0, y: 0 };
-    let maxLevels = 70;
+    const MAX_LEVELS = 100;
     let unlockedLevels = [1];
     
-    // Stars background
     let stars = [];
     for(let i=0;i<120;i++) stars.push({ x:Math.random(), y:Math.random(), size:1+Math.random()*2 });
     
-    // ---------- PROGRESS STORAGE ----------
     function saveGameProgress() { 
-      localStorage.setItem('brickBall70pro', JSON.stringify({ 
-        unlocked: unlockedLevels, 
-        currentLevel: currentLevel
-      })); 
+      localStorage.setItem('brickBall100Pro', JSON.stringify({ unlocked: unlockedLevels, currentLevel: currentLevel })); 
     }
     function loadGameProgress() { 
-      let d = localStorage.getItem('brickBall70pro'); 
+      let d = localStorage.getItem('brickBall100Pro'); 
       if(d) { 
         let p = JSON.parse(d); 
         unlockedLevels = p.unlocked || [1]; 
         currentLevel = p.currentLevel || 1;
+        if (currentLevel > MAX_LEVELS) currentLevel = 1;
       } else { 
         unlockedLevels = [1]; 
         currentLevel = 1;
       } 
     }
     
-    // Generate random 7-digit reward code
+    // Reset game completely (wipe progress, start fresh)
+    function fullGameReset() {
+      unlockedLevels = [1];
+      currentLevel = 1;
+      score = 0;
+      saveGameProgress();
+      // also clear any pending reward flag
+      if (currentScreen === "reward") changeScreen("start");
+      console.log("Game fully reset to level 1");
+    }
+    
     function generateRewardCode() {
       let code = '';
-      for(let i = 0; i < 7; i++) {
-        code += Math.floor(Math.random() * 10);
-      }
+      for(let i = 0; i < 7; i++) code += Math.floor(Math.random() * 10);
       return code;
     }
     
-    let level70RewardCode = generateRewardCode();
+    let level100RewardCode = generateRewardCode();
     
-    // ---------- BRICK COUNT: EXACTLY 3 BRICKS ----------
     function generateBricksForLevel(level) {
       const targetCount = 3;
       const cx = canvas.width / 2;
-      const cy = canvas.height / 2 - 90; // Moved bricks up a bit
+      const cy = canvas.height / 2 - 90;
       let bricksArray = [];
-      
       let brickW = 85;
       let brickH = 28;
       let totalWidth = brickW * 3 + 30;
       let startX = cx - totalWidth / 2;
-      
       for (let i = 0; i < targetCount; i++) {
         let x = startX + i * (brickW + 15);
         let y = cy;
@@ -579,10 +515,9 @@
       return bricksArray;
     }
     
-    // ---------- HIGH SPEED SYSTEM ----------
     function getBallBaseSpeed() {
       let speed = 14 + (currentLevel * 0.12);
-      return Math.min(speed, 22);
+      return Math.min(speed, 23.5);
     }
     
     function updateHUD() {
@@ -590,10 +525,9 @@
       document.getElementById('ballsCount').innerText = balls.length;
     }
     
-    // PADDLE POSITION - MUCH HIGHER (moved up significantly)
     function resetPositions() {
       paddle.x = canvas.width / 2 - paddle.w / 2;
-      paddle.y = canvas.height - 310; // Higher paddle position (was -110, now -210)
+      paddle.y = canvas.height - 310;
       balls = [{ x: canvas.width / 2, y: paddle.y - 18, r: 7, vx: 0, vy: 0, stuck: true }];
       updateHUD();
     }
@@ -613,26 +547,25 @@
     }
     
     function tryAddExtraBall(x, y) {
-      if (Math.random() < 0.22) {
-        if (balls.length < 8) {
-          let newBall = {
-            x: x,
-            y: y,
-            r: 7,
-            vx: (Math.random() - 0.5) * (getBallBaseSpeed() * 0.9),
-            vy: -Math.abs(getBallBaseSpeed() * 0.8),
-            stuck: false
-          };
-          balls.push(newBall);
-          playExtraBall();
-          updateHUD();
-        }
+      if (Math.random() < 0.22 && balls.length < 8) {
+        let newBall = {
+          x: x, y: y, r: 7,
+          vx: (Math.random() - 0.5) * (getBallBaseSpeed() * 0.9),
+          vy: -Math.abs(getBallBaseSpeed() * 0.8),
+          stuck: false
+        };
+        balls.push(newBall);
+        playExtraBall();
+        updateHUD();
       }
     }
     
+    // FINAL REWARD for LEVEL 100 + AUTO RESET after copy
     function showFinalReward() {
+      running = false;
       playFinalReward();
-      document.getElementById('rewardCode').value = level70RewardCode;
+      level100RewardCode = generateRewardCode(); // fresh code on completion
+      document.getElementById('rewardCode').value = level100RewardCode;
       document.getElementById('rewardOverlay').classList.remove('hidden');
       currentScreen = "reward";
     }
@@ -641,12 +574,12 @@
       running = false;
       playLevelComplete();
       
-      if (currentLevel < maxLevels && !unlockedLevels.includes(currentLevel + 1)) {
+      if (currentLevel < MAX_LEVELS && !unlockedLevels.includes(currentLevel + 1)) {
         unlockedLevels.push(currentLevel + 1);
         saveGameProgress();
       }
       
-      if (currentLevel === maxLevels) {
+      if (currentLevel === MAX_LEVELS) {
         showFinalReward();
       } else {
         await showLevelCompleteAd();
@@ -714,23 +647,14 @@
           if (balls.length === 0) {
             handleGameOver();
             return;
-          } else {
-            updateHUD();
-          }
+          } else updateHUD();
         }
       }
       
-      if (balls.length === 0 && running) {
-        handleGameOver();
-        return;
-      }
-      
-      if (bricks.length && bricks.every(b => !b.alive)) {
-        handleLevelComplete();
-      }
+      if (balls.length === 0 && running) { handleGameOver(); return; }
+      if (bricks.length && bricks.every(b => !b.alive)) handleLevelComplete();
     }
     
-    // ---------- DRAWING ----------
     function drawBackground() {
       let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
       grad.addColorStop(0, "#0a1030");
@@ -748,24 +672,20 @@
     function drawGame() {
       if (currentScreen !== "game") return;
       drawBackground();
-      
       for (let b of bricks) {
         if (b.alive) {
           ctx.fillStyle = b.color;
           ctx.shadowBlur = 4;
-          ctx.shadowColor = "#00000066";
           ctx.fillRect(b.x, b.y, b.w, b.h);
           ctx.fillStyle = "#fff3cf";
           ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, 4);
         }
       }
       ctx.shadowBlur = 0;
-      
       ctx.fillStyle = "#ffd966";
       ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
       ctx.fillStyle = "#ffe5a3";
       ctx.fillRect(paddle.x + 4, paddle.y - 2, paddle.w - 8, 4);
-      
       for (let ball of balls) {
         ctx.fillStyle = "#ffaa66";
         ctx.beginPath();
@@ -782,17 +702,15 @@
         ctx.fill();
         ctx.shadowBlur = 0;
       }
-      
       ctx.font = "bold 16px monospace";
       ctx.fillStyle = "#ffaa55";
-      ctx.fillText(`LEVEL ${currentLevel}`, canvas.width - 85, 45);
+      ctx.fillText(`LEVEL ${currentLevel} / ${MAX_LEVELS}`, canvas.width - 95, 45);
       ctx.font = "bold 14px monospace";
       ctx.fillStyle = "#ff8888";
-      ctx.fillText(`SPEED: ${getBallBaseSpeed().toFixed(1)}`, canvas.width - 85, 75);
-      
+      ctx.fillText(`SPEED: ${getBallBaseSpeed().toFixed(1)}`, canvas.width - 95, 75);
       let remaining = bricks.filter(b => b.alive).length;
       ctx.fillStyle = "#ffaa88";
-      ctx.fillText(`BRICKS: ${remaining}/3`, canvas.width - 85, 105);
+      ctx.fillText(`BRICKS: ${remaining}/3`, canvas.width - 95, 105);
     }
     
     function changeScreen(scr) {
@@ -810,10 +728,7 @@
     }
     
     async function startLevel() {
-      if (!navigator.onLine) {
-        changeScreen("network_error");
-        return;
-      }
+      if (!navigator.onLine) { changeScreen("network_error"); return; }
       await showStartAdIfNeeded();
       resetAdFlags();
       changeScreen("game");
@@ -827,21 +742,16 @@
     function buildLevelGrid() {
       let grid = document.getElementById('levelGrid');
       grid.innerHTML = '';
-      for (let i = 1; i <= maxLevels; i++) {
+      for (let i = 1; i <= MAX_LEVELS; i++) {
         let box = document.createElement('div');
         box.className = 'lvlBox';
         box.innerText = i;
         if (!unlockedLevels.includes(i)) box.classList.add('locked');
-        else box.addEventListener('click', async () => { 
-          playClick(); 
-          currentLevel = i; 
-          await startLevel();
-        });
+        else box.addEventListener('click', async () => { playClick(); currentLevel = i; await startLevel(); });
         grid.appendChild(box);
       }
     }
     
-    // ---------- CONTROLS ----------
     function onMove(clientX) {
       if (currentScreen !== "game") return;
       const rect = canvas.getBoundingClientRect();
@@ -858,39 +768,33 @@
     canvas.addEventListener('touchstart', (e) => { if (currentScreen === "game" && running) launchBall(); resumeAudioCtx(); });
     
     // Button listeners
-    document.getElementById('openLevelSelect').onclick = async () => { 
-      if (!navigator.onLine) {
-        changeScreen("network_error");
-        return;
-      }
-      changeScreen("levels"); 
-      resumeAudioCtx();
-      await showStartAdIfNeeded();
-    };
-    document.getElementById('restartBtn').onclick = async () => { 
-      document.getElementById('gameOverOverlay').classList.add('hidden'); 
-      await startLevel();
-    };
+    document.getElementById('openLevelSelect').onclick = async () => { if (!navigator.onLine) { changeScreen("network_error"); return; } changeScreen("levels"); resumeAudioCtx(); await showStartAdIfNeeded(); };
+    document.getElementById('restartBtn').onclick = async () => { document.getElementById('gameOverOverlay').classList.add('hidden'); await startLevel(); };
     document.getElementById('backBtn').onclick = () => { changeScreen("levels"); };
-    document.getElementById('nextLevelBtn').onclick = async () => { 
-      document.getElementById('levelCompleteOverlay').classList.add('hidden'); 
-      if (currentLevel < maxLevels) { 
-        currentLevel++; 
-        saveGameProgress(); 
-        await startLevel();
-      } else changeScreen("levels"); 
-    };
+    document.getElementById('nextLevelBtn').onclick = async () => { document.getElementById('levelCompleteOverlay').classList.add('hidden'); if (currentLevel < MAX_LEVELS) { currentLevel++; saveGameProgress(); await startLevel(); } else changeScreen("levels"); };
     document.getElementById('levelsBtn').onclick = () => { changeScreen("levels"); };
     document.getElementById('backToStartFromLevels').onclick = () => { changeScreen("start"); };
-    document.getElementById('rewardBackBtn').onclick = () => { changeScreen("start"); };
+    
+    // REWARD: copy code + FULL RESET (auto reset level 1)
     document.getElementById('copyRewardBtn').onclick = () => { 
       let codeArea = document.getElementById('rewardCode'); 
       codeArea.select(); 
       document.execCommand('copy'); 
-      alert('🎉 7-Digit Reward Code Copied! 🎉'); 
+      alert('🎉 7-Digit Reward Code Copied! The game will now reset to Level 1. 🎉');
+      // FULL RESET: clear progress, reset level & unlockables, then go to start screen
+      fullGameReset();
+      // hide reward overlay and go to start menu
+      document.getElementById('rewardOverlay').classList.add('hidden');
+      changeScreen("start");
+      // Also force re-render level grid for future
+      if (currentScreen === "start") {
+        // just ensure fresh state
+        currentLevel = 1;
+        score = 0;
+        running = false;
+      }
     };
     
-    // Network error buttons
     document.getElementById('networkRetryBtn').onclick = () => {
       if (navigator.onLine) {
         if (gamePausedForNetwork && savedGameStateBeforeNetwork) {
@@ -905,28 +809,16 @@
           savedGameStateBeforeNetwork = null;
           updateHUD();
           changeScreen("game");
-        } else {
-          changeScreen("start");
-        }
-      } else {
-        alert("Still no internet connection. Please connect and try again.");
-      }
+        } else changeScreen("start");
+      } else alert("Still no internet connection.");
     };
-    
-    document.getElementById('networkExitBtn').onclick = () => {
-      gamePausedForNetwork = false;
-      savedGameStateBeforeNetwork = null;
-      changeScreen("start");
-    };
-    
+    document.getElementById('networkExitBtn').onclick = () => { gamePausedForNetwork = false; savedGameStateBeforeNetwork = null; changeScreen("start"); };
     document.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => { playClick(); resumeAudioCtx(); }));
     
-    // Game loops
     setInterval(() => { if (currentScreen === "game" && running) updateGame(); }, 16);
     function animateDraw() { drawGame(); requestAnimationFrame(animateDraw); }
     animateDraw();
     
-    // Initialize
     initAds();
     loadGameProgress();
     resumeAudioCtx();
