@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
-  <title>Brick Ball — 100 Levels | Grand Reward & Auto Reset</title>
+  <title>Brick Ball — 20 Levels | Grand Reward at Level 20</title>
   <style>
     * {
       -webkit-user-select: none;
@@ -274,7 +274,7 @@
   <div class="sun"></div>
   <div class="mountains"></div>
   <button id="openLevelSelect" style="background:#ffb347;font-size:26px;padding:14px 45px;">🎮 START GAME</button>
-  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 100 LEVELS | HIGH SPEED | HIGH PADDLE | GRAND REWARD ✨</div>
+  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 20 LEVELS | COMPLETE LEVEL 20 FOR GRAND REWARD ✨</div>
 </div>
 
 <!-- LEVEL SELECT -->
@@ -318,11 +318,11 @@
   </div>
 </div>
 
-<!-- FINAL REWARD FOR LEVEL 100 -->
+<!-- FINAL REWARD FOR LEVEL 20 -->
 <div class="overlay hidden" id="rewardOverlay">
   <div class="reward-card">
     <h2>🏆 GRAND MASTER REWARD 🏆</h2>
-    <p style="color:white;font-size:18px;">Congratulations! You conquered all 100 levels!</p>
+    <p style="color:white;font-size:18px;">Congratulations! You conquered all 20 levels!</p>
     <p style="color:#ffd966;font-size:14px;">Your exclusive 7-digit reward code:</p>
     <textarea id="rewardCode" rows="1" readonly></textarea>
     <button id="copyRewardBtn" class="copy-btn">📋 COPY CODE</button>
@@ -455,17 +455,17 @@
     let currentLevel = 1, score = 0;
     let balls = [], bricks = [], running = false;
     let paddle = { w: 140, h: 18, x: 0, y: 0 };
-    const MAX_LEVELS = 100;
+    const MAX_LEVELS = 20;  // ONLY 20 LEVELS
     let unlockedLevels = [1];
     
     let stars = [];
     for(let i=0;i<120;i++) stars.push({ x:Math.random(), y:Math.random(), size:1+Math.random()*2 });
     
     function saveGameProgress() { 
-      localStorage.setItem('brickBall100Pro', JSON.stringify({ unlocked: unlockedLevels, currentLevel: currentLevel })); 
+      localStorage.setItem('brickBall20', JSON.stringify({ unlocked: unlockedLevels, currentLevel: currentLevel })); 
     }
     function loadGameProgress() { 
-      let d = localStorage.getItem('brickBall100Pro'); 
+      let d = localStorage.getItem('brickBall20'); 
       if(d) { 
         let p = JSON.parse(d); 
         unlockedLevels = p.unlocked || [1]; 
@@ -483,8 +483,6 @@
       currentLevel = 1;
       score = 0;
       saveGameProgress();
-      // also clear any pending reward flag
-      if (currentScreen === "reward") changeScreen("start");
       console.log("Game fully reset to level 1");
     }
     
@@ -494,7 +492,7 @@
       return code;
     }
     
-    let level100RewardCode = generateRewardCode();
+    let level20RewardCode = generateRewardCode();
     
     function generateBricksForLevel(level) {
       const targetCount = 3;
@@ -516,8 +514,8 @@
     }
     
     function getBallBaseSpeed() {
-      let speed = 14 + (currentLevel * 0.12);
-      return Math.min(speed, 23.5);
+      let speed = 14 + (currentLevel * 0.2);
+      return Math.min(speed, 22);
     }
     
     function updateHUD() {
@@ -560,12 +558,12 @@
       }
     }
     
-    // FINAL REWARD for LEVEL 100 + AUTO RESET after copy
+    // FINAL REWARD for LEVEL 20 + AUTO RESET after copy
     function showFinalReward() {
       running = false;
       playFinalReward();
-      level100RewardCode = generateRewardCode(); // fresh code on completion
-      document.getElementById('rewardCode').value = level100RewardCode;
+      level20RewardCode = generateRewardCode(); // fresh code on completion
+      document.getElementById('rewardCode').value = level20RewardCode;
       document.getElementById('rewardOverlay').classList.remove('hidden');
       currentScreen = "reward";
     }
@@ -584,6 +582,7 @@
       } else {
         await showLevelCompleteAd();
         document.getElementById('levelCompleteOverlay').classList.remove('hidden');
+        currentScreen = "levelcomplete";
       }
     }
     
@@ -788,7 +787,6 @@
       changeScreen("start");
       // Also force re-render level grid for future
       if (currentScreen === "start") {
-        // just ensure fresh state
         currentLevel = 1;
         score = 0;
         running = false;
