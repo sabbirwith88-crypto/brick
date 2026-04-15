@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Brick Ball — Smash & Earn | Ultimate Mobile</title>
+    <title>Brick Ball — Smash & Earn | Adsgram Power</title>
     <!-- Adsgram SDK (blockId: int-25869) -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <!-- Monetag SDK (zone: 10866085) -->
     <script src="//libtl.com/sdk.js" data-zone="10866085" data-sdk="show_10866085"></script>
-    <!-- Adexora SDK (App ID: 2022) -->
-    <script src="https://adexora.com/cdn/ads.js?id=2022"></script>
+    <!-- All ads now use Adsgram + Monetag — Adexora completely removed -->
     <style>
         * {
             margin: 0;
@@ -457,11 +456,11 @@
 <div class="game-container">
     <div class="brick-header">
         <div class="title"><span>🧱</span><span>BRICK BALL</span><span class="ball-animation">🏀</span></div>
-        <div class="subtitle">⚡ SMASH → WATCH ADS → UNLOCK ⚡</div>
-        <div class="badge-pattern">🔨 LVL 3,6,9: DOUBLE ADSGRAM | OTHERS: ADEXORA</div>
+        <div class="subtitle">⚡ SMASH → WATCH ADS (ADSGRAM + MONETAG) → UNLOCK ⚡</div>
+        <div class="badge-pattern">🎯 ALL LEVELS: ADSGRAM ×2 + MONETAG — ADEXORA REPLACED</div>
     </div>
     <div class="level-list" id="levelListContainer"></div>
-    <div class="footer-note">💥 Tap bricks to smash them with the ball! Each set = 5 bricks.</div>
+    <div class="footer-note">💥 Tap bricks to smash them with the ball! Each set = 5 bricks. Every level requires full ad sequence.</div>
 </div>
 
 <!-- Game Panel -->
@@ -502,10 +501,10 @@
     <button class="btn" id="resetAllBtn">📋 COPY & RESET GAME</button>
 </div>
 
-<!-- Ad Sequence Modal -->
+<!-- Ad Sequence Modal (ADSGRAM only now) -->
 <div id="adSequencePanel" class="ad-sequence-panel" style="display: none;">
     <div class="ad-sequence-card">
-        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">🏀</div>
+        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">🎬</div>
         <div class="ad-step-message" style="font-size: 20px; font-weight: bold; color:#ffcf7a;" id="adStepMessage">Loading ad...</div>
         <div class="ad-description" style="margin: 8px 0;" id="adDescription">Complete ad to continue smashing</div>
         <button id="nextStepAdBtn" class="next-step-btn" style="display: none;">➡️ Next Step</button>
@@ -514,7 +513,7 @@
 </div>
 
 <script>
-    // ---------- BRICK BALL ULTIMATE MOBILE ----------
+    // ---------- BRICK BALL: ALL ADS NOW ADSGRAM (Adexora completely removed) ----------
     const MAX_LEVEL = 10;
     let currentUnlockedLevel = 1;
     let activeGameLevel = null;
@@ -528,9 +527,7 @@
     let adController = null;
     let adInitialized = false;
     
-    function isBreakLevel(level) { return (level === 3 || level === 6 || level === 9); }
-    function shouldShowAdexora(level) { return !isBreakLevel(level); }
-    
+    // No Adexora references — only Adsgram & Monetag
     function loadProgress() {
         try {
             const saved = localStorage.getItem('brickBallPro');
@@ -563,7 +560,7 @@
                 adController = window.Adsgram.init({ blockId: "int-25869" }); 
                 adInitialized = true; 
             } 
-        } catch(e) {} 
+        } catch(e) { console.warn("Adsgram init warn"); } 
     }
     function withNetworkGuard(fn, name) {
         return new Promise(async (resolve) => {
@@ -572,9 +569,8 @@
             try { await fn(); clearTimeout(tid); resolve(); } catch(e) { clearTimeout(tid); console.error(e); if(!isNetworkOnline()) showOfflineExitAndCloseGame(`Network lost during ${name}`); resolve(); }
         });
     }
-    const showAdsgramAd = () => withNetworkGuard(async () => { if(adInitialized && adController) await adController.show(); }, "Adsgram");
+    const showAdsgramAd = () => withNetworkGuard(async () => { if(adInitialized && adController) await adController.show(); else console.warn("Adsgram not ready"); }, "Adsgram");
     const showMonetagAd = () => withNetworkGuard(async () => { if(typeof window.show_10866085 === 'function') await window.show_10866085(); else console.warn("Monetag not ready"); }, "Monetag");
-    const showAdexoraAd = () => withNetworkGuard(async () => { if(typeof window.showAdexora === 'function') await window.showAdexora(); else console.warn("Adexora not ready"); }, "Adexora");
     
     const adSeqPanel = document.getElementById('adSequencePanel');
     const adStepMsg = document.getElementById('adStepMessage');
@@ -593,28 +589,34 @@
             const interval = setInterval(() => { if(!isNetworkOnline() && adSeqPanel.style.display === 'flex') { clearInterval(interval); showOfflineExitAndCloseGame("Lost connection."); if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep = null; resolve(); } }, 1000);
         });
     }
-    async function countdownAdexora() {
-        adStepMsg.innerText = "⏳ Preparing Adexora Ad"; adDesc.innerText = "Ad in 3 seconds..."; adLoading.style.display = "block";
-        for (let i=3;i>=1;i--) { if(!isNetworkOnline()) throw new Error("offline"); adLoading.innerHTML = `<span style="font-size:40px;font-weight:800;background:linear-gradient(45deg,#ffbc6e,#ff9326);-webkit-background-clip:text;color:transparent;">${i}</span><br/>Preparing...`; adStepMsg.innerText = `🎬 Adexora in ${i}`; await new Promise(r=>setTimeout(r,1000)); }
-        adLoading.innerHTML = "Now loading ad..."; adStepMsg.innerText = "⚡ Loading Adexora Ad"; await new Promise(r=>setTimeout(r,200));
-    }
     
+    // Unified ad sequence: Adsgram (1) → Monetag → Adsgram (2) — replaces former Adexora flow
     async function runFullAdSequence(level) {
         if(!isNetworkOnline()) throw new Error("offline");
-        const needAdex = shouldShowAdexora(level);
-        showAdUI("📢 STEP 1/3", "Showing interstitial ad..."); await showAdsgramAd(); if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("✅ Step 1 Complete", "Click next"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("💰 STEP 2/3", "Rewarded ad loading..."); await showMonetagAd(); if(!isNetworkOnline()) throw new Error("offline");
-        if(needAdex) {
-            showAdUI("✅ Step 2 Complete", "Click for final ad (Adexora)"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
-            await countdownAdexora(); if(!isNetworkOnline()) throw new Error("offline");
-            showAdUI("⚡ STEP 3/3: Adexora", "Final ad, almost there!"); await showAdexoraAd();
-        } else {
-            showAdUI("🎲 Break level: 2nd Adsgram", "Click for extra interstitial"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
-            showAdUI("📢 Double Adsgram", "Additional ad"); await showAdsgramAd();
-            showAdUI("✅ Double Adsgram Completed", "Ready to smash!");
-        }
-        await new Promise(r=>setTimeout(r,400)); hideAdUI();
+        // STEP 1: First Adsgram interstitial
+        showAdUI("🎬 STEP 1/3", "Showing Adsgram interstitial..."); 
+        await showAdsgramAd(); 
+        if(!isNetworkOnline()) throw new Error("offline");
+        
+        showAdUI("✅ Step 1 Complete", "Click next to continue"); 
+        await waitForNextStep(); 
+        if(!isNetworkOnline()) throw new Error("offline");
+        
+        // STEP 2: Monetag ad
+        showAdUI("💰 STEP 2/3", "Monetag ad — almost there!"); 
+        await showMonetagAd(); 
+        if(!isNetworkOnline()) throw new Error("offline");
+        
+        showAdUI("✅ Step 2 Complete", "Click for final Adsgram ad"); 
+        await waitForNextStep(); 
+        if(!isNetworkOnline()) throw new Error("offline");
+        
+        // STEP 3: Second Adsgram (replaces former Adexora call)
+        showAdUI("⚡ STEP 3/3: Final Adsgram", "Last ad, smash permission granted!"); 
+        await showAdsgramAd();
+        
+        await new Promise(r=>setTimeout(r,400)); 
+        hideAdUI();
     }
     
     function createBallHitEffect(x, y) {
@@ -758,7 +760,8 @@
             const unlocked = i <= currentUnlockedLevel;
             const card = document.createElement('div'); card.className = 'level-card' + (unlocked ? '' : ' locked');
             if(unlocked) card.onclick = () => { if(!adSequenceActive && !isProcessing) startLevelEntry(i); };
-            const adType = shouldShowAdexora(i) ? "📺 Adexora" : "🔄 2x Adsgram";
+            // Unified ad description: Adsgram + Monetag (Adexora replaced)
+            const adType = "🎬 Adsgram×2 + Monetag";
             const statusIcon = unlocked ? (i < currentUnlockedLevel ? '✓' : '🔓') : '🔒';
             card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">🧱 Brick Set ${i} <span style="font-size:9px;">${adType}</span></div><div class="level-requirement">💥 5 bricks smash</div></div><div class="level-status">${statusIcon}</div>`;
             container.appendChild(card);
