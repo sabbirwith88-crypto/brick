@@ -1,829 +1,782 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
-  <title>Brick Ball — 20 Levels | Grand Reward at Level 20</title>
-  <style>
-    * {
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Brick Ball — Smash & Earn | Ultimate Mobile</title>
+    <!-- Adsgram SDK (blockId: int-25869) -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Monetag SDK (zone: 10866085) -->
+    <script src="//libtl.com/sdk.js" data-zone="10866085" data-sdk="show_10866085"></script>
+    <!-- Adexora SDK (App ID: 2022) -->
+    <script src="https://adexora.com/cdn/ads.js?id=2022"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+        }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: #0a0f1e;
-      font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif;
-      touch-action: none;
-    }
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #2c1a0e, #0f0804);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            position: relative;
+        }
 
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      z-index: 0;
-    }
+        /* animated brick pattern overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(45deg, rgba(200, 80, 40, 0.15) 0px, rgba(200, 80, 40, 0.15) 60px, rgba(230, 110, 50, 0.1) 60px, rgba(230, 110, 50, 0.1) 120px);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 20;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(5px);
-      background: rgba(0, 0, 0, 0.85);
-    }
+        .game-container {
+            width: 100%;
+            max-width: 520px;
+            background: linear-gradient(145deg, #c47a44, #9b4a28);
+            border-radius: 48px;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,215,140,0.6);
+            overflow: hidden;
+            border: 3px solid #ffcf7a;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.2s ease;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .brick-header {
+            background: repeating-linear-gradient(135deg, #bd4a24, #bd4a24 40px, #e06e3a 40px, #e06e3a 80px);
+            padding: 14px 10px;
+            text-align: center;
+            border-bottom: 4px solid #ffcd7a;
+        }
 
-    .skyBg {
-      background: linear-gradient(145deg, #0b2b3b, #1a4a6f);
-      position: relative;
-      overflow: hidden;
-    }
+        .title {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff0b5, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 3px 3px 0 #6b2e12;
+            letter-spacing: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .sun {
-      position: absolute;
-      top: 8%;
-      right: 10%;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, #ffdd99, #ffaa33);
-      border-radius: 50%;
-      box-shadow: 0 0 40px #ffaa44;
-    }
+        .ball-animation {
+            display: inline-block;
+            animation: bounceBall 1s infinite ease;
+        }
 
-    .mountains {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 38%;
-      background: linear-gradient(to top, #2c5a3e, #1d442c);
-      clip-path: polygon(0% 100%, 6% 72%, 18% 86%, 32% 58%, 48% 78%, 68% 52%, 84% 73%, 100% 44%, 100% 100%);
-    }
+        @keyframes bounceBall {
+            0%,100%{ transform: translateY(0px) rotate(0deg);}
+            50%{ transform: translateY(-6px) rotate(10deg);}
+        }
 
-    .level-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(70px, 85px));
-      gap: 12px;
-      justify-content: center;
-      max-height: 65vh;
-      overflow-y: auto;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.55);
-      border-radius: 48px;
-    }
+        .subtitle {
+            font-size: 10px;
+            background: #2b170cba;
+            backdrop-filter: blur(6px);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 60px;
+            color: #ffeaac;
+            font-weight: 600;
+            margin-top: 6px;
+        }
 
-    .lvlBox {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(145deg, #2c3e66, #1a2a48);
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
-      border-radius: 24px;
-      cursor: pointer;
-      transition: 0.05s linear;
-      box-shadow: 0 6px 0 #0f1a2a;
-      border: 1px solid #ffb34777;
-    }
+        .badge-pattern {
+            background: #2f1a0c;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 9px;
+            margin-top: 6px;
+            color: #ffcf7a;
+            font-weight: bold;
+            display: inline-block;
+        }
 
-    .lvlBox:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #0f1a2a;
-    }
+        .level-list {
+            max-height: 460px;
+            overflow-y: auto;
+            padding: 12px;
+            background: rgba(30, 16, 6, 0.8);
+            scrollbar-width: thin;
+        }
 
-    .locked {
-      background: #4a5568 !important;
-      cursor: not-allowed;
-      opacity: 0.55;
-      filter: grayscale(0.3);
-      box-shadow: 0 4px 0 #2d3748;
-    }
+        .level-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .level-list::-webkit-scrollbar-track { background: #7a3a1c; border-radius: 10px; }
+        .level-list::-webkit-scrollbar-thumb { background: #ffbc6e; border-radius: 10px; }
 
-    .hud {
-      position: absolute;
-      left: 12px;
-      top: 12px;
-      display: flex;
-      gap: 16px;
-      z-index: 90;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(10px);
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: bold;
-      color: white;
-      font-size: 16px;
-      font-family: monospace;
-      border: 1px solid #ffb347;
-    }
+        .level-card {
+            background: linear-gradient(105deg, #6e351b, #4f2410);
+            margin-bottom: 12px;
+            border-radius: 28px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 6px solid #ffbc6e;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+        .level-card:active { transform: scale(0.97); background: #814020; }
+        .level-card.locked { opacity: 0.55; border-left-color: #7a5a44; pointer-events: none; filter: grayscale(0.2);}
 
-    .hud span:first-child {
-      margin-right: 6px;
-      color: #ffcc88;
-    }
+        .level-number {
+            font-size: 24px;
+            font-weight: 800;
+            background: #ffbc6e;
+            color: #3a1c0a;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            box-shadow: inset 0 -2px 0 #b1622a, 0 4px 8px black;
+        }
 
-    .hud span:last-child {
-      color: #ffaa55;
-      font-size: 22px;
-      font-weight: 900;
-      margin-left: 4px;
-    }
+        .level-info { flex: 1; padding-left: 12px; }
+        .level-name { font-size: 15px; font-weight: 800; color: #ffefc0; }
+        .level-requirement { font-size: 9px; color: #ffcd8a; margin-top: 2px; }
 
-    .right-hud {
-      left: auto;
-      right: 12px;
-    }
+        /* Game Panel */
+        .game-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 10, 3, 0.97);
+            backdrop-filter: blur(18px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeSlide 0.25s ease;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: scale(0.96); backdrop-filter: blur(0);}
+            to { opacity: 1; transform: scale(1); backdrop-filter: blur(18px);}
+        }
 
-    button {
-      background: #ff9800;
-      border: none;
-      border-radius: 60px;
-      font-weight: 800;
-      padding: 10px 28px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: 0.07s linear;
-      box-shadow: 0 5px 0 #b45f06;
-      color: #1e2a2e;
-      font-family: inherit;
-      touch-action: manipulation;
-    }
+        .game-card {
+            background: radial-gradient(ellipse at 30% 20%, #d47e44, #893d1c);
+            border-radius: 56px;
+            padding: 24px 16px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            border: 3px solid #ffdfa5;
+            box-shadow: 0 25px 35px black;
+        }
 
-    button:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #b45f06;
-    }
+        .game-level-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff0b5;
+            text-shadow: 2px 2px 0 #652d10;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
 
-    .reward-card,
-    .gameover-card,
-    .levelcomplete-card,
-    .network-card {
-      background: linear-gradient(145deg, #f39c12, #e67e22);
-      padding: 25px 30px;
-      border-radius: 50px;
-      text-align: center;
-      border: 3px solid gold;
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
-      min-width: 280px;
-      margin: 20px;
-    }
+        .brick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        @media (min-width: 450px) {
+            .brick-grid { grid-template-columns: repeat(3, 1fr); }
+        }
 
-    .network-card {
-      background: linear-gradient(145deg, #e63946, #c92a2a);
-      border-color: #ffaa66;
-    }
+        .brick {
+            background: linear-gradient(145deg, #c2582c, #9b3a1a);
+            border-radius: 20px;
+            padding: 14px 4px;
+            text-align: center;
+            font-weight: 800;
+            color: #fff0ce;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.05s linear;
+            box-shadow: 0 6px 0 #55280e;
+            position: relative;
+            overflow: hidden;
+        }
+        .brick:active { transform: translateY(3px); box-shadow: 0 2px 0 #55280e; }
+        .brick.broken {
+            background: #4a3224;
+            box-shadow: none;
+            transform: translateY(4px);
+            filter: grayscale(0.6);
+            cursor: default;
+            pointer-events: none;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
 
-    .network-card h2 {
-      color: white;
-      font-size: 36px;
-      margin-bottom: 20px;
-    }
+        .ball-hit-effect {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: radial-gradient(circle, #ffcf4a, #ff8c1a);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: hitPop 0.3s ease-out forwards;
+            z-index: 200;
+        }
+        @keyframes hitPop {
+            0% { transform: scale(0.2); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
 
-    .reward-card textarea {
-      width: 100%;
-      background: #2d2f36;
-      color: #ffd966;
-      font-size: 18px;
-      font-weight: bold;
-      border: 2px solid #ffcc66;
-      border-radius: 20px;
-      padding: 15px;
-      margin: 15px 0;
-      font-family: monospace;
-      resize: none;
-      text-align: center;
-      letter-spacing: 1px;
-    }
+        .progress-bar {
+            background: #2b180c;
+            border-radius: 60px;
+            padding: 3px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #ffbc6e, #ff9626);
+            height: 10px;
+            border-radius: 60px;
+            width: 0%;
+            transition: width 0.2s ease;
+        }
 
-    .copy-btn {
-      background: #2ecc71;
-      color: #1e2a2e;
-      margin-top: 6px;
-      padding: 10px 28px;
-      font-size: 18px;
-    }
+        .combo-streak {
+            background: #1f1107;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: #ffcd7a;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
 
-    .gameover-card {
-      background: #1e2a2e;
-      border-color: #ff8855;
-    }
-
-    .gameover-card h1 {
-      font-size: 48px;
-      color: #ff8855;
-    }
-
-    .levelcomplete-card {
-      background: linear-gradient(145deg, #1f6e43, #0e4f2e);
-    }
-
-    .levelcomplete-card h1 {
-      font-size: 44px;
-      color: gold;
-    }
-
-    @media (max-width: 600px) {
-      .level-grid {
-        grid-template-columns: repeat(4, minmax(70px, 80px));
-        gap: 10px;
-      }
-      .lvlBox {
-        font-size: 18px;
-      }
-      button {
-        padding: 8px 20px;
-        font-size: 16px;
-      }
-      .reward-card textarea {
-        font-size: 14px;
-        padding: 10px;
-      }
-      .network-card h2 {
-        font-size: 28px;
-      }
-    }
-  </style>
-  <!-- Adsgram SDK -->
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+        /* enhanced countdown overlay */
+        .countdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(20px);
+            z-index: 11000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .countdown-number {
+            font-size: 100px;
+            background: linear-gradient(45deg, #ffbc6e, #ff8c1a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+            animation: pulseScale 0.4s ease-out;
+            text-shadow: 0 0 20px rgba(255,140,26,0.5);
+        }
+        @keyframes pulseScale {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .countdown-message {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffcf7a;
+            margin-top: 20px;
+            text-shadow: 0 2px 4px black;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 20px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+        }
+        .countdown-progress-ring {
+            width: 120px;
+            height: 120px;
+            margin-top: 20px;
+        }
+        .levelcomplete-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #e07a2e, #55280e);
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .complete-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: #fff0b5;
+            text-shadow: 3px 3px 0 #5a2a10;
+        }
+        .reward-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f5bc70, #d97a2a);
+            z-index: 9500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .reward-code {
+            background: rgba(0,0,0,0.85);
+            padding: 14px 24px;
+            border-radius: 48px;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #ffbc6e;
+            margin: 20px;
+            cursor: pointer;
+            border: 2px solid gold;
+        }
+        .btn {
+            background: linear-gradient(45deg, #ffbc6e, #f5922a);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 800;
+            border-radius: 60px;
+            cursor: pointer;
+            margin: 6px;
+            transition: 0.08s linear;
+            box-shadow: 0 4px 0 #9b4a1a;
+        }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9b4a1a; }
+        .footer-note {
+            text-align: center;
+            padding: 10px;
+            background: #1f1107;
+            color: #ffcf9a;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        .ad-sequence-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(30px);
+            z-index: 12000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .ad-sequence-card {
+            background: #35200f;
+            border-radius: 56px;
+            padding: 28px 20px;
+            max-width: 320px;
+            width: 85%;
+            text-align: center;
+            border: 3px solid #ffbc6e;
+        }
+        .next-step-btn {
+            background: linear-gradient(45deg, #ffbc6e, #f5922a);
+            border: none;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 60px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .offline-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: #b33a22;
+            color: white;
+            padding: 12px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 20000;
+            box-shadow: 0 6px 15px black;
+            animation: slideUp 0.25s;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .game-close-btn {
+            background: #2c1a10;
+            color: #ffcf8a;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 60px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 14px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body oncontextmenu="return false;">
-<canvas id="game"></canvas>
-
-<!-- START SCREEN -->
-<div class="overlay skyBg" id="startOverlay">
-  <div class="sun"></div>
-  <div class="mountains"></div>
-  <button id="openLevelSelect" style="background:#ffb347;font-size:26px;padding:14px 45px;">🎮 START GAME</button>
-  <div style="margin-top:25px;color:#ffecb3;font-weight:bold;font-size:16px;text-align:center;">✨ 20 LEVELS | COMPLETE LEVEL 20 FOR GRAND REWARD ✨</div>
+<body>
+<div class="game-container">
+    <div class="brick-header">
+        <div class="title"><span>🧱</span><span>BRICK BALL</span><span class="ball-animation">🏀</span></div>
+        <div class="subtitle">⚡ SMASH → WATCH ADS → UNLOCK ⚡</div>
+        <div class="badge-pattern">🔨 LVL 3,6,9: DOUBLE ADSGRAM | OTHERS: ADEXORA</div>
+    </div>
+    <div class="level-list" id="levelListContainer"></div>
+    <div class="footer-note">💥 Tap bricks to smash them with the ball! Each set = 5 bricks.</div>
 </div>
 
-<!-- LEVEL SELECT -->
-<div class="overlay hidden" id="levelOverlay">
-  <div class="sun"></div>
-  <div class="mountains"></div>
-  <div class="level-grid" id="levelGrid"></div>
-  <button id="backToStartFromLevels" style="margin-top:20px;background:#e67e22;">🏠 MAIN MENU</button>
+<!-- Game Panel -->
+<div id="gamePanel" class="game-panel" style="display: none;">
+    <div class="game-card">
+        <div class="game-level-title"><span>🏀</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>🧱</span></div>
+        <div class="combo-streak" id="comboStreakDisplay">🔥 STREAK 0</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="game-progress" id="gameProgressText" style="font-weight: bold; margin: 8px 0;">0 / 5 smashed</div>
+        <div class="brick-grid" id="bricksGrid"></div>
+        <div class="complete-status" id="completeStatusMsg">✨ Tap any brick to smash! ✨</div>
+        <button class="game-close-btn" id="exitGameBtn">🏠 Back to Hall</button>
+    </div>
 </div>
 
-<!-- IN-GAME HUD -->
-<div class="hud"><span>💎 SCORE</span><span id="score">0</span></div>
-<div class="hud right-hud"><span>⚡ BALLS</span><span id="ballsCount">1</span></div>
-
-<!-- GAME OVER -->
-<div class="overlay hidden" id="gameOverOverlay">
-  <div class="gameover-card">
-    <h1>💀 GAME OVER</h1>
-    <button id="restartBtn" style="background:#27ae60;">🔄 RESTART LEVEL</button>
-    <button id="backBtn" style="background:#e67e22;">📁 LEVELS</button>
-  </div>
+<!-- Enhanced Countdown Overlay -->
+<div id="countdownOverlay" class="countdown-overlay" style="display: none;">
+    <div class="countdown-number" id="countdownNum">3</div>
+    <div class="countdown-message" id="countdownMsg">Next Brick Set starting...</div>
+    <div class="countdown-progress-ring"><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#ffbc6e" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="0" id="countdownCircle"/></svg></div>
 </div>
 
-<!-- LEVEL COMPLETE -->
-<div class="overlay hidden" id="levelCompleteOverlay">
-  <div class="levelcomplete-card">
-    <h1>✨ LEVEL CLEARED!</h1>
-    <button id="nextLevelBtn" style="background:#f39c12;">➡ NEXT LEVEL</button>
-    <button id="levelsBtn" style="background:#3498db;">📋 LEVEL SELECT</button>
-  </div>
+<!-- Level Complete Screen -->
+<div id="levelCompleteScreen" class="levelcomplete-screen" style="display: none;">
+    <div class="complete-title">🏆 BRICK BALL CLEAR! 🏆</div>
+    <div style="color: #ffefb0; font-size: 18px; margin: 16px;" id="completeLevelMsg"></div>
+    <button class="btn" id="nextLevelBtnFromComplete">➡️ NEXT BRICK SET</button>
+    <button class="btn" id="backToRoadCompleteBtn">🏠 MAIN MENU</button>
 </div>
 
-<!-- NETWORK ERROR OVERLAY -->
-<div class="overlay hidden" id="networkErrorOverlay">
-  <div class="network-card">
-    <h2>⚠️ NETWORK ERROR ⚠️</h2>
-    <p style="color:white;font-size:18px;">No internet connection detected!</p>
-    <p style="color:#ffdd99;font-size:14px;margin:10px 0;">Please check your connection and try again.</p>
-    <button id="networkRetryBtn" style="background:#27ae60;margin-top:15px;">🔄 RETRY</button>
-    <button id="networkExitBtn" style="background:#e63946;margin-top:10px;">🚪 EXIT GAME</button>
-  </div>
+<!-- Reward Screen -->
+<div id="rewardScreen" class="reward-screen" style="display: none;">
+    <h2 style="font-size: 38px; color:#2b180a;">🏅 MASTER SMASHER 🏅</h2>
+    <p style="color: white; font-size: 18px;">You crushed all 10 brick sets!</p>
+    <p style="color: #ffefb0; margin-top: 12px;">🎁 Your reward code:</p>
+    <div class="reward-code" id="rewardCodeDisplay" onclick="copyRewardCodeGlobal()">BALL10-XXXXXX</div>
+    <p style="font-size: 11px;">👇 tap to copy 👇</p>
+    <button class="btn" id="resetAllBtn">📋 COPY & RESET GAME</button>
 </div>
 
-<!-- FINAL REWARD FOR LEVEL 20 -->
-<div class="overlay hidden" id="rewardOverlay">
-  <div class="reward-card">
-    <h2>🏆 GRAND MASTER REWARD 🏆</h2>
-    <p style="color:white;font-size:18px;">Congratulations! You conquered all 20 levels!</p>
-    <p style="color:#ffd966;font-size:14px;">Your exclusive 7-digit reward code:</p>
-    <textarea id="rewardCode" rows="1" readonly></textarea>
-    <button id="copyRewardBtn" class="copy-btn">📋 COPY CODE</button>
-    <p style="color:#fff0b5; font-size:12px; margin-top:8px;">After copying, the game will reset automatically to Level 1.</p>
-  </div>
+<!-- Ad Sequence Modal -->
+<div id="adSequencePanel" class="ad-sequence-panel" style="display: none;">
+    <div class="ad-sequence-card">
+        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">🏀</div>
+        <div class="ad-step-message" style="font-size: 20px; font-weight: bold; color:#ffcf7a;" id="adStepMessage">Loading ad...</div>
+        <div class="ad-description" style="margin: 8px 0;" id="adDescription">Complete ad to continue smashing</div>
+        <button id="nextStepAdBtn" class="next-step-btn" style="display: none;">➡️ Next Step</button>
+        <div id="adLoadingIndicator" class="ad-loading-text" style="color:#ffbc6e;">Processing...</div>
+    </div>
 </div>
 
 <script>
-  (function() {
-    // ---------- NETWORK MONITORING ----------
-    let isOnline = navigator.onLine;
-    let gamePausedForNetwork = false;
-    let savedGameStateBeforeNetwork = null;
+    // ---------- BRICK BALL ULTIMATE MOBILE ----------
+    const MAX_LEVEL = 10;
+    let currentUnlockedLevel = 1;
+    let activeGameLevel = null;
+    let bricksBroken = [];
+    let gameCompletedFlag = false;
+    let isProcessing = false;
+    let adSequenceActive = false;
+    let pendingResolveNextStep = null;
+    let currentStreak = 0;
     
-    function checkNetworkAndShowError() {
-      if (!navigator.onLine) {
-        isOnline = false;
-        if (currentScreen === "game" && running && !gamePausedForNetwork) {
-          gamePausedForNetwork = true;
-          savedGameStateBeforeNetwork = {
-            running: running,
-            currentLevel: currentLevel,
-            score: score,
-            balls: JSON.parse(JSON.stringify(balls)),
-            bricks: JSON.parse(JSON.stringify(bricks)),
-            paddleX: paddle.x,
-            paddleY: paddle.y
-          };
-          running = false;
-          changeScreen("network_error");
-        } else if (currentScreen !== "network_error") {
-          changeScreen("network_error");
-        }
-      } else {
-        isOnline = true;
-        if (currentScreen === "network_error" && gamePausedForNetwork) {
-          if (savedGameStateBeforeNetwork) {
-            currentLevel = savedGameStateBeforeNetwork.currentLevel;
-            score = savedGameStateBeforeNetwork.score;
-            balls = savedGameStateBeforeNetwork.balls;
-            bricks = savedGameStateBeforeNetwork.bricks;
-            paddle.x = savedGameStateBeforeNetwork.paddleX;
-            paddle.y = savedGameStateBeforeNetwork.paddleY;
-            running = true;
-            gamePausedForNetwork = false;
-            savedGameStateBeforeNetwork = null;
-            updateHUD();
-            changeScreen("game");
-          } else {
-            changeScreen("start");
-          }
-        } else if (currentScreen === "network_error" && !gamePausedForNetwork) {
-          changeScreen("start");
-        }
-      }
-    }
-    
-    window.addEventListener('online', () => checkNetworkAndShowError());
-    window.addEventListener('offline', () => checkNetworkAndShowError());
-    setInterval(() => { if (navigator.onLine !== isOnline) checkNetworkAndShowError(); }, 2000);
-    
-    // ---------- ADSGRAM INTERSTITIAL ADS ----------
     let adController = null;
-    let isAdLoading = false;
+    let adInitialized = false;
     
-    function initAds() {
-      try {
-        if (window.Adsgram) {
-          adController = window.Adsgram.init({ blockId: "int-25869" });
-        } else {
-          setTimeout(initAds, 500);
-        }
-      } catch(e) { console.log("Ads init error"); }
-    }
+    function isBreakLevel(level) { return (level === 3 || level === 6 || level === 9); }
+    function shouldShowAdexora(level) { return !isBreakLevel(level); }
     
-    function showInterstitialAd() {
-      return new Promise((resolve) => {
-        if (!adController || isAdLoading) { resolve(); return; }
-        isAdLoading = true;
+    function loadProgress() {
         try {
-          adController.show().then(() => { isAdLoading = false; resolve(); })
-            .catch(() => { isAdLoading = false; resolve(); });
-        } catch(e) { isAdLoading = false; resolve(); }
-      });
+            const saved = localStorage.getItem('brickBallPro');
+            if(saved) { const data = JSON.parse(saved); currentUnlockedLevel = Math.min(MAX_LEVEL, data.unlockedLevel || 1); }
+            else currentUnlockedLevel = 1;
+        } catch(e) { currentUnlockedLevel = 1; }
+    }
+    function saveProgress() { localStorage.setItem('brickBallPro', JSON.stringify({ unlockedLevel: currentUnlockedLevel })); }
+    
+    function isNetworkOnline() { return navigator.onLine; }
+    function showOfflineExitAndCloseGame(msg = "📡 No internet. Returning to menu.") {
+        const toast = document.createElement('div'); toast.className = 'offline-toast'; toast.innerText = msg;
+        document.body.appendChild(toast); setTimeout(() => toast.remove(), 3500);
+        forceExitAllGameScreens();
+    }
+    function forceExitAllGameScreens() {
+        document.getElementById('gamePanel').style.display = 'none';
+        document.getElementById('adSequencePanel').style.display = 'none';
+        document.getElementById('countdownOverlay').style.display = 'none';
+        document.getElementById('levelCompleteScreen').style.display = 'none';
+        document.getElementById('rewardScreen').style.display = 'none';
+        if(pendingResolveNextStep) { pendingResolveNextStep(); pendingResolveNextStep = null; }
+        adSequenceActive = false; isProcessing = false; gameCompletedFlag = false; activeGameLevel = null;
+    }
+    window.addEventListener('offline', () => { if(adSequenceActive || document.getElementById('gamePanel').style.display === 'flex') showOfflineExitAndCloseGame("⚠️ Connection lost. Exiting."); });
+    
+    function initAdsgram() { 
+        try { 
+            if(window.Adsgram) { 
+                adController = window.Adsgram.init({ blockId: "int-25869" }); 
+                adInitialized = true; 
+            } 
+        } catch(e) {} 
+    }
+    function withNetworkGuard(fn, name) {
+        return new Promise(async (resolve) => {
+            if(!isNetworkOnline()) { showOfflineExitAndCloseGame(`No internet for ${name}`); resolve(); return; }
+            const tid = setTimeout(() => { console.warn(`${name} timeout`); resolve(); }, 10000);
+            try { await fn(); clearTimeout(tid); resolve(); } catch(e) { clearTimeout(tid); console.error(e); if(!isNetworkOnline()) showOfflineExitAndCloseGame(`Network lost during ${name}`); resolve(); }
+        });
+    }
+    const showAdsgramAd = () => withNetworkGuard(async () => { if(adInitialized && adController) await adController.show(); }, "Adsgram");
+    const showMonetagAd = () => withNetworkGuard(async () => { if(typeof window.show_10866085 === 'function') await window.show_10866085(); else console.warn("Monetag not ready"); }, "Monetag");
+    const showAdexoraAd = () => withNetworkGuard(async () => { if(typeof window.showAdexora === 'function') await window.showAdexora(); else console.warn("Adexora not ready"); }, "Adexora");
+    
+    const adSeqPanel = document.getElementById('adSequencePanel');
+    const adStepMsg = document.getElementById('adStepMessage');
+    const adDesc = document.getElementById('adDescription');
+    const nextStepBtn = document.getElementById('nextStepAdBtn');
+    const adLoading = document.getElementById('adLoadingIndicator');
+    function showAdUI(step, desc) { adStepMsg.innerText = step; adDesc.innerText = desc; nextStepBtn.style.display = 'none'; adLoading.style.display = 'block'; adSeqPanel.style.display = 'flex'; }
+    function hideAdUI() { adSeqPanel.style.display = 'none'; if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep = null; }
+    function waitForNextStep() {
+        return new Promise((resolve) => {
+            if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost."); resolve(); return; }
+            pendingResolveNextStep = resolve;
+            nextStepBtn.style.display = 'block'; adLoading.style.display = 'none';
+            const onClick = () => { nextStepBtn.removeEventListener('click', onClick); if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep = null; resolve(); };
+            nextStepBtn.addEventListener('click', onClick, { once: true });
+            const interval = setInterval(() => { if(!isNetworkOnline() && adSeqPanel.style.display === 'flex') { clearInterval(interval); showOfflineExitAndCloseGame("Lost connection."); if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep = null; resolve(); } }, 1000);
+        });
+    }
+    async function countdownAdexora() {
+        adStepMsg.innerText = "⏳ Preparing Adexora Ad"; adDesc.innerText = "Ad in 3 seconds..."; adLoading.style.display = "block";
+        for (let i=3;i>=1;i--) { if(!isNetworkOnline()) throw new Error("offline"); adLoading.innerHTML = `<span style="font-size:40px;font-weight:800;background:linear-gradient(45deg,#ffbc6e,#ff9326);-webkit-background-clip:text;color:transparent;">${i}</span><br/>Preparing...`; adStepMsg.innerText = `🎬 Adexora in ${i}`; await new Promise(r=>setTimeout(r,1000)); }
+        adLoading.innerHTML = "Now loading ad..."; adStepMsg.innerText = "⚡ Loading Adexora Ad"; await new Promise(r=>setTimeout(r,200));
     }
     
-    let hasShownStartAd = false;
-    async function showStartAdIfNeeded() {
-      if (!hasShownStartAd && navigator.onLine) { hasShownStartAd = true; await showInterstitialAd(); }
-    }
-    let gameOverAdShown = false;
-    async function showGameOverAd() { if (!gameOverAdShown && navigator.onLine) { gameOverAdShown = true; await showInterstitialAd(); } }
-    let levelCompleteAdShown = false;
-    async function showLevelCompleteAd() { if (!levelCompleteAdShown && navigator.onLine) { levelCompleteAdShown = true; await showInterstitialAd(); } }
-    function resetAdFlags() { gameOverAdShown = false; levelCompleteAdShown = false; }
-    
-    // ---------- CANVAS ----------
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    let DPR = window.devicePixelRatio || 1;
-    function resizeCanvas() {
-      canvas.width = window.innerWidth * DPR;
-      canvas.height = window.innerHeight * DPR;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-    }
-    resizeCanvas();
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      if (currentScreen === "game" && paddle) paddle.x = Math.min(Math.max(paddle.x, 0), canvas.width - paddle.w);
-      if (currentScreen === "game" && balls && balls[0] && balls[0].stuck) balls[0].x = paddle.x + paddle.w / 2;
-    });
-
-    // ---------- AUDIO ----------
-    let soundEnabled = true;
-    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function safePlay(fn) { if (!soundEnabled) return; try { fn(); } catch(e) {} }
-    function playBrickHit() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=880; osc.frequency.exponentialRampToValueAtTime(380, audioCtx.currentTime+0.07); gain.gain.value=0.28; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.09); osc.start(); osc.stop(audioCtx.currentTime+0.09); }); }
-    function playPaddleHit() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=620; osc.frequency.exponentialRampToValueAtTime(360, audioCtx.currentTime+0.06); gain.gain.value=0.2; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.07); osc.start(); osc.stop(audioCtx.currentTime+0.07); }); }
-    function playLevelComplete() { safePlay(()=>{ [523,659,784,1047].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.32; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.25); osc.start(); osc.stop(audioCtx.currentTime+0.25); }, i*100); }); }); }
-    function playGameOver() { safePlay(()=>{ [392,349,330].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.3; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.4); osc.start(); osc.stop(audioCtx.currentTime+0.4); }, i*170); }); }); }
-    function playLaunch() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=350; osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime+0.12); gain.gain.value=0.24; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.13); osc.start(); osc.stop(audioCtx.currentTime+0.13); }); }
-    function playExtraBall() { safePlay(()=>{ [523,784,1047].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.type='sine'; osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.25; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.2); osc.start(); osc.stop(audioCtx.currentTime+0.2); }, i*70); }); }); }
-    function playFinalReward() { safePlay(()=>{ [523,659,784,1047,1318,1568].forEach((f,i)=>{ setTimeout(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.type='sine'; osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=f; gain.gain.value=0.4; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.35); osc.start(); osc.stop(audioCtx.currentTime+0.35); }, i*150); }); }); }
-    function playClick() { safePlay(()=>{ const osc=audioCtx.createOscillator(), gain=audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value=700; osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime+0.05); gain.gain.value=0.16; gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.06); osc.start(); osc.stop(audioCtx.currentTime+0.06); }); }
-    function resumeAudioCtx() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
-
-    // ---------- GLOBAL ----------
-    let currentScreen = "start";
-    let currentLevel = 1, score = 0;
-    let balls = [], bricks = [], running = false;
-    let paddle = { w: 140, h: 18, x: 0, y: 0 };
-    const MAX_LEVELS = 20;  // ONLY 20 LEVELS
-    let unlockedLevels = [1];
-    
-    let stars = [];
-    for(let i=0;i<120;i++) stars.push({ x:Math.random(), y:Math.random(), size:1+Math.random()*2 });
-    
-    function saveGameProgress() { 
-      localStorage.setItem('brickBall20', JSON.stringify({ unlocked: unlockedLevels, currentLevel: currentLevel })); 
-    }
-    function loadGameProgress() { 
-      let d = localStorage.getItem('brickBall20'); 
-      if(d) { 
-        let p = JSON.parse(d); 
-        unlockedLevels = p.unlocked || [1]; 
-        currentLevel = p.currentLevel || 1;
-        if (currentLevel > MAX_LEVELS) currentLevel = 1;
-      } else { 
-        unlockedLevels = [1]; 
-        currentLevel = 1;
-      } 
-    }
-    
-    // Reset game completely (wipe progress, start fresh)
-    function fullGameReset() {
-      unlockedLevels = [1];
-      currentLevel = 1;
-      score = 0;
-      saveGameProgress();
-      console.log("Game fully reset to level 1");
-    }
-    
-    function generateRewardCode() {
-      let code = '';
-      for(let i = 0; i < 7; i++) code += Math.floor(Math.random() * 10);
-      return code;
-    }
-    
-    let level20RewardCode = generateRewardCode();
-    
-    function generateBricksForLevel(level) {
-      const targetCount = 3;
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2 - 90;
-      let bricksArray = [];
-      let brickW = 85;
-      let brickH = 28;
-      let totalWidth = brickW * 3 + 30;
-      let startX = cx - totalWidth / 2;
-      for (let i = 0; i < targetCount; i++) {
-        let x = startX + i * (brickW + 15);
-        let y = cy;
-        let hue = (level * 25 + i * 120) % 360;
-        let color = `hsl(${hue}, 75%, 58%)`;
-        bricksArray.push({ x, y, w: brickW - 2, h: brickH - 2, alive: true, color });
-      }
-      return bricksArray;
-    }
-    
-    function getBallBaseSpeed() {
-      let speed = 14 + (currentLevel * 0.2);
-      return Math.min(speed, 22);
-    }
-    
-    function updateHUD() {
-      document.getElementById('score').innerText = score;
-      document.getElementById('ballsCount').innerText = balls.length;
-    }
-    
-    function resetPositions() {
-      paddle.x = canvas.width / 2 - paddle.w / 2;
-      paddle.y = canvas.height - 310;
-      balls = [{ x: canvas.width / 2, y: paddle.y - 18, r: 7, vx: 0, vy: 0, stuck: true }];
-      updateHUD();
-    }
-    
-    function launchBall() {
-      if (!running) return;
-      for (let b of balls) {
-        if (b.stuck) {
-          let angle = (Math.random() * Math.PI / 2.4) - Math.PI / 4.8;
-          let sp = getBallBaseSpeed();
-          b.vx = Math.sin(angle) * sp;
-          b.vy = -Math.cos(angle) * sp;
-          b.stuck = false;
-          playLaunch();
+    async function runFullAdSequence(level) {
+        if(!isNetworkOnline()) throw new Error("offline");
+        const needAdex = shouldShowAdexora(level);
+        showAdUI("📢 STEP 1/3", "Showing interstitial ad..."); await showAdsgramAd(); if(!isNetworkOnline()) throw new Error("offline");
+        showAdUI("✅ Step 1 Complete", "Click next"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
+        showAdUI("💰 STEP 2/3", "Rewarded ad loading..."); await showMonetagAd(); if(!isNetworkOnline()) throw new Error("offline");
+        if(needAdex) {
+            showAdUI("✅ Step 2 Complete", "Click for final ad (Adexora)"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
+            await countdownAdexora(); if(!isNetworkOnline()) throw new Error("offline");
+            showAdUI("⚡ STEP 3/3: Adexora", "Final ad, almost there!"); await showAdexoraAd();
+        } else {
+            showAdUI("🎲 Break level: 2nd Adsgram", "Click for extra interstitial"); await waitForNextStep(); if(!isNetworkOnline()) throw new Error("offline");
+            showAdUI("📢 Double Adsgram", "Additional ad"); await showAdsgramAd();
+            showAdUI("✅ Double Adsgram Completed", "Ready to smash!");
         }
-      }
+        await new Promise(r=>setTimeout(r,400)); hideAdUI();
     }
     
-    function tryAddExtraBall(x, y) {
-      if (Math.random() < 0.22 && balls.length < 8) {
-        let newBall = {
-          x: x, y: y, r: 7,
-          vx: (Math.random() - 0.5) * (getBallBaseSpeed() * 0.9),
-          vy: -Math.abs(getBallBaseSpeed() * 0.8),
-          stuck: false
-        };
-        balls.push(newBall);
-        playExtraBall();
-        updateHUD();
-      }
+    function createBallHitEffect(x, y) {
+        const effect = document.createElement('div'); effect.className = 'ball-hit-effect';
+        effect.style.left = x + 'px'; effect.style.top = y + 'px';
+        effect.style.position = 'fixed'; effect.style.zIndex = '20000';
+        document.body.appendChild(effect);
+        setTimeout(() => effect.remove(), 300);
     }
     
-    // FINAL REWARD for LEVEL 20 + AUTO RESET after copy
-    function showFinalReward() {
-      running = false;
-      playFinalReward();
-      level20RewardCode = generateRewardCode(); // fresh code on completion
-      document.getElementById('rewardCode').value = level20RewardCode;
-      document.getElementById('rewardOverlay').classList.remove('hidden');
-      currentScreen = "reward";
+    async function startLevelEntry(level) {
+        if(adSequenceActive || isProcessing) return false;
+        if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Internet required."); return false; }
+        adSequenceActive = true; isProcessing = true;
+        document.getElementById('gamePanel').style.display = 'none';
+        try {
+            await runFullAdSequence(level);
+            if(!isNetworkOnline()) throw new Error("offline");
+            activeGameLevel = level;
+            bricksBroken = [false, false, false, false, false];
+            gameCompletedFlag = false;
+            currentStreak = 0;
+            renderGameUI(level);
+            document.getElementById('gamePanel').style.display = 'flex';
+            adSequenceActive = false; isProcessing = false;
+            return true;
+        } catch(err) { hideAdUI(); adSequenceActive = false; isProcessing = false; showOfflineExitAndCloseGame("Ad sequence failed."); return false; }
     }
     
-    async function handleLevelComplete() {
-      running = false;
-      playLevelComplete();
-      
-      if (currentLevel < MAX_LEVELS && !unlockedLevels.includes(currentLevel + 1)) {
-        unlockedLevels.push(currentLevel + 1);
-        saveGameProgress();
-      }
-      
-      if (currentLevel === MAX_LEVELS) {
-        showFinalReward();
-      } else {
-        await showLevelCompleteAd();
-        document.getElementById('levelCompleteOverlay').classList.remove('hidden');
-        currentScreen = "levelcomplete";
-      }
-    }
-    
-    async function handleGameOver() {
-      running = false;
-      playGameOver();
-      await showGameOverAd();
-      document.getElementById('gameOverOverlay').classList.remove('hidden');
-      changeScreen("gameover");
-    }
-    
-    function updateGame() {
-      if (currentScreen !== "game" || !running) return;
-      
-      for (let i = 0; i < balls.length; i++) {
-        let ball = balls[i];
-        if (ball.stuck) continue;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-        
-        if (ball.x - ball.r <= 0) { ball.x = ball.r; ball.vx = -ball.vx; }
-        if (ball.x + ball.r >= canvas.width) { ball.x = canvas.width - ball.r; ball.vx = -ball.vx; }
-        if (ball.y - ball.r <= 0) { ball.y = ball.r; ball.vy = -ball.vy; }
-        
-        if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y - ball.r <= paddle.y + paddle.h &&
-            ball.x + ball.r >= paddle.x && ball.x - ball.r <= paddle.x + paddle.w) {
-          let hitPos = (ball.x - paddle.x) / paddle.w;
-          let angle = (hitPos - 0.5) * 1.4;
-          let speed = Math.hypot(ball.vx, ball.vy);
-          ball.vx = Math.sin(angle) * speed;
-          ball.vy = -Math.abs(Math.cos(angle) * speed);
-          playPaddleHit();
+    const brickNames = ["🧱 CORNER", "🏛️ WALL", "💎 CORE", "⚡ FLANK", "🏆 TOP"];
+    function renderGameUI(level) {
+        document.getElementById('gameLevelTitle').innerHTML = `🧱 BRICK SET ${level} 🏀`;
+        const brokenCount = bricksBroken.filter(v=>v).length;
+        const percent = (brokenCount/5)*100;
+        document.getElementById('progressFill').style.width = percent+'%';
+        document.getElementById('gameProgressText').innerHTML = `💥 ${brokenCount} / 5 smashed | 🏀 ${currentStreak} streak`;
+        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `🔥 STREAK ${currentStreak} 🔥` : `⚡ STREAK 0`;
+        const grid = document.getElementById('bricksGrid'); grid.innerHTML = '';
+        for(let i=0;i<5;i++) {
+            const brickDiv = document.createElement('div'); brickDiv.className = 'brick';
+            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `💀<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
+            else {
+                brickDiv.innerHTML = `<span style="font-size:24px;">🧱</span><br>${brickNames[i]}`;
+                brickDiv.onclick = (e) => { if(gameCompletedFlag || bricksBroken[i]) return; smashBrick(i, e); };
+            }
+            grid.appendChild(brickDiv);
         }
-        
-        let brickHit = false;
-        for (let b of bricks) {
-          if (b.alive && ball.x + ball.r > b.x && ball.x - ball.r < b.x + b.w &&
-              ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h) {
-            b.alive = false;
-            brickHit = true;
-            
-            let overlapL = (ball.x + ball.r) - b.x;
-            let overlapR = (b.x + b.w) - (ball.x - ball.r);
-            let overlapT = (ball.y + ball.r) - b.y;
-            let overlapB = (b.y + b.h) - (ball.y - ball.r);
-            let minOverlap = Math.min(overlapL, overlapR, overlapT, overlapB);
-            if (minOverlap === overlapL || minOverlap === overlapR) ball.vx = -ball.vx;
-            else ball.vy = -ball.vy;
-            
-            score += 1;
-            updateHUD();
-            playBrickHit();
-            tryAddExtraBall(b.x + b.w / 2, b.y + b.h / 2);
-            break;
-          }
+        const remaining = 5 - brokenCount;
+        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "🎉 ALL BRICKS SHATTERED! LEVEL CLEAR! 🎉" : `💢 ${remaining} brick${remaining!==1?'s':''} remaining — tap to smash!`;
+    }
+    
+    function smashBrick(index, event) {
+        if(gameCompletedFlag || bricksBroken[index]) return;
+        const rect = event.target.getBoundingClientRect();
+        const centerX = rect.left + rect.width/2, centerY = rect.top + rect.height/2;
+        createBallHitEffect(centerX, centerY);
+        bricksBroken[index] = true;
+        currentStreak++;
+        renderGameUI(activeGameLevel);
+        if(bricksBroken.every(v=>v===true) && !gameCompletedFlag) {
+            gameCompletedFlag = true;
+            handleLevelCompletion(activeGameLevel);
         }
-        
-        if (ball.y + ball.r > canvas.height) {
-          balls.splice(i, 1);
-          i--;
-          if (balls.length === 0) {
-            handleGameOver();
-            return;
-          } else updateHUD();
+    }
+    
+    async function handleLevelCompletion(level) {
+        if(isProcessing) return;
+        isProcessing = true;
+        document.getElementById('gamePanel').style.display = 'none';
+        if(level === currentUnlockedLevel && level < MAX_LEVEL) { currentUnlockedLevel = level+1; saveProgress(); buildLevelList(); }
+        else if(level > currentUnlockedLevel && level <= MAX_LEVEL) { currentUnlockedLevel = level; saveProgress(); buildLevelList(); }
+        if(level === MAX_LEVEL) { showRewardScreen(); isProcessing = false; }
+        else { showLevelComplete(level); isProcessing = false; }
+    }
+    
+    function showLevelComplete(level) {
+        const completeDiv = document.getElementById('levelCompleteScreen');
+        document.getElementById('completeLevelMsg').innerHTML = `✨ BRICK SET ${level} DESTROYED! ✨`;
+        completeDiv.dataset.currentLevel = level;
+        completeDiv.style.display = 'flex';
+    }
+    
+    function showCountdown(seconds, msgPrefix) {
+        return new Promise((resolve) => {
+            const overlay = document.getElementById('countdownOverlay');
+            const countdownNum = document.getElementById('countdownNum');
+            const msgSpan = document.getElementById('countdownMsg');
+            const circle = document.getElementById('countdownCircle');
+            msgSpan.innerHTML = msgPrefix || "Next Brick Set in...";
+            overlay.style.display = 'flex';
+            let remain = seconds;
+            countdownNum.textContent = remain;
+            const circumference = 2 * Math.PI * 45;
+            if(circle) circle.style.strokeDasharray = circumference;
+            const interval = setInterval(() => {
+                if(!isNetworkOnline()) { clearInterval(interval); overlay.style.display='none'; showOfflineExitAndCloseGame("Network lost."); resolve(); return; }
+                remain--;
+                if(remain >= 1) {
+                    countdownNum.textContent = remain;
+                    if(circle) {
+                        const offset = circumference * (remain / seconds);
+                        circle.style.strokeDashoffset = offset;
+                    }
+                } else {
+                    clearInterval(interval); overlay.style.display='none'; resolve();
+                }
+            }, 1000);
+        });
+    }
+    
+    async function handleNextLevel(countCompletedLevel) {
+        if(isProcessing) return;
+        const nextLvl = countCompletedLevel + 1;
+        if(nextLvl > MAX_LEVEL) { document.getElementById('levelCompleteScreen').style.display = 'none'; showRewardScreen(); return; }
+        document.getElementById('levelCompleteScreen').style.display = 'none';
+        isProcessing = true;
+        await showCountdown(3, `🔥 NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
+        if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost before next level."); isProcessing = false; return; }
+        const success = await startLevelEntry(nextLvl);
+        isProcessing = false;
+        if(!success) forceExitAllGameScreens();
+    }
+    
+    function showRewardScreen() {
+        const code = `BALL10-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
+        document.getElementById('rewardCodeDisplay').textContent = code;
+        document.getElementById('rewardScreen').style.display = 'flex';
+    }
+    
+    function resetGameAndCopy() {
+        const code = document.getElementById('rewardCodeDisplay').textContent;
+        navigator.clipboard.writeText(code).catch(()=>{});
+        alert('🏆 Reward code copied! Progress reset to Level 1.');
+        currentUnlockedLevel = 1; saveProgress(); buildLevelList(); forceExitAllGameScreens();
+    }
+    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('📋 Code copied: '+code); };
+    
+    function buildLevelList() {
+        const container = document.getElementById('levelListContainer'); container.innerHTML = '';
+        for(let i=1;i<=MAX_LEVEL;i++) {
+            const unlocked = i <= currentUnlockedLevel;
+            const card = document.createElement('div'); card.className = 'level-card' + (unlocked ? '' : ' locked');
+            if(unlocked) card.onclick = () => { if(!adSequenceActive && !isProcessing) startLevelEntry(i); };
+            const adType = shouldShowAdexora(i) ? "📺 Adexora" : "🔄 2x Adsgram";
+            const statusIcon = unlocked ? (i < currentUnlockedLevel ? '✓' : '🔓') : '🔒';
+            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">🧱 Brick Set ${i} <span style="font-size:9px;">${adType}</span></div><div class="level-requirement">💥 5 bricks smash</div></div><div class="level-status">${statusIcon}</div>`;
+            container.appendChild(card);
         }
-      }
-      
-      if (balls.length === 0 && running) { handleGameOver(); return; }
-      if (bricks.length && bricks.every(b => !b.alive)) handleLevelComplete();
     }
     
-    function drawBackground() {
-      let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, "#0a1030");
-      grad.addColorStop(1, "#17253b");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255,240,180,0.7)";
-      for (let s of stars) {
-        ctx.beginPath();
-        ctx.arc(s.x * canvas.width, s.y * canvas.height, s.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    function exitGame() { if(adSequenceActive) { hideAdUI(); adSequenceActive=false; if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep=null; } document.getElementById('gamePanel').style.display='none'; isProcessing=false; }
+    function backToRoad() { document.getElementById('levelCompleteScreen').style.display='none'; isProcessing=false; }
+    
+    function bindEvents() {
+        document.getElementById('nextLevelBtnFromComplete').onclick = () => { const lvl = parseInt(document.getElementById('levelCompleteScreen').dataset.currentLevel); if(!isNaN(lvl)) handleNextLevel(lvl); };
+        document.getElementById('backToRoadCompleteBtn').onclick = backToRoad;
+        document.getElementById('resetAllBtn').onclick = resetGameAndCopy;
+        document.getElementById('exitGameBtn').onclick = exitGame;
     }
     
-    function drawGame() {
-      if (currentScreen !== "game") return;
-      drawBackground();
-      for (let b of bricks) {
-        if (b.alive) {
-          ctx.fillStyle = b.color;
-          ctx.shadowBlur = 4;
-          ctx.fillRect(b.x, b.y, b.w, b.h);
-          ctx.fillStyle = "#fff3cf";
-          ctx.fillRect(b.x + 3, b.y + 3, b.w - 6, 4);
-        }
-      }
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = "#ffd966";
-      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
-      ctx.fillStyle = "#ffe5a3";
-      ctx.fillRect(paddle.x + 4, paddle.y - 2, paddle.w - 8, 4);
-      for (let ball of balls) {
-        ctx.fillStyle = "#ffaa66";
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(ball.x - 2, ball.y - 2, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = "#ffaa66";
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-      ctx.font = "bold 16px monospace";
-      ctx.fillStyle = "#ffaa55";
-      ctx.fillText(`LEVEL ${currentLevel} / ${MAX_LEVELS}`, canvas.width - 95, 45);
-      ctx.font = "bold 14px monospace";
-      ctx.fillStyle = "#ff8888";
-      ctx.fillText(`SPEED: ${getBallBaseSpeed().toFixed(1)}`, canvas.width - 95, 75);
-      let remaining = bricks.filter(b => b.alive).length;
-      ctx.fillStyle = "#ffaa88";
-      ctx.fillText(`BRICKS: ${remaining}/3`, canvas.width - 95, 105);
-    }
-    
-    function changeScreen(scr) {
-      currentScreen = scr;
-      document.querySelectorAll('.overlay').forEach(el => el.classList.add('hidden'));
-      if (scr === "start") document.getElementById('startOverlay').classList.remove('hidden');
-      if (scr === "levels") { document.getElementById('levelOverlay').classList.remove('hidden'); buildLevelGrid(); }
-      if (scr === "game") { 
-        document.getElementById('gameOverOverlay').classList.add('hidden');
-        document.getElementById('levelCompleteOverlay').classList.add('hidden');
-      }
-      if (scr === "reward") document.getElementById('rewardOverlay').classList.remove('hidden');
-      if (scr === "gameover") document.getElementById('gameOverOverlay').classList.remove('hidden');
-      if (scr === "network_error") document.getElementById('networkErrorOverlay').classList.remove('hidden');
-    }
-    
-    async function startLevel() {
-      if (!navigator.onLine) { changeScreen("network_error"); return; }
-      await showStartAdIfNeeded();
-      resetAdFlags();
-      changeScreen("game");
-      running = true;
-      score = 0;
-      bricks = generateBricksForLevel(currentLevel);
-      resetPositions();
-      updateHUD();
-    }
-    
-    function buildLevelGrid() {
-      let grid = document.getElementById('levelGrid');
-      grid.innerHTML = '';
-      for (let i = 1; i <= MAX_LEVELS; i++) {
-        let box = document.createElement('div');
-        box.className = 'lvlBox';
-        box.innerText = i;
-        if (!unlockedLevels.includes(i)) box.classList.add('locked');
-        else box.addEventListener('click', async () => { playClick(); currentLevel = i; await startLevel(); });
-        grid.appendChild(box);
-      }
-    }
-    
-    function onMove(clientX) {
-      if (currentScreen !== "game") return;
-      const rect = canvas.getBoundingClientRect();
-      let rawX = (clientX - rect.left) * (canvas.width / rect.width);
-      let newX = rawX - paddle.w / 2;
-      newX = Math.min(Math.max(newX, 0), canvas.width - paddle.w);
-      paddle.x = newX;
-      for (let b of balls) if (b.stuck) b.x = paddle.x + paddle.w / 2;
-    }
-    
-    canvas.addEventListener('mousemove', (e) => onMove(e.clientX));
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (e.touches[0]) onMove(e.touches[0].clientX); }, { passive: false });
-    canvas.addEventListener('click', () => { if (currentScreen === "game" && running) launchBall(); resumeAudioCtx(); });
-    canvas.addEventListener('touchstart', (e) => { if (currentScreen === "game" && running) launchBall(); resumeAudioCtx(); });
-    
-    // Button listeners
-    document.getElementById('openLevelSelect').onclick = async () => { if (!navigator.onLine) { changeScreen("network_error"); return; } changeScreen("levels"); resumeAudioCtx(); await showStartAdIfNeeded(); };
-    document.getElementById('restartBtn').onclick = async () => { document.getElementById('gameOverOverlay').classList.add('hidden'); await startLevel(); };
-    document.getElementById('backBtn').onclick = () => { changeScreen("levels"); };
-    document.getElementById('nextLevelBtn').onclick = async () => { document.getElementById('levelCompleteOverlay').classList.add('hidden'); if (currentLevel < MAX_LEVELS) { currentLevel++; saveGameProgress(); await startLevel(); } else changeScreen("levels"); };
-    document.getElementById('levelsBtn').onclick = () => { changeScreen("levels"); };
-    document.getElementById('backToStartFromLevels').onclick = () => { changeScreen("start"); };
-    
-    // REWARD: copy code + FULL RESET (auto reset level 1)
-    document.getElementById('copyRewardBtn').onclick = () => { 
-      let codeArea = document.getElementById('rewardCode'); 
-      codeArea.select(); 
-      document.execCommand('copy'); 
-      alert('🎉 7-Digit Reward Code Copied! The game will now reset to Level 1. 🎉');
-      // FULL RESET: clear progress, reset level & unlockables, then go to start screen
-      fullGameReset();
-      // hide reward overlay and go to start menu
-      document.getElementById('rewardOverlay').classList.add('hidden');
-      changeScreen("start");
-      // Also force re-render level grid for future
-      if (currentScreen === "start") {
-        currentLevel = 1;
-        score = 0;
-        running = false;
-      }
-    };
-    
-    document.getElementById('networkRetryBtn').onclick = () => {
-      if (navigator.onLine) {
-        if (gamePausedForNetwork && savedGameStateBeforeNetwork) {
-          currentLevel = savedGameStateBeforeNetwork.currentLevel;
-          score = savedGameStateBeforeNetwork.score;
-          balls = savedGameStateBeforeNetwork.balls;
-          bricks = savedGameStateBeforeNetwork.bricks;
-          paddle.x = savedGameStateBeforeNetwork.paddleX;
-          paddle.y = savedGameStateBeforeNetwork.paddleY;
-          running = true;
-          gamePausedForNetwork = false;
-          savedGameStateBeforeNetwork = null;
-          updateHUD();
-          changeScreen("game");
-        } else changeScreen("start");
-      } else alert("Still no internet connection.");
-    };
-    document.getElementById('networkExitBtn').onclick = () => { gamePausedForNetwork = false; savedGameStateBeforeNetwork = null; changeScreen("start"); };
-    document.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => { playClick(); resumeAudioCtx(); }));
-    
-    setInterval(() => { if (currentScreen === "game" && running) updateGame(); }, 16);
-    function animateDraw() { drawGame(); requestAnimationFrame(animateDraw); }
-    animateDraw();
-    
-    initAds();
-    loadGameProgress();
-    resumeAudioCtx();
-    changeScreen("start");
-    setInterval(saveGameProgress, 20000);
-    if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e => console.log);
-  })();
+    window.addEventListener('load', () => { loadProgress(); initAdsgram(); buildLevelList(); bindEvents(); });
+    window.addEventListener('beforeunload', () => saveProgress());
 </script>
 </body>
 </html>
