@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Brick Ball ‚Äî Triple Ad + Fallback | Adsgram + Monetag + GigaPub</title>
+    <title>Brick Ball °™ Triple Ads + Auto-Fallback | Stable & Fast</title>
     <!-- Adsgram SDK (blockId: int-25869) -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <!-- Monetag SDK (zone: 10866085) -->
@@ -411,15 +411,16 @@
             text-align: center;
             border: 3px solid #ffbc6e;
         }
-        .next-step-btn {
-            background: linear-gradient(45deg, #ffbc6e, #f5922a);
+        .fallback-manual-btn {
+            background: #6b3a1e;
             border: none;
-            padding: 10px 24px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 8px 16px;
+            font-size: 12px;
             border-radius: 60px;
-            cursor: pointer;
             margin-top: 12px;
+            color: #ffcf7a;
+            cursor: pointer;
+            font-weight: bold;
         }
         .offline-toast {
             position: fixed;
@@ -448,29 +449,34 @@
             margin-top: 14px;
             cursor: pointer;
         }
+        .ad-loading-text {
+            color: #ffbc6e;
+            font-size: 13px;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
 <div class="game-container">
     <div class="brick-header">
-        <div class="title"><span>üß±</span><span>BRICK BALL</span><span class="ball-animation">üèÄ</span></div>
-        <div class="subtitle">‚ö° TRIPLE ADS + FALLBACK: if ad fails ‚Üí fallback link ‚Üí back = step complete ‚ö°</div>
-        <div class="badge-pattern">üéØ EACH LEVEL: ADSGRAM ‚Üí MONETAG ‚Üí GIGAPUB (with fallback protection)</div>
+        <div class="title"><span>ï0„5</span><span>BRICK BALL</span><span class="ball-animation">î9√0</span></div>
+        <div class="subtitle">Å7≤3 TRIPLE ADS (Auto-continue) + FALLBACK: if ad fails °˙ fallback link °˙ auto-resume Å7≤3</div>
+        <div class="badge-pattern">î9¡3 EACH LEVEL: Adsgram °˙ Monetag °˙ GigaPub (30s timeout + manual fallback option)</div>
     </div>
     <div class="level-list" id="levelListContainer"></div>
-    <div class="footer-note">üí• Tap bricks! Ad sequence required. If an ad doesn't load, fallback link opens. After return, step completes automatically.</div>
+    <div class="footer-note">î9Ÿ9 Tap bricks! Ad sequence runs automatically. If any ad fails, fallback opens, return = auto next step.</div>
 </div>
 
 <!-- Game Panel -->
 <div id="gamePanel" class="game-panel" style="display: none;">
     <div class="game-card">
-        <div class="game-level-title"><span>üèÄ</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>üß±</span></div>
-        <div class="combo-streak" id="comboStreakDisplay">üî• STREAK 0</div>
+        <div class="game-level-title"><span>î9√0</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>ï0„5</span></div>
+        <div class="combo-streak" id="comboStreakDisplay">î9Ê7 STREAK 0</div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <div class="game-progress" id="gameProgressText" style="font-weight: bold; margin: 8px 0;">0 / 5 smashed</div>
         <div class="brick-grid" id="bricksGrid"></div>
-        <div class="complete-status" id="completeStatusMsg">‚ú® Tap any brick to smash! ‚ú®</div>
-        <button class="game-close-btn" id="exitGameBtn">üè† Back to Hall</button>
+        <div class="complete-status" id="completeStatusMsg">Å7ø8 Tap any brick to smash! Å7ø8</div>
+        <button class="game-close-btn" id="exitGameBtn">î9∆2 Back to Hall</button>
     </div>
 </div>
 
@@ -483,37 +489,37 @@
 
 <!-- Level Complete Screen -->
 <div id="levelCompleteScreen" class="levelcomplete-screen" style="display: none;">
-    <div class="complete-title">üèÜ BRICK BALL CLEAR! üèÜ</div>
+    <div class="complete-title">î9√6 BRICK BALL CLEAR! î9√6</div>
     <div style="color: #ffefb0; font-size: 18px; margin: 16px;" id="completeLevelMsg"></div>
-    <button class="btn" id="nextLevelBtnFromComplete">‚û°Ô∏è NEXT BRICK SET</button>
-    <button class="btn" id="backToRoadCompleteBtn">üè† MAIN MENU</button>
+    <button class="btn" id="nextLevelBtnFromComplete">Å7À9Ñ1Ç5 NEXT BRICK SET</button>
+    <button class="btn" id="backToRoadCompleteBtn">î9∆2 MAIN MENU</button>
 </div>
 
 <!-- Reward Screen -->
 <div id="rewardScreen" class="reward-screen" style="display: none;">
-    <h2 style="font-size: 38px; color:#2b180a;">üèÖ MASTER SMASHER üèÖ</h2>
+    <h2 style="font-size: 38px; color:#2b180a;">î9√5 MASTER SMASHER î9√5</h2>
     <p style="color: white; font-size: 18px;">You crushed all 10 brick sets!</p>
-    <p style="color: #ffefb0; margin-top: 12px;">üéÅ Your reward code:</p>
+    <p style="color: #ffefb0; margin-top: 12px;">î9º7 Your reward code:</p>
     <div class="reward-code" id="rewardCodeDisplay" onclick="copyRewardCodeGlobal()">BALL10-XXXXXX</div>
-    <p style="font-size: 11px;">üëá tap to copy üëá</p>
-    <button class="btn" id="resetAllBtn">üìã COPY & RESET GAME</button>
+    <p style="font-size: 11px;">î9–5 tap to copy î9–5</p>
+    <button class="btn" id="resetAllBtn">î9›7 COPY & RESET GAME</button>
 </div>
 
-<!-- Ad Sequence Modal (Adsgram + Monetag + Giga Pub) -->
+<!-- Ad Sequence Panel (Auto mode, no next-step button, but manual fallback) -->
 <div id="adSequencePanel" class="ad-sequence-panel" style="display: none;">
     <div class="ad-sequence-card">
-        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">üé¨</div>
+        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">î9¡0</div>
         <div class="ad-step-message" style="font-size: 20px; font-weight: bold; color:#ffcf7a;" id="adStepMessage">Loading ad...</div>
-        <div class="ad-description" style="margin: 8px 0;" id="adDescription">Complete ad to continue smashing</div>
-        <button id="nextStepAdBtn" class="next-step-btn" style="display: none;">‚û°Ô∏è Next Step</button>
-        <div id="adLoadingIndicator" class="ad-loading-text" style="color:#ffbc6e;">Processing...</div>
+        <div class="ad-description" style="margin: 8px 0;" id="adDescription">Please wait, ad is loading...</div>
+        <div id="adLoadingIndicator" class="ad-loading-text">Å7Å7 Processing ad...</div>
+        <button id="manualFallbackBtn" class="fallback-manual-btn">Å7≤2Ñ1Ç5 Ad stuck? Use Fallback</button>
     </div>
 </div>
 
 <script>
     // ---------- FALLBACK CONFIGURATION ----------
-    // UPDATED FALLBACK LINK AS REQUESTED
     const FALLBACK_AD_URL = "https://install-the-app-form-this-link.vercel.app";
+    const AD_TIMEOUT_MS = 30000; // 30 seconds generous timeout to avoid "time not seen" error
     
     // ---------- GAME STATE ----------
     const MAX_LEVEL = 10;
@@ -523,12 +529,11 @@
     let gameCompletedFlag = false;
     let isProcessing = false;
     let adSequenceActive = false;
-    let pendingResolveNextStep = null;
     let currentStreak = 0;
     let adController = null;
     let adInitialized = false;
     
-    // pending fallback visibility resolver
+    // pending fallback resolver
     let pendingFallbackResolver = null;
     let visibilityListenerActive = false;
     
@@ -543,7 +548,7 @@
     function saveProgress() { localStorage.setItem('brickBallPro', JSON.stringify({ unlockedLevel: currentUnlockedLevel })); }
     
     function isNetworkOnline() { return navigator.onLine; }
-    function showOfflineExitAndCloseGame(msg = "üì° No internet. Returning to menu.") {
+    function showOfflineExitAndCloseGame(msg = "î9ﬂ9 No internet. Returning to menu.") {
         const toast = document.createElement('div'); toast.className = 'offline-toast'; toast.innerText = msg;
         document.body.appendChild(toast); setTimeout(() => toast.remove(), 3500);
         forceExitAllGameScreens();
@@ -554,13 +559,12 @@
         document.getElementById('countdownOverlay').style.display = 'none';
         document.getElementById('levelCompleteScreen').style.display = 'none';
         document.getElementById('rewardScreen').style.display = 'none';
-        if(pendingResolveNextStep) { pendingResolveNextStep(); pendingResolveNextStep = null; }
         if(pendingFallbackResolver) { pendingFallbackResolver(); pendingFallbackResolver = null; }
         adSequenceActive = false; isProcessing = false; gameCompletedFlag = false; activeGameLevel = null;
         removeVisibilityListener();
     }
     
-    // visibility listener for fallback return
+    // visibility listener for fallback return (auto-resume)
     function onVisibilityChange() {
         if(document.visibilityState === 'visible' && pendingFallbackResolver) {
             const resolver = pendingFallbackResolver;
@@ -582,13 +586,13 @@
         }
     }
     
-    // Core: show ad with fallback mechanism (opens link on failure)
+    // Core: show ad with improved timeout and fallback (auto + manual)
     async function showAdWithFallback(adPromiseFactory, networkName, stepDesc) {
         if(!isNetworkOnline()) throw new Error("offline");
         
         let timeoutId;
         const timeoutPromise = new Promise((_, reject) => {
-            timeoutId = setTimeout(() => reject(new Error(`Ad timeout (${networkName})`)), 12000);
+            timeoutId = setTimeout(() => reject(new Error(`Timeout (${networkName}) after ${AD_TIMEOUT_MS/1000}s`)), AD_TIMEOUT_MS);
         });
         
         let adPromise;
@@ -605,7 +609,7 @@
             return result;
         } catch(err) {
             clearTimeout(timeoutId);
-            console.warn(`Ad ${networkName} failed:`, err);
+            console.warn(`Ad ${networkName} failed/timeout:`, err);
             return await triggerFallbackAndWait(networkName, stepDesc);
         }
     }
@@ -614,25 +618,23 @@
         const adStepMsgElem = document.getElementById('adStepMessage');
         const adDescElem = document.getElementById('adDescription');
         if(adStepMsgElem && adDescElem) {
-            adStepMsgElem.innerText = `‚ö†Ô∏è ${networkName} ad failed. Opening fallback...`;
-            adDescElem.innerText = `Please complete the fallback page, then come back to continue.`;
+            adStepMsgElem.innerText = `Å7≤2Ñ1Ç5 ${networkName} ad not loaded. Opening fallback...`;
+            adDescElem.innerText = `Complete the fallback page, then return here. Auto-continue.`;
         }
-        // Open the user-specified fallback link
         window.open(FALLBACK_AD_URL, '_blank');
-        
         addVisibilityListener();
         return new Promise((resolve) => {
             pendingFallbackResolver = () => {
                 if(adStepMsgElem && adDescElem) {
-                    adStepMsgElem.innerText = `‚úÖ ${networkName} step completed (fallback used)`;
-                    adDescElem.innerText = `Click "Next Step" to continue.`;
+                    adStepMsgElem.innerText = `Å7º3 ${networkName} step completed (fallback)`;
+                    adDescElem.innerText = `Moving to next ad automatically...`;
                 }
                 resolve();
             };
         });
     }
     
-    // ----- individual ad functions with fallback integration -----
+    // ----- individual ad functions with robust checking -----
     async function showAdsgramAd() {
         if(!adInitialized || !adController) {
             console.warn("Adsgram not ready, using fallback");
@@ -645,31 +647,40 @@
     }
     
     async function showMonetagAd() {
+        // Wait for monetag SDK
+        let attempts = 0;
+        while(typeof window.show_10866085 !== 'function' && attempts < 25) {
+            await new Promise(r => setTimeout(r, 150));
+            attempts++;
+        }
         if(typeof window.show_10866085 !== 'function') {
             console.warn("Monetag not ready, using fallback");
-            await triggerFallbackAndWait("Monetag", "Monetag unavailable");
+            await triggerFallbackAndWait("Monetag", "Monetag SDK missing");
             return;
         }
         await showAdWithFallback(async () => {
-            return await window.show_10866085();
+            const result = window.show_10866085();
+            // If result is not a promise, wrap into a resolved promise after short delay
+            if(result && typeof result.then === 'function') return result;
+            return new Promise(resolve => setTimeout(resolve, 800));
         }, "Monetag", "Step 2/3");
     }
     
     async function showGigaAd() {
+        let attempts = 0;
+        while(typeof window.showGiga !== 'function' && attempts < 30) {
+            await new Promise(r => setTimeout(r, 100));
+            attempts++;
+        }
         if(typeof window.showGiga !== 'function') {
-            let attempts = 0;
-            while(typeof window.showGiga !== 'function' && attempts < 30) {
-                await new Promise(r => setTimeout(r, 100));
-                attempts++;
-            }
-            if(typeof window.showGiga !== 'function') {
-                console.warn("Giga Pub SDK unavailable, using fallback");
-                await triggerFallbackAndWait("GigaPub", "GigaPub unavailable");
-                return;
-            }
+            console.warn("GigaPub SDK unavailable, using fallback");
+            await triggerFallbackAndWait("GigaPub", "GigaPub unavailable");
+            return;
         }
         await showAdWithFallback(async () => {
-            return await window.showGiga();
+            const result = window.showGiga();
+            if(result && typeof result.then === 'function') return result;
+            return new Promise(resolve => setTimeout(resolve, 800));
         }, "GigaPub", "Step 3/3");
     }
     
@@ -683,74 +694,76 @@
         } catch(e) { console.warn("Adsgram init warn"); } 
     }
     
-    // UI helpers for ad sequence
+    // UI helpers for ad sequence (auto mode, no next-step)
     const adSeqPanel = document.getElementById('adSequencePanel');
     const adStepMsg = document.getElementById('adStepMessage');
     const adDesc = document.getElementById('adDescription');
-    const nextStepBtn = document.getElementById('nextStepAdBtn');
-    const adLoading = document.getElementById('adLoadingIndicator');
+    const adLoadingIndicator = document.getElementById('adLoadingIndicator');
     const adStepIcon = document.getElementById('adStepIcon');
+    const manualFallbackBtn = document.getElementById('manualFallbackBtn');
     
-    function showAdUI(step, desc, icon = "üé¨") {
+    let currentManualResolver = null;
+    
+    function showAdUI(step, desc, icon = "î9¡0", loadingText = "Å7Å7 Processing ad...") {
         adStepMsg.innerText = step;
         adDesc.innerText = desc;
         adStepIcon.innerText = icon;
-        nextStepBtn.style.display = 'none';
-        adLoading.style.display = 'block';
+        adLoadingIndicator.innerText = loadingText;
         adSeqPanel.style.display = 'flex';
     }
     function hideAdUI() { 
         adSeqPanel.style.display = 'none'; 
-        if(pendingResolveNextStep) { pendingResolveNextStep(); pendingResolveNextStep = null; }
-    }
-    function waitForNextStep() {
-        return new Promise((resolve) => {
-            if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost."); resolve(); return; }
-            pendingResolveNextStep = resolve;
-            nextStepBtn.style.display = 'block';
-            adLoading.style.display = 'none';
-            const onClick = () => { 
-                nextStepBtn.removeEventListener('click', onClick); 
-                if(pendingResolveNextStep) pendingResolveNextStep(); 
-                pendingResolveNextStep = null; 
-                resolve(); 
-            };
-            nextStepBtn.addEventListener('click', onClick, { once: true });
-            const interval = setInterval(() => { 
-                if(!isNetworkOnline() && adSeqPanel.style.display === 'flex') { 
-                    clearInterval(interval); 
-                    showOfflineExitAndCloseGame("Lost connection."); 
-                    if(pendingResolveNextStep) pendingResolveNextStep(); 
-                    pendingResolveNextStep = null; 
-                    resolve(); 
-                } 
-            }, 1000);
-        });
+        if(currentManualResolver) { currentManualResolver(); currentManualResolver = null; }
     }
     
-    // FULL AD SEQUENCE with fallback protection
+    // FULL AD SEQUENCE with auto-continue, no extra clicks
     async function runFullAdSequence(level) {
         if(!isNetworkOnline()) throw new Error("offline");
         
-        showAdUI("üé¨ STEP 1/3", "Watching Adsgram ad... (fallback if needed)", "üì∫");
+        // STEP 1: Adsgram
+        showAdUI("î9¡0 STEP 1/3", "Loading Adsgram ad... (fallback ready)", "î9‚4", "Please wait, ad loading...");
         await showAdsgramAd();
         if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("‚úÖ Step 1 Complete", "Click next to continue to Monetag", "üëç");
-        await waitForNextStep();
-        if(!isNetworkOnline()) throw new Error("offline");
+        showAdUI("Å7º3 STEP 1 done", "Adsgram completed. Auto proceeding to Monetag...", "î9—1", "Moving to next ad...");
+        await new Promise(r => setTimeout(r, 800));
         
-        showAdUI("üí∞ STEP 2/3", "Monetag ad - fallback ready!", "üì¢");
+        // STEP 2: Monetag
+        showAdUI("î9€0 STEP 2/3", "Monetag ad - loading (fallback ready)", "î9‡0", "Fetching monetization...");
         await showMonetagAd();
         if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("‚úÖ Step 2 Complete", "Click for final Giga Pub ad", "‚≠ê");
-        await waitForNextStep();
-        if(!isNetworkOnline()) throw new Error("offline");
+        showAdUI("Å7º3 STEP 2 done", "Monetag completed. Auto proceeding to GigaPub...", "Å8¨2", "Finalizing...");
+        await new Promise(r => setTimeout(r, 800));
         
-        showAdUI("‚ö° STEP 3/3", "Giga Pub ad ‚Äî final step (fallback if needed)", "üéÆ");
+        // STEP 3: GigaPub
+        showAdUI("Å7≤3 STEP 3/3", "Giga Pub ad °™ final step (fallback ready)", "î9¡2", "Loading last ad...");
         await showGigaAd();
         
-        await new Promise(r=>setTimeout(r, 400)); 
+        // All done
         hideAdUI();
+        await new Promise(r => setTimeout(r, 400));
+    }
+    
+    // Manual fallback handler inside ad panel
+    function setupManualFallback() {
+        manualFallbackBtn.onclick = () => {
+            if(pendingFallbackResolver) {
+                // already in fallback mode, just open again
+                window.open(FALLBACK_AD_URL, '_blank');
+            } else {
+                // force fallback for current step
+                if(adSeqPanel.style.display === 'flex') {
+                    const currentMsg = adStepMsg.innerText;
+                    const net = currentMsg.includes("Adsgram") ? "Adsgram" : (currentMsg.includes("Monetag") ? "Monetag" : "GigaPub");
+                    triggerFallbackAndWait(net, "Manual fallback").then(() => {
+                        if(pendingFallbackResolver) {
+                            const temp = pendingFallbackResolver;
+                            pendingFallbackResolver = null;
+                            temp();
+                        }
+                    });
+                }
+            }
+        };
     }
     
     // Ball smash effect
@@ -786,26 +799,26 @@
         }
     }
     
-    const brickNames = ["üß± CORNER", "üèõÔ∏è WALL", "üíé CORE", "‚ö° FLANK", "üèÜ TOP"];
+    const brickNames = ["ï0„5 CORNER", "î9≈7Ñ1Ç5 WALL", "î9◊6 CORE", "Å7≤3 FLANK", "î9√6 TOP"];
     function renderGameUI(level) {
-        document.getElementById('gameLevelTitle').innerHTML = `üß± BRICK SET ${level} üèÄ`;
+        document.getElementById('gameLevelTitle').innerHTML = `ï0„5 BRICK SET ${level} î9√0`;
         const brokenCount = bricksBroken.filter(v=>v).length;
         const percent = (brokenCount/5)*100;
         document.getElementById('progressFill').style.width = percent+'%';
-        document.getElementById('gameProgressText').innerHTML = `üí• ${brokenCount} / 5 smashed | üèÄ ${currentStreak} streak`;
-        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `üî• STREAK ${currentStreak} üî•` : `‚ö° STREAK 0`;
+        document.getElementById('gameProgressText').innerHTML = `î9Ÿ9 ${brokenCount} / 5 smashed | î9√0 ${currentStreak} streak`;
+        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `î9Ê7 STREAK ${currentStreak} î9Ê7` : `Å7≤3 STREAK 0`;
         const grid = document.getElementById('bricksGrid'); grid.innerHTML = '';
         for(let i=0;i<5;i++) {
             const brickDiv = document.createElement('div'); brickDiv.className = 'brick';
-            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `üíÄ<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
+            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `î9÷2<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
             else {
-                brickDiv.innerHTML = `<span style="font-size:24px;">üß±</span><br>${brickNames[i]}`;
+                brickDiv.innerHTML = `<span style="font-size:24px;">ï0„5</span><br>${brickNames[i]}`;
                 brickDiv.onclick = (e) => { if(gameCompletedFlag || bricksBroken[i]) return; smashBrick(i, e); };
             }
             grid.appendChild(brickDiv);
         }
         const remaining = 5 - brokenCount;
-        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "üéâ ALL BRICKS SHATTERED! LEVEL CLEAR! üéâ" : `üí¢ ${remaining} brick${remaining!==1?'s':''} remaining ‚Äî tap to smash!`;
+        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "î9Ω5 ALL BRICKS SHATTERED! LEVEL CLEAR! î9Ω5" : `î9Ÿ6 ${remaining} brick${remaining!==1?'s':''} remaining °™ tap to smash!`;
     }
     
     function smashBrick(index, event) {
@@ -834,7 +847,7 @@
     
     function showLevelComplete(level) {
         const completeDiv = document.getElementById('levelCompleteScreen');
-        document.getElementById('completeLevelMsg').innerHTML = `‚ú® BRICK SET ${level} DESTROYED! ‚ú®`;
+        document.getElementById('completeLevelMsg').innerHTML = `Å7ø8 BRICK SET ${level} DESTROYED! Å7ø8`;
         completeDiv.dataset.currentLevel = level;
         completeDiv.style.display = 'flex';
     }
@@ -873,7 +886,7 @@
         if(nextLvl > MAX_LEVEL) { document.getElementById('levelCompleteScreen').style.display = 'none'; showRewardScreen(); return; }
         document.getElementById('levelCompleteScreen').style.display = 'none';
         isProcessing = true;
-        await showCountdown(3, `üî• NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
+        await showCountdown(3, `î9Ê7 NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
         if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost before next level."); isProcessing = false; return; }
         const success = await startLevelEntry(nextLvl);
         isProcessing = false;
@@ -889,10 +902,10 @@
     function resetGameAndCopy() {
         const code = document.getElementById('rewardCodeDisplay').textContent;
         navigator.clipboard.writeText(code).catch(()=>{});
-        alert('üèÜ Reward code copied! Progress reset to Level 1.');
+        alert('î9√6 Reward code copied! Progress reset to Level 1.');
         currentUnlockedLevel = 1; saveProgress(); buildLevelList(); forceExitAllGameScreens();
     }
-    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('üìã Code copied: '+code); };
+    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('î9›7 Code copied: '+code); };
     
     function buildLevelList() {
         const container = document.getElementById('levelListContainer'); container.innerHTML = '';
@@ -900,14 +913,14 @@
             const unlocked = i <= currentUnlockedLevel;
             const card = document.createElement('div'); card.className = 'level-card' + (unlocked ? '' : ' locked');
             if(unlocked) card.onclick = () => { if(!adSequenceActive && !isProcessing) startLevelEntry(i); };
-            const adType = "üé¨ Adsgram ‚Üí üí∞ Monetag ‚Üí üéÆ GigaPub (fallback ready)";
-            const statusIcon = unlocked ? (i < currentUnlockedLevel ? '‚úì' : 'üîì') : 'üîí';
-            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">üß± Brick Set ${i} <span style="font-size:8px;">${adType}</span></div><div class="level-requirement">üí• 5 bricks smash (3 ads + fallback if needed)</div></div><div class="level-status">${statusIcon}</div>`;
+            const adType = "î9¡0 °˙ î9€0 °˙ î9¡2 (auto-fallback)";
+            const statusIcon = unlocked ? (i < currentUnlockedLevel ? 'Å7Ω7' : 'î9‰9') : 'î9‰8';
+            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">ï0„5 Brick Set ${i} <span style="font-size:8px;">${adType}</span></div><div class="level-requirement">î9Ÿ9 5 bricks smash (30s timeout + fallback)</div></div><div class="level-status">${statusIcon}</div>`;
             container.appendChild(card);
         }
     }
     
-    function exitGame() { if(adSequenceActive) { hideAdUI(); adSequenceActive=false; if(pendingResolveNextStep) pendingResolveNextStep(); pendingResolveNextStep=null; } document.getElementById('gamePanel').style.display='none'; isProcessing=false; removeVisibilityListener(); }
+    function exitGame() { if(adSequenceActive) { hideAdUI(); adSequenceActive=false; } document.getElementById('gamePanel').style.display='none'; isProcessing=false; removeVisibilityListener(); }
     function backToRoad() { document.getElementById('levelCompleteScreen').style.display='none'; isProcessing=false; }
     
     function bindEvents() {
@@ -915,6 +928,7 @@
         document.getElementById('backToRoadCompleteBtn').onclick = backToRoad;
         document.getElementById('resetAllBtn').onclick = resetGameAndCopy;
         document.getElementById('exitGameBtn').onclick = exitGame;
+        setupManualFallback();
     }
     
     window.addEventListener('load', () => { loadProgress(); initAdsgram(); buildLevelList(); bindEvents(); });
