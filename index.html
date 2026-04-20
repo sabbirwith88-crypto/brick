@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Brick Ball ¡ª Triple Ads + Auto-Fallback | Stable & Fast</title>
+    <title>Brick Ball â€” Triple Ads + Auto-Fallback | Stable & Fast</title>
     <!-- Adsgram SDK (blockId: int-25869) -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <!-- Monetag SDK (zone: 10866085) -->
@@ -459,24 +459,24 @@
 <body>
 <div class="game-container">
     <div class="brick-header">
-        <div class="title"><span>•0ã5</span><span>BRICK BALL</span><span class="ball-animation">”9Ã0</span></div>
-        <div class="subtitle">7²3 TRIPLE ADS (Auto-continue) + FALLBACK: if ad fails ¡ú fallback link ¡ú auto-resume 7²3</div>
-        <div class="badge-pattern">”9Á3 EACH LEVEL: Adsgram ¡ú Monetag ¡ú GigaPub (30s timeout + manual fallback option)</div>
+        <div class="title"><span>ğŸ§±</span><span>BRICK BALL</span><span class="ball-animation">ğŸ€</span></div>
+        <div class="subtitle">âš¡ TRIPLE ADS (Auto-continue) + FALLBACK: if ad fails â†’ fallback link â†’ auto-resume âš¡</div>
+        <div class="badge-pattern">ğŸ¯ EACH LEVEL: Adsgram â†’ Monetag â†’ GigaPub (30s timeout + manual fallback option)</div>
     </div>
     <div class="level-list" id="levelListContainer"></div>
-    <div class="footer-note">”9Ù9 Tap bricks! Ad sequence runs automatically. If any ad fails, fallback opens, return = auto next step.</div>
+    <div class="footer-note">ğŸ’¥ Tap bricks! Ad sequence runs automatically. If any ad fails, fallback opens, return = auto next step.</div>
 </div>
 
 <!-- Game Panel -->
 <div id="gamePanel" class="game-panel" style="display: none;">
     <div class="game-card">
-        <div class="game-level-title"><span>”9Ã0</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>•0ã5</span></div>
-        <div class="combo-streak" id="comboStreakDisplay">”9æ7 STREAK 0</div>
+        <div class="game-level-title"><span>ğŸ€</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>ğŸ§±</span></div>
+        <div class="combo-streak" id="comboStreakDisplay">ğŸ”¥ STREAK 0</div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <div class="game-progress" id="gameProgressText" style="font-weight: bold; margin: 8px 0;">0 / 5 smashed</div>
         <div class="brick-grid" id="bricksGrid"></div>
-        <div class="complete-status" id="completeStatusMsg">7¿8 Tap any brick to smash! 7¿8</div>
-        <button class="game-close-btn" id="exitGameBtn">”9Æ2 Back to Hall</button>
+        <div class="complete-status" id="completeStatusMsg">âœ¨ Tap any brick to smash! âœ¨</div>
+        <button class="game-close-btn" id="exitGameBtn">ğŸ  Back to Hall</button>
     </div>
 </div>
 
@@ -489,30 +489,30 @@
 
 <!-- Level Complete Screen -->
 <div id="levelCompleteScreen" class="levelcomplete-screen" style="display: none;">
-    <div class="complete-title">”9Ã6 BRICK BALL CLEAR! ”9Ã6</div>
+    <div class="complete-title">ğŸ† BRICK BALL CLEAR! ğŸ†</div>
     <div style="color: #ffefb0; font-size: 18px; margin: 16px;" id="completeLevelMsg"></div>
-    <button class="btn" id="nextLevelBtnFromComplete">7Ë9„1‚5 NEXT BRICK SET</button>
-    <button class="btn" id="backToRoadCompleteBtn">”9Æ2 MAIN MENU</button>
+    <button class="btn" id="nextLevelBtnFromComplete">â¡ï¸ NEXT BRICK SET</button>
+    <button class="btn" id="backToRoadCompleteBtn">ğŸ  MAIN MENU</button>
 </div>
 
 <!-- Reward Screen -->
 <div id="rewardScreen" class="reward-screen" style="display: none;">
-    <h2 style="font-size: 38px; color:#2b180a;">”9Ã5 MASTER SMASHER ”9Ã5</h2>
+    <h2 style="font-size: 38px; color:#2b180a;">ğŸ… MASTER SMASHER ğŸ…</h2>
     <p style="color: white; font-size: 18px;">You crushed all 10 brick sets!</p>
-    <p style="color: #ffefb0; margin-top: 12px;">”9¼7 Your reward code:</p>
+    <p style="color: #ffefb0; margin-top: 12px;">ğŸ Your reward code:</p>
     <div class="reward-code" id="rewardCodeDisplay" onclick="copyRewardCodeGlobal()">BALL10-XXXXXX</div>
-    <p style="font-size: 11px;">”9Ğ5 tap to copy ”9Ğ5</p>
-    <button class="btn" id="resetAllBtn">”9İ7 COPY & RESET GAME</button>
+    <p style="font-size: 11px;">ğŸ‘‡ tap to copy ğŸ‘‡</p>
+    <button class="btn" id="resetAllBtn">ğŸ“‹ COPY & RESET GAME</button>
 </div>
 
 <!-- Ad Sequence Panel (Auto mode, no next-step button, but manual fallback) -->
 <div id="adSequencePanel" class="ad-sequence-panel" style="display: none;">
     <div class="ad-sequence-card">
-        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">”9Á0</div>
+        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">ğŸ¬</div>
         <div class="ad-step-message" style="font-size: 20px; font-weight: bold; color:#ffcf7a;" id="adStepMessage">Loading ad...</div>
         <div class="ad-description" style="margin: 8px 0;" id="adDescription">Please wait, ad is loading...</div>
-        <div id="adLoadingIndicator" class="ad-loading-text">77 Processing ad...</div>
-        <button id="manualFallbackBtn" class="fallback-manual-btn">7²2„1‚5 Ad stuck? Use Fallback</button>
+        <div id="adLoadingIndicator" class="ad-loading-text">â³ Processing ad...</div>
+        <button id="manualFallbackBtn" class="fallback-manual-btn">âš ï¸ Ad stuck? Use Fallback</button>
     </div>
 </div>
 
@@ -548,7 +548,7 @@
     function saveProgress() { localStorage.setItem('brickBallPro', JSON.stringify({ unlockedLevel: currentUnlockedLevel })); }
     
     function isNetworkOnline() { return navigator.onLine; }
-    function showOfflineExitAndCloseGame(msg = "”9ß9 No internet. Returning to menu.") {
+    function showOfflineExitAndCloseGame(msg = "ğŸ“¡ No internet. Returning to menu.") {
         const toast = document.createElement('div'); toast.className = 'offline-toast'; toast.innerText = msg;
         document.body.appendChild(toast); setTimeout(() => toast.remove(), 3500);
         forceExitAllGameScreens();
@@ -618,7 +618,7 @@
         const adStepMsgElem = document.getElementById('adStepMessage');
         const adDescElem = document.getElementById('adDescription');
         if(adStepMsgElem && adDescElem) {
-            adStepMsgElem.innerText = `7²2„1‚5 ${networkName} ad not loaded. Opening fallback...`;
+            adStepMsgElem.innerText = `âš ï¸ ${networkName} ad not loaded. Opening fallback...`;
             adDescElem.innerText = `Complete the fallback page, then return here. Auto-continue.`;
         }
         window.open(FALLBACK_AD_URL, '_blank');
@@ -626,7 +626,7 @@
         return new Promise((resolve) => {
             pendingFallbackResolver = () => {
                 if(adStepMsgElem && adDescElem) {
-                    adStepMsgElem.innerText = `7¼3 ${networkName} step completed (fallback)`;
+                    adStepMsgElem.innerText = `âœ… ${networkName} step completed (fallback)`;
                     adDescElem.innerText = `Moving to next ad automatically...`;
                 }
                 resolve();
@@ -704,7 +704,7 @@
     
     let currentManualResolver = null;
     
-    function showAdUI(step, desc, icon = "”9Á0", loadingText = "77 Processing ad...") {
+    function showAdUI(step, desc, icon = "ğŸ¬", loadingText = "â³ Processing ad...") {
         adStepMsg.innerText = step;
         adDesc.innerText = desc;
         adStepIcon.innerText = icon;
@@ -721,21 +721,21 @@
         if(!isNetworkOnline()) throw new Error("offline");
         
         // STEP 1: Adsgram
-        showAdUI("”9Á0 STEP 1/3", "Loading Adsgram ad... (fallback ready)", "”9â4", "Please wait, ad loading...");
+        showAdUI("ğŸ¬ STEP 1/3", "Loading Adsgram ad... (fallback ready)", "ğŸ“º", "Please wait, ad loading...");
         await showAdsgramAd();
         if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("7¼3 STEP 1 done", "Adsgram completed. Auto proceeding to Monetag...", "”9Ñ1", "Moving to next ad...");
+        showAdUI("âœ… STEP 1 done", "Adsgram completed. Auto proceeding to Monetag...", "ğŸ‘", "Moving to next ad...");
         await new Promise(r => setTimeout(r, 800));
         
         // STEP 2: Monetag
-        showAdUI("”9Û0 STEP 2/3", "Monetag ad - loading (fallback ready)", "”9à0", "Fetching monetization...");
+        showAdUI("ğŸ’° STEP 2/3", "Monetag ad - loading (fallback ready)", "ğŸ“¢", "Fetching monetization...");
         await showMonetagAd();
         if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("7¼3 STEP 2 done", "Monetag completed. Auto proceeding to GigaPub...", "8¬2", "Finalizing...");
+        showAdUI("âœ… STEP 2 done", "Monetag completed. Auto proceeding to GigaPub...", "â­", "Finalizing...");
         await new Promise(r => setTimeout(r, 800));
         
         // STEP 3: GigaPub
-        showAdUI("7²3 STEP 3/3", "Giga Pub ad ¡ª final step (fallback ready)", "”9Á2", "Loading last ad...");
+        showAdUI("âš¡ STEP 3/3", "Giga Pub ad â€” final step (fallback ready)", "ğŸ®", "Loading last ad...");
         await showGigaAd();
         
         // All done
@@ -799,26 +799,26 @@
         }
     }
     
-    const brickNames = ["•0ã5 CORNER", "”9Å7„1‚5 WALL", "”9×6 CORE", "7²3 FLANK", "”9Ã6 TOP"];
+    const brickNames = ["ğŸ§± CORNER", "ğŸ›ï¸ WALL", "ğŸ’ CORE", "âš¡ FLANK", "ğŸ† TOP"];
     function renderGameUI(level) {
-        document.getElementById('gameLevelTitle').innerHTML = `•0ã5 BRICK SET ${level} ”9Ã0`;
+        document.getElementById('gameLevelTitle').innerHTML = `ğŸ§± BRICK SET ${level} ğŸ€`;
         const brokenCount = bricksBroken.filter(v=>v).length;
         const percent = (brokenCount/5)*100;
         document.getElementById('progressFill').style.width = percent+'%';
-        document.getElementById('gameProgressText').innerHTML = `”9Ù9 ${brokenCount} / 5 smashed | ”9Ã0 ${currentStreak} streak`;
-        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `”9æ7 STREAK ${currentStreak} ”9æ7` : `7²3 STREAK 0`;
+        document.getElementById('gameProgressText').innerHTML = `ğŸ’¥ ${brokenCount} / 5 smashed | ğŸ€ ${currentStreak} streak`;
+        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `ğŸ”¥ STREAK ${currentStreak} ğŸ”¥` : `âš¡ STREAK 0`;
         const grid = document.getElementById('bricksGrid'); grid.innerHTML = '';
         for(let i=0;i<5;i++) {
             const brickDiv = document.createElement('div'); brickDiv.className = 'brick';
-            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `”9Ö2<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
+            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `ğŸ’€<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
             else {
-                brickDiv.innerHTML = `<span style="font-size:24px;">•0ã5</span><br>${brickNames[i]}`;
+                brickDiv.innerHTML = `<span style="font-size:24px;">ğŸ§±</span><br>${brickNames[i]}`;
                 brickDiv.onclick = (e) => { if(gameCompletedFlag || bricksBroken[i]) return; smashBrick(i, e); };
             }
             grid.appendChild(brickDiv);
         }
         const remaining = 5 - brokenCount;
-        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "”9½5 ALL BRICKS SHATTERED! LEVEL CLEAR! ”9½5" : `”9Ù6 ${remaining} brick${remaining!==1?'s':''} remaining ¡ª tap to smash!`;
+        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "ğŸ‰ ALL BRICKS SHATTERED! LEVEL CLEAR! ğŸ‰" : `ğŸ’¢ ${remaining} brick${remaining!==1?'s':''} remaining â€” tap to smash!`;
     }
     
     function smashBrick(index, event) {
@@ -847,7 +847,7 @@
     
     function showLevelComplete(level) {
         const completeDiv = document.getElementById('levelCompleteScreen');
-        document.getElementById('completeLevelMsg').innerHTML = `7¿8 BRICK SET ${level} DESTROYED! 7¿8`;
+        document.getElementById('completeLevelMsg').innerHTML = `âœ¨ BRICK SET ${level} DESTROYED! âœ¨`;
         completeDiv.dataset.currentLevel = level;
         completeDiv.style.display = 'flex';
     }
@@ -886,7 +886,7 @@
         if(nextLvl > MAX_LEVEL) { document.getElementById('levelCompleteScreen').style.display = 'none'; showRewardScreen(); return; }
         document.getElementById('levelCompleteScreen').style.display = 'none';
         isProcessing = true;
-        await showCountdown(3, `”9æ7 NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
+        await showCountdown(3, `ğŸ”¥ NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
         if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost before next level."); isProcessing = false; return; }
         const success = await startLevelEntry(nextLvl);
         isProcessing = false;
@@ -902,10 +902,10 @@
     function resetGameAndCopy() {
         const code = document.getElementById('rewardCodeDisplay').textContent;
         navigator.clipboard.writeText(code).catch(()=>{});
-        alert('”9Ã6 Reward code copied! Progress reset to Level 1.');
+        alert('ğŸ† Reward code copied! Progress reset to Level 1.');
         currentUnlockedLevel = 1; saveProgress(); buildLevelList(); forceExitAllGameScreens();
     }
-    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('”9İ7 Code copied: '+code); };
+    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('ğŸ“‹ Code copied: '+code); };
     
     function buildLevelList() {
         const container = document.getElementById('levelListContainer'); container.innerHTML = '';
@@ -913,9 +913,9 @@
             const unlocked = i <= currentUnlockedLevel;
             const card = document.createElement('div'); card.className = 'level-card' + (unlocked ? '' : ' locked');
             if(unlocked) card.onclick = () => { if(!adSequenceActive && !isProcessing) startLevelEntry(i); };
-            const adType = "”9Á0 ¡ú ”9Û0 ¡ú ”9Á2 (auto-fallback)";
-            const statusIcon = unlocked ? (i < currentUnlockedLevel ? '7½7' : '”9ä9') : '”9ä8';
-            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">•0ã5 Brick Set ${i} <span style="font-size:8px;">${adType}</span></div><div class="level-requirement">”9Ù9 5 bricks smash (30s timeout + fallback)</div></div><div class="level-status">${statusIcon}</div>`;
+            const adType = "ğŸ¬ â†’ ğŸ’° â†’ ğŸ® (auto-fallback)";
+            const statusIcon = unlocked ? (i < currentUnlockedLevel ? 'âœ“' : 'ğŸ”“') : 'ğŸ”’';
+            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">ğŸ§± Brick Set ${i} <span style="font-size:8px;">${adType}</span></div><div class="level-requirement">ğŸ’¥ 5 bricks smash (30s timeout + fallback)</div></div><div class="level-status">${statusIcon}</div>`;
             container.appendChild(card);
         }
     }
