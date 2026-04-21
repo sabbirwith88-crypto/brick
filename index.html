@@ -2,937 +2,3091 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Brick Ball — Triple Ads + Auto-Fallback | Stable & Fast</title>
-    <!-- Adsgram SDK (blockId: int-25869) -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-    <!-- Monetag SDK (zone: 10866085) -->
-    <script src="//libtl.com/sdk.js" data-zone="10866085" data-sdk="show_10866085"></script>
-    <!-- Giga Pub SDK (new ad network) -->
-    <script src="https://ad.gigapub.tech/script?id=6334"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Earn For Earn - Mobile App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (v9 compatible) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    
+    <!-- Monetag SDK -->
+    <script src='//libtl.com/sdk.js' data-zone='10541383' data-sdk='show_10541383'></script>
+    
+    <!-- Adexora SDK -->
+    <script src="https://adexora.com/cdn/ads.js?id=1963"></script>
+    
     <style>
+        /* ========== ALL ORIGINAL STYLES (preserved, no changes) ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-
-        body {
-            min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #2c1a0e, #0f0804);
-            display: flex;
-            justify-content: center;
+        
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border: #333333;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --purple: #8a2be2;
+            --purple-dark: #6a0dad;
+            --blue: #2b6de2;
+            --blue-dark: #1a5ad9;
+            --success: #4CAF50;
+            --error: #f44336;
+            --warning: #ff9800;
+            --gold: #FFD700;
+            --gold-dark: #DAA520;
+            --green: #00C851;
+            --green-dark: #007E33;
+            --orange: #FF8C00;
+            --orange-dark: #FF4500;
+            --ban-red: #8B0000;
+            --racing-green: #4CAF50;
+            --racing-green-dark: #388E3C;
+            --ball-game: #FF6B6B;
+            --ball-game-dark: #FF4757;
+            --puzzle: #9C27B0;
+            --puzzle-dark: #7B1FA2;
+            --block: #2196F3;
+            --block-dark: #1976D2;
+            --ai-hard: #E91E63;
+            --ai-hard-dark: #C2185B;
+            --zombie: #795548;
+            --zombie-dark: #5D4037;
+            --brick: #FF9800;
+            --brick-dark: #F57C00;
+            --payoneer: #2C3E50;
+            --payoneer-dark: #1A252F;
+            --privacy: #00ACC1;
+            --privacy-dark: #00838F;
+            --terms: #FFA726;
+            --terms-dark: #F57C00;
+            --install: #607D8B;
+            --install-dark: #455A64;
+        }
+        
+        .business-email {
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .business-email a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-flex;
             align-items: center;
-            padding: 12px;
-            position: relative;
+            gap: 10px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        body::before {
-            content: "";
+        
+        .business-email a:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .business-email p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            background-color: var(--bg-primary);
+            box-shadow: 0 0 20px var(--shadow);
+        }
+        
+        .ban-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: repeating-linear-gradient(45deg, rgba(200, 80, 40, 0.15) 0px, rgba(200, 80, 40, 0.15) 60px, rgba(230, 110, 50, 0.1) 60px, rgba(230, 110, 50, 0.1) 120px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .game-container {
-            width: 100%;
-            max-width: 520px;
-            background: linear-gradient(145deg, #c47a44, #9b4a28);
-            border-radius: 48px;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,215,140,0.6);
-            overflow: hidden;
-            border: 3px solid #ffcf7a;
-            position: relative;
-            z-index: 2;
-            transition: transform 0.2s ease;
-        }
-
-        .brick-header {
-            background: repeating-linear-gradient(135deg, #bd4a24, #bd4a24 40px, #e06e3a 40px, #e06e3a 80px);
-            padding: 14px 10px;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             text-align: center;
-            border-bottom: 4px solid #ffcd7a;
         }
-
-        .title {
-            font-size: 32px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff0b5, #ffd966);
+        
+        .ban-screen.hidden {
+            display: none;
+        }
+        
+        .ban-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            background-color: var(--ban-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            animation: banPulse 2s infinite;
+        }
+        
+        @keyframes banPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(139, 0, 0, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 0, 0, 0); }
+        }
+        
+        .ban-icon i {
+            font-size: 4rem;
+            color: white;
+        }
+        
+        .ban-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--ban-red);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+        
+        .ban-message {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .ban-reason {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 300px;
+            line-height: 1.6;
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--ban-red);
+        }
+        
+        .ban-footer {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .loading-screen.hidden {
+            display: none;
+        }
+        
+        .loading-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(138, 43, 226, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
+        }
+        
+        .loading-logo i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .loading-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--purple), var(--blue));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 3px 3px 0 #6b2e12;
-            letter-spacing: 2px;
-            display: inline-flex;
+        }
+        
+        .loading-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-percent {
+            font-weight: 600;
+            color: var(--purple);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--blue));
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .loading-steps {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .loading-step {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
             align-items: center;
+            gap: 10px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-step.active {
+            opacity: 1;
+            color: var(--text-primary);
+        }
+        
+        .loading-step.completed {
+            opacity: 0.8;
+            color: var(--purple);
+        }
+        
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-version {
+            position: absolute;
+            bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .loading-spinner.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg-secondary);
+            border-top: 5px solid var(--purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            color: var(--text-secondary);
+        }
+        
+        .auth-screen {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-container {
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background-color: #222222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+            border: 2px solid #333333;
+        }
+        
+        .auth-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .auth-form {
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #444444;
+        }
+        
+        .referral-input-container {
+            position: relative;
+        }
+        
+        .optional-badge {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: 16px;
+            background-color: #222222;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .auth-button:hover {
+            background-color: #333333;
+        }
+        
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .auth-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+        
+        .header {
+            background-color: var(--bg-secondary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .user-profile {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #222222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: white;
+            border: 1px solid #333333;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            padding-bottom: 90px;
+        }
+        
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .balance-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .balance-amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .balance-amount::before {
+            content: '$';
+            font-size: 1.5rem;
+            margin-right: 2px;
+        }
+        
+        .balance-usd {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        
+        .coin-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .earn-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .earn-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.usd::before {
+            content: '$';
+            font-size: 1rem;
+            margin-right: 1px;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .rules-section {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .rules-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .rules-list {
+            list-style: none;
+        }
+        
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .rule-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .rule-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #222222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            color: #cccccc;
+            border: 1px solid #333333;
+        }
+        
+        .rule-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #cccccc;
+        }
+        
+        .rule-highlight {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .rule-coin {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .info-section {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .info-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .info-card-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .info-card-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .info-card-content p {
+            margin-bottom: 10px;
+        }
+        
+        .info-card-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .support-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .support-button {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #333333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #222222;
+            color: white;
+        }
+        
+        .support-button:hover {
+            background-color: #333333;
+        }
+        
+        .privacy-button {
+            background: linear-gradient(135deg, var(--privacy), var(--privacy-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .privacy-button:hover {
+            background: linear-gradient(135deg, var(--privacy-dark), var(--privacy));
+        }
+        
+        .terms-button {
+            background: linear-gradient(135deg, var(--terms), var(--terms-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .terms-button:hover {
+            background: linear-gradient(135deg, var(--terms-dark), var(--terms));
+        }
+        
+        .legal-options {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tasks-container {
+            margin-top: 10px;
+        }
+        
+        .task-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .task-reward {
+            background-color: #222222;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #333333;
+        }
+        
+        .task-reward.usd {
+            background-color: var(--purple);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward::before {
+            content: '$';
+            margin-right: 2px;
+        }
+        
+        .task-reward.blue {
+            background-color: var(--blue);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.premium {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: black;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.game {
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.general {
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.racing {
+            background: linear-gradient(135deg, var(--racing-green), var(--racing-green-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.ball {
+            background: linear-gradient(135deg, var(--ball-game), var(--ball-game-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.puzzle {
+            background: linear-gradient(135deg, var(--puzzle), var(--puzzle-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.block {
+            background: linear-gradient(135deg, var(--block), var(--block-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.ai-hard {
+            background: linear-gradient(135deg, var(--ai-hard), var(--ai-hard-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.zombie {
+            background: linear-gradient(135deg, var(--zombie), var(--zombie-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.brick {
+            background: linear-gradient(135deg, var(--brick), var(--brick-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.payoneer {
+            background: linear-gradient(135deg, var(--payoneer), var(--payoneer-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-reward.install {
+            background: linear-gradient(135deg, var(--install), var(--install-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .task-image {
+            width: 100%;
+            height: 120px;
+            background-color: #222222;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333333;
+            overflow: hidden;
+        }
+        
+        .task-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .task-image i {
+            font-size: 3rem;
+            color: #444;
+        }
+        
+        .task-status {
+            font-size: 0.85rem;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            border: 1px solid #333333;
+        }
+        
+        .task-status.pending {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.completed {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.rejected {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.approved {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.countdown {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.limited {
+            background-color: #1a1a1a;
+            color: #cccccc;
+        }
+        
+        .task-status.completed-badge {
+            background-color: var(--success);
+            color: white;
+            border: none;
+        }
+        
+        .task-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #222222;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .task-button.usd {
+            background-color: var(--purple);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.blue {
+            background-color: var(--blue);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.premium {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: black;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.game {
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.general {
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.racing {
+            background: linear-gradient(135deg, var(--racing-green), var(--racing-green-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.ball {
+            background: linear-gradient(135deg, var(--ball-game), var(--ball-game-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.puzzle {
+            background: linear-gradient(135deg, var(--puzzle), var(--puzzle-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.block {
+            background: linear-gradient(135deg, var(--block), var(--block-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.ai-hard {
+            background: linear-gradient(135deg, var(--ai-hard), var(--ai-hard-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.zombie {
+            background: linear-gradient(135deg, var(--zombie), var(--zombie-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.brick {
+            background: linear-gradient(135deg, var(--brick), var(--brick-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.payoneer {
+            background: linear-gradient(135deg, var(--payoneer), var(--payoneer-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.install {
+            background: linear-gradient(135deg, var(--install), var(--install-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .task-button.completed {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        
+        .task-button.completed:hover {
+            background-color: var(--success);
+            opacity: 0.8;
+        }
+        
+        .task-button:hover:not(:disabled):not(.completed) {
+            background-color: #333333;
+        }
+        
+        .task-button.usd:hover:not(:disabled):not(.completed) {
+            background-color: var(--purple-dark);
+        }
+        
+        .task-button.blue:hover:not(:disabled):not(.completed) {
+            background-color: var(--blue-dark);
+        }
+        
+        .task-button.premium:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+        }
+        
+        .task-button.game:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--orange-dark), var(--orange));
+        }
+        
+        .task-button.general:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--green-dark), var(--green));
+        }
+        
+        .task-button.racing:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--racing-green-dark), var(--racing-green));
+        }
+        
+        .task-button.ball:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--ball-game-dark), var(--ball-game));
+        }
+        
+        .task-button.puzzle:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--puzzle-dark), var(--puzzle));
+        }
+        
+        .task-button.block:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--block-dark), var(--block));
+        }
+        
+        .task-button.ai-hard:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--ai-hard-dark), var(--ai-hard));
+        }
+        
+        .task-button.zombie:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--zombie-dark), var(--zombie));
+        }
+        
+        .task-button.brick:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--brick-dark), var(--brick));
+        }
+        
+        .task-button.payoneer:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--payoneer-dark), var(--payoneer));
+        }
+        
+        .task-button.install:hover:not(:disabled):not(.completed) {
+            background: linear-gradient(135deg, var(--install-dark), var(--install));
+        }
+        
+        .task-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-secondary);
+        }
+        
+        .task-progress {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .game-install-info {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #333333;
+        }
+        
+        .game-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .game-step i {
+            color: var(--orange);
+            width: 20px;
+            margin-top: 3px;
+        }
+        
+        .warning-box {
+            background-color: rgba(255, 140, 0, 0.1);
+            border: 1px solid var(--orange);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .warning-box i {
+            color: var(--orange);
+            font-size: 1.2rem;
+        }
+        
+        .warning-text {
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .warning-text strong {
+            color: var(--orange);
+        }
+        
+        .code-submit-section {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #333333;
+        }
+        
+        .code-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .code-input {
+            flex: 1;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid #333333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-family: monospace;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .code-input:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+        
+        .code-input::placeholder {
+            color: #555;
+            letter-spacing: normal;
+        }
+        
+        .submit-code-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-code-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .submit-code-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .task-history-section {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .history-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .history-item {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
             gap: 8px;
         }
-
-        .ball-animation {
-            display: inline-block;
-            animation: bounceBall 1s infinite ease;
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        @keyframes bounceBall {
-            0%,100%{ transform: translateY(0px) rotate(0deg);}
-            50%{ transform: translateY(-6px) rotate(10deg);}
+        
+        .history-id {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: monospace;
         }
-
-        .subtitle {
-            font-size: 10px;
-            background: #2b170cba;
-            backdrop-filter: blur(6px);
-            display: inline-block;
+        
+        .history-amount {
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .history-amount::before {
+            content: '$';
+            margin-right: 2px;
+        }
+        
+        .history-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .history-date {
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
             padding: 4px 12px;
-            border-radius: 60px;
-            color: #ffeaac;
+            border-radius: 50px;
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 6px;
+            text-transform: uppercase;
         }
-
-        .badge-pattern {
-            background: #2f1a0c;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 9px;
-            margin-top: 6px;
-            color: #ffcf7a;
-            font-weight: bold;
-            display: inline-block;
+        
+        .status-pending {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
-
-        .level-list {
-            max-height: 460px;
-            overflow-y: auto;
-            padding: 12px;
-            background: rgba(30, 16, 6, 0.8);
-            scrollbar-width: thin;
+        
+        .status-approved {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
         }
-
-        .level-list::-webkit-scrollbar {
-            width: 4px;
+        
+        .status-rejected {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error);
+            border: 1px solid var(--error);
         }
-        .level-list::-webkit-scrollbar-track { background: #7a3a1c; border-radius: 10px; }
-        .level-list::-webkit-scrollbar-thumb { background: #ffbc6e; border-radius: 10px; }
-
-        .level-card {
-            background: linear-gradient(105deg, #6e351b, #4f2410);
+        
+        .zero-history {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .zero-history i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+            color: #cccccc;
+        }
+        
+        .zero-history p {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .withdraw-method {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .withdraw-method:hover {
+            background-color: #222222;
+            transform: scale(1.02);
+        }
+        
+        .withdraw-method.active {
+            border: 2px solid var(--purple);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+        
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background-color: #222222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: white;
+            border: 1px solid #333333;
+        }
+        
+        .method-icon.binance {
+            background: linear-gradient(135deg, #F0B90B, #F0B90B);
+            color: #1E2329;
+        }
+        
+        .method-title {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .method-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .requirements-list {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .requirement-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .requirement-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            border: 1px solid #333333;
+        }
+        
+        .requirement-icon.pending {
+            color: var(--text-secondary);
+            background-color: #222222;
+        }
+        
+        .requirement-icon.completed {
+            background-color: #222222;
+            color: white;
+        }
+        
+        .requirement-details {
+            flex: 1;
+        }
+        
+        .requirement-title {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            color: white;
+        }
+        
+        .requirement-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .requirement-status.completed {
+            color: #cccccc;
+        }
+        
+        .withdraw-form {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+        
+        .withdraw-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .withdraw-warning {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #cccccc;
+        }
+        
+        .withdraw-warning i {
+            color: #cccccc;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .form-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .next-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .next-button.active {
+            display: block;
+        }
+        
+        .next-button:hover {
+            opacity: 0.9;
+        }
+        
+        .next-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .withdrawal-history-section {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .referral-card {
+            background-color: #111111;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333333;
+        }
+        
+        .referral-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #333333;
+        }
+        
+        .referral-title {
+            font-size: 1.3rem;
             margin-bottom: 12px;
-            border-radius: 28px;
-            padding: 10px 14px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .referral-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #cccccc;
+        }
+        
+        .referral-bonus {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            background-color: #1a1a1a;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            color: white;
+            border: 1px solid #333333;
+        }
+        
+        .referral-bonus::before {
+            content: '$';
+            margin-right: 2px;
+        }
+        
+        .referral-code-container {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px dashed #333333;
+        }
+        
+        .referral-code-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .referral-code {
+            font-family: monospace;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            font-weight: bold;
+            color: white;
+            padding: 10px;
+            background: #111111;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 180px;
+            border: 1px solid #333333;
+        }
+        
+        .referral-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .referral-action-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #333333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #222222;
+            color: white;
+        }
+        
+        .referral-action-btn.copy {
+            background-color: var(--purple);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .referral-action-btn.share {
+            background-color: #222222;
+            color: white;
+        }
+        
+        .referral-action-btn:hover {
+            background-color: #333333;
+        }
+        
+        .referral-action-btn.copy:hover {
+            background-color: var(--purple-dark);
+        }
+        
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .referral-stat {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .referral-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .referral-stat-value.usd::before {
+            content: '$';
+            font-size: 1.2rem;
+            margin-right: 2px;
+        }
+        
+        .referral-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .friend-item {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-left: 6px solid #ffbc6e;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
         }
-        .level-card:active { transform: scale(0.97); background: #814020; }
-        .level-card.locked { opacity: 0.55; border-left-color: #7a5a44; pointer-events: none; filter: grayscale(0.2);}
-
-        .level-number {
-            font-size: 24px;
-            font-weight: 800;
-            background: #ffbc6e;
-            color: #3a1c0a;
-            width: 48px;
-            height: 48px;
+        
+        .friend-item:hover {
+            background-color: #222222;
+        }
+        
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .friend-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #222222;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
-            box-shadow: inset 0 -2px 0 #b1622a, 0 4px 8px black;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+            border: 1px solid #333333;
         }
-
-        .level-info { flex: 1; padding-left: 12px; }
-        .level-name { font-size: 15px; font-weight: 800; color: #ffefc0; }
-        .level-requirement { font-size: 9px; color: #ffcd8a; margin-top: 2px; }
-
-        .game-panel {
+        
+        .friend-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .friend-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .friend-earned {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .friend-earned::before {
+            content: '$';
+            margin-right: 2px;
+        }
+        
+        .zero-friends {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .zero-friends i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: #cccccc;
+        }
+        
+        .zero-friends h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .zero-friends p {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #cccccc;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-secondary);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0 20px 0;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-btn-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            padding: 10px 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 70px;
+            border-radius: 12px;
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .nav-btn i {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .nav-btn span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .nav-btn.active {
+            color: white;
+            background-color: #222222;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+        }
+        
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: 5px;
+            background-color: var(--purple);
+            color: white;
+            font-size: 0.7rem;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(20, 10, 3, 0.97);
-            backdrop-filter: blur(18px);
-            z-index: 10000;
-            display: flex;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 200;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            animation: fadeSlide 0.25s ease;
+            padding: 20px;
         }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: scale(0.96); backdrop-filter: blur(0);}
-            to { opacity: 1; transform: scale(1); backdrop-filter: blur(18px);}
-        }
-
-        .game-card {
-            background: radial-gradient(ellipse at 30% 20%, #d47e44, #893d1c);
-            border-radius: 56px;
-            padding: 24px 16px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-            border: 3px solid #ffdfa5;
-            box-shadow: 0 25px 35px black;
-        }
-
-        .game-level-title {
-            font-size: 28px;
-            font-weight: 900;
-            color: #fff0b5;
-            text-shadow: 2px 2px 0 #652d10;
+        
+        .modal.active {
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 10px;
         }
-
-        .brick-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 20px 0;
+        
+        .modal-content {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            width: 100%;
+            max-width: 350px;
+            animation: modalFadeIn 0.3s ease;
+            border: 1px solid #333333;
         }
-        @media (min-width: 450px) {
-            .brick-grid { grid-template-columns: repeat(3, 1fr); }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .brick {
-            background: linear-gradient(145deg, #c2582c, #9b3a1a);
-            border-radius: 20px;
-            padding: 14px 4px;
-            text-align: center;
-            font-weight: 800;
-            color: #fff0ce;
-            font-size: 14px;
+        
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .modal-message {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #333333;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.05s linear;
-            box-shadow: 0 6px 0 #55280e;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
+            background-color: #222222;
+            color: white;
         }
-        .brick:active { transform: translateY(3px); box-shadow: 0 2px 0 #55280e; }
-        .brick.broken {
-            background: #4a3224;
-            box-shadow: none;
-            transform: translateY(4px);
-            filter: grayscale(0.6);
-            cursor: default;
-            pointer-events: none;
-            text-decoration: line-through;
-            opacity: 0.6;
+        
+        .modal-btn.primary {
+            background-color: var(--purple);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .ball-hit-effect {
-            position: absolute;
-            width: 36px;
-            height: 36px;
-            background: radial-gradient(circle, #ffcf4a, #ff8c1a);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: hitPop 0.3s ease-out forwards;
-            z-index: 200;
+        
+        .modal-btn.orange {
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        @keyframes hitPop {
-            0% { transform: scale(0.2); opacity: 1; }
-            100% { transform: scale(1.4); opacity: 0; }
+        
+        .modal-btn.secondary {
+            background-color: #1a1a1a;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
         }
-
-        .progress-bar {
-            background: #2b180c;
-            border-radius: 60px;
-            padding: 3px;
+        
+        .modal-btn.usd {
+            background-color: var(--purple);
+            color: white;
+        }
+        
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
             margin: 10px 0;
         }
-        .progress-fill {
-            background: linear-gradient(90deg, #ffbc6e, #ff9626);
-            height: 10px;
-            border-radius: 60px;
-            width: 0%;
-            transition: width 0.2s ease;
-        }
-
-        .combo-streak {
-            background: #1f1107;
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 60px;
-            font-weight: bold;
-            color: #ffcd7a;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-
-        .countdown-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.96);
-            backdrop-filter: blur(20px);
-            z-index: 11000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        
+        .countdown-text {
             text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
         }
-        .countdown-number {
-            font-size: 100px;
-            background: linear-gradient(45deg, #ffbc6e, #ff8c1a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 900;
-            animation: pulseScale 0.4s ease-out;
-            text-shadow: 0 0 20px rgba(255,140,26,0.5);
+        
+        .change-password-modal .form-group {
+            margin-bottom: 20px;
         }
-        @keyframes pulseScale {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
+        
+        .change-password-modal .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
-        .countdown-message {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffcf7a;
-            margin-top: 20px;
-            text-shadow: 0 2px 4px black;
-            background: rgba(0,0,0,0.5);
-            padding: 8px 20px;
-            border-radius: 60px;
-            backdrop-filter: blur(4px);
-        }
-        .countdown-progress-ring {
-            width: 120px;
-            height: 120px;
-            margin-top: 20px;
-        }
-        .levelcomplete-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
+        
+        .change-password-modal .form-input {
             width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #e07a2e, #55280e);
-            z-index: 9000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
         }
-        .complete-title {
-            font-size: 42px;
-            font-weight: 900;
-            color: #fff0b5;
-            text-shadow: 3px 3px 0 #5a2a10;
+        
+        .user-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            min-width: 220px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px var(--shadow);
+            z-index: 150;
+            display: none;
         }
-        .reward-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #f5bc70, #d97a2a);
-            z-index: 9500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+        
+        .user-menu.active {
+            display: block;
         }
-        .reward-code {
-            background: rgba(0,0,0,0.85);
-            padding: 14px 24px;
-            border-radius: 48px;
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #ffbc6e;
-            margin: 20px;
+        
+        .user-info {
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+        
+        .user-email {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+        
+        .user-referral {
+            font-size: 0.8rem;
+            color: white;
+            margin-top: 5px;
+        }
+        
+        .menu-item {
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            border: 2px solid gold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
         }
-        .btn {
-            background: linear-gradient(45deg, #ffbc6e, #f5922a);
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 800;
-            border-radius: 60px;
-            cursor: pointer;
-            margin: 6px;
-            transition: 0.08s linear;
-            box-shadow: 0 4px 0 #9b4a1a;
+        
+        .menu-item:hover {
+            background-color: var(--bg-secondary);
         }
-        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9b4a1a; }
-        .footer-note {
+        
+        .menu-item.privacy {
+            color: var(--privacy);
+        }
+        
+        .menu-item.terms {
+            color: var(--terms);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 10px 0;
+        }
+        
+        .zero-value {
+            color: var(--text-secondary) !important;
+        }
+        
+        .success-message {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .success-message.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding: 10px;
-            background: #1f1107;
-            color: #ffcf9a;
-            font-size: 9px;
+            cursor: pointer;
+            color: white;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        
+        .back-button:hover {
+            color: var(--purple);
+        }
+        
+        .info-menu-item {
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+        
+        .general-task-section {
+            margin-top: 20px;
+        }
+        
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0 15px;
+        }
+        
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+        }
+        
+        .section-divider-text {
+            padding: 0 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
             font-weight: 600;
         }
-        .ad-sequence-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(30px);
-            z-index: 12000;
+        
+        .games-section {
+            margin-top: 20px;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .game-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: scale(1.02);
+            background-color: #222222;
+        }
+        
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background-color: #222222;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            margin: 0 auto 12px;
+            font-size: 1.8rem;
         }
-        .ad-sequence-card {
-            background: #35200f;
-            border-radius: 56px;
-            padding: 28px 20px;
-            max-width: 320px;
-            width: 85%;
-            text-align: center;
-            border: 3px solid #ffbc6e;
+        
+        .game-icon.racing {
+            background: linear-gradient(135deg, var(--racing-green), var(--racing-green-dark));
         }
-        .fallback-manual-btn {
-            background: #6b3a1e;
-            border: none;
-            padding: 8px 16px;
-            font-size: 12px;
-            border-radius: 60px;
-            margin-top: 12px;
-            color: #ffcf7a;
-            cursor: pointer;
-            font-weight: bold;
+        
+        .game-icon.ball {
+            background: linear-gradient(135deg, var(--ball-game), var(--ball-game-dark));
         }
-        .offline-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 16px;
-            right: 16px;
-            background: #b33a22;
+        
+        .game-icon.puzzle {
+            background: linear-gradient(135deg, var(--puzzle), var(--puzzle-dark));
+        }
+        
+        .game-icon.block {
+            background: linear-gradient(135deg, var(--block), var(--block-dark));
+        }
+        
+        .game-icon.ai-hard {
+            background: linear-gradient(135deg, var(--ai-hard), var(--ai-hard-dark));
+        }
+        
+        .game-icon.zombie {
+            background: linear-gradient(135deg, var(--zombie), var(--zombie-dark));
+        }
+        
+        .game-icon.brick {
+            background: linear-gradient(135deg, var(--brick), var(--brick-dark));
+        }
+        
+        .game-icon.install {
+            background: linear-gradient(135deg, var(--install), var(--install-dark));
+        }
+        
+        .game-name {
+            font-size: 0.95rem;
+            font-weight: 600;
             color: white;
-            padding: 12px;
-            border-radius: 60px;
-            text-align: center;
-            font-weight: bold;
-            z-index: 20000;
-            box-shadow: 0 6px 15px black;
-            animation: slideUp 0.25s;
+            margin-bottom: 5px;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .game-close-btn {
-            background: #2c1a10;
-            color: #ffcf8a;
-            padding: 10px 18px;
+        
+        .game-reward {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .game-reward::before {
+            content: '$';
+            margin-right: 2px;
+        }
+        
+        .game-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 50px;
+            background-color: var(--purple);
+            color: white;
+            display: inline-block;
+        }
+        
+        .game-badge.completed {
+            background-color: var(--success);
+        }
+        
+        @media (max-width: 400px) {
+            .app-container { max-width: 100%; }
+            .balance-amount { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 12px 8px; }
+            .stat-value { font-size: 1.2rem; }
+            .auth-container { padding: 25px 20px; }
+            .support-options { flex-direction: column; }
+            .legal-options { flex-direction: column; }
+            .referral-actions { flex-direction: column; }
+            .referral-stats { grid-template-columns: 1fr; }
+            .nav-btn { min-width: 60px; font-size: 0.65rem; }
+            .nav-btn i { font-size: 1.2rem; }
+            .nav-btn span { font-size: 0.65rem; }
+            .code-input-group { flex-direction: column; }
+            .games-grid { grid-template-columns: 1fr; }
+        }
+        
+        .game-task-container {
+            transition: all 0.3s ease;
+        }
+        
+        .weekly-reset-banner {
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .reset-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reset-info i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .reset-text {
+            font-size: 0.9rem;
+            color: white;
+        }
+        
+        .reset-timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 15px;
+            border-radius: 50px;
+        }
+        
+        .verify-join-btn {
+            background: linear-gradient(135deg, var(--success), #2e7d32);
+            color: white;
             border: none;
-            border-radius: 60px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 14px;
-            cursor: pointer;
-        }
-        .ad-loading-text {
-            color: #ffbc6e;
-            font-size: 13px;
-            margin-top: 8px;
         }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <div class="brick-header">
-        <div class="title"><span>🧱</span><span>BRICK BALL</span><span class="ball-animation">🏀</span></div>
-        <div class="subtitle">⚡ TRIPLE ADS (Auto-continue) + FALLBACK: if ad fails → fallback link → auto-resume ⚡</div>
-        <div class="badge-pattern">🎯 EACH LEVEL: Adsgram → Monetag → GigaPub (30s timeout + manual fallback option)</div>
+    <!-- Ban Screen -->
+    <div class="ban-screen hidden" id="banScreen">
+        <div class="ban-icon"><i class="fas fa-ban"></i></div>
+        <div class="ban-title">BANNED</div>
+        <div class="ban-message" id="banMessage">Your ID is banned!</div>
+        <div class="ban-reason" id="banReason">Because you cheated. No cheating allowed!</div>
+        <div class="ban-footer">This account cannot be recovered. Create a new account if you want to use the app again.</div>
     </div>
-    <div class="level-list" id="levelListContainer"></div>
-    <div class="footer-note">💥 Tap bricks! Ad sequence runs automatically. If any ad fails, fallback opens, return = auto next step.</div>
-</div>
 
-<!-- Game Panel -->
-<div id="gamePanel" class="game-panel" style="display: none;">
-    <div class="game-card">
-        <div class="game-level-title"><span>🏀</span> <span id="gameLevelTitle">BRICK SET 1</span> <span>🧱</span></div>
-        <div class="combo-streak" id="comboStreakDisplay">🔥 STREAK 0</div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="game-progress" id="gameProgressText" style="font-weight: bold; margin: 8px 0;">0 / 5 smashed</div>
-        <div class="brick-grid" id="bricksGrid"></div>
-        <div class="complete-status" id="completeStatusMsg">✨ Tap any brick to smash! ✨</div>
-        <button class="game-close-btn" id="exitGameBtn">🏠 Back to Hall</button>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo"><i class="fas fa-wallet"></i></div>
+        <h1 class="loading-title">Earn For Earn</h1>
+        <p class="loading-subtitle">Loading your experience...</p>
+        <div class="progress-container">
+            <div class="progress-label"><span>Initializing</span><span class="progress-percent" id="progressPercent">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+        <div class="loading-steps">
+            <div class="loading-step" id="step1"><div class="step-icon"><i class="fas fa-cog"></i></div><span>Initializing system...</span></div>
+            <div class="loading-step" id="step2"><div class="step-icon"><i class="fas fa-ad"></i></div><span>Loading advertisements...</span></div>
+            <div class="loading-step" id="step3"><div class="step-icon"><i class="fas fa-user"></i></div><span>Checking authentication...</span></div>
+            <div class="loading-step" id="step4"><div class="step-icon"><i class="fas fa-dollar-sign"></i></div><span>Loading user data...</span></div>
+            <div class="loading-step" id="step5"><div class="step-icon"><i class="fas fa-check"></i></div><span>Ready to earn!</span></div>
+        </div>
+        <div class="loading-version">Version 3.0.0 - 3 Decimal Precision</div>
     </div>
-</div>
-
-<!-- Countdown Overlay -->
-<div id="countdownOverlay" class="countdown-overlay" style="display: none;">
-    <div class="countdown-number" id="countdownNum">3</div>
-    <div class="countdown-message" id="countdownMsg">Next Brick Set starting...</div>
-    <div class="countdown-progress-ring"><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#ffbc6e" stroke-width="6" stroke-dasharray="283" stroke-dashoffset="0" id="countdownCircle"/></svg></div>
-</div>
-
-<!-- Level Complete Screen -->
-<div id="levelCompleteScreen" class="levelcomplete-screen" style="display: none;">
-    <div class="complete-title">🏆 BRICK BALL CLEAR! 🏆</div>
-    <div style="color: #ffefb0; font-size: 18px; margin: 16px;" id="completeLevelMsg"></div>
-    <button class="btn" id="nextLevelBtnFromComplete">➡️ NEXT BRICK SET</button>
-    <button class="btn" id="backToRoadCompleteBtn">🏠 MAIN MENU</button>
-</div>
-
-<!-- Reward Screen -->
-<div id="rewardScreen" class="reward-screen" style="display: none;">
-    <h2 style="font-size: 38px; color:#2b180a;">🏅 MASTER SMASHER 🏅</h2>
-    <p style="color: white; font-size: 18px;">You crushed all 10 brick sets!</p>
-    <p style="color: #ffefb0; margin-top: 12px;">🎁 Your reward code:</p>
-    <div class="reward-code" id="rewardCodeDisplay" onclick="copyRewardCodeGlobal()">BALL10-XXXXXX</div>
-    <p style="font-size: 11px;">👇 tap to copy 👇</p>
-    <button class="btn" id="resetAllBtn">📋 COPY & RESET GAME</button>
-</div>
-
-<!-- Ad Sequence Panel (Auto mode, no next-step button, but manual fallback) -->
-<div id="adSequencePanel" class="ad-sequence-panel" style="display: none;">
-    <div class="ad-sequence-card">
-        <div class="ad-step-icon" style="font-size: 48px;" id="adStepIcon">🎬</div>
-        <div class="ad-step-message" style="font-size: 20px; font-weight: bold; color:#ffcf7a;" id="adStepMessage">Loading ad...</div>
-        <div class="ad-description" style="margin: 8px 0;" id="adDescription">Please wait, ad is loading...</div>
-        <div id="adLoadingIndicator" class="ad-loading-text">⏳ Processing ad...</div>
-        <button id="manualFallbackBtn" class="fallback-manual-btn">⚠️ Ad stuck? Use Fallback</button>
+    
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Processing...</div>
     </div>
-</div>
-
-<script>
-    // ---------- FALLBACK CONFIGURATION ----------
-    const FALLBACK_AD_URL = "https://install-the-app-form-this-link.vercel.app";
-    const AD_TIMEOUT_MS = 30000; // 30 seconds generous timeout to avoid "time not seen" error
     
-    // ---------- GAME STATE ----------
-    const MAX_LEVEL = 10;
-    let currentUnlockedLevel = 1;
-    let activeGameLevel = null;
-    let bricksBroken = [];
-    let gameCompletedFlag = false;
-    let isProcessing = false;
-    let adSequenceActive = false;
-    let currentStreak = 0;
-    let adController = null;
-    let adInitialized = false;
-    
-    // pending fallback resolver
-    let pendingFallbackResolver = null;
-    let visibilityListenerActive = false;
-    
-    // ---------- PROGRESS MANAGEMENT ----------
-    function loadProgress() {
-        try {
-            const saved = localStorage.getItem('brickBallPro');
-            if(saved) { const data = JSON.parse(saved); currentUnlockedLevel = Math.min(MAX_LEVEL, data.unlockedLevel || 1); }
-            else currentUnlockedLevel = 1;
-        } catch(e) { currentUnlockedLevel = 1; }
-    }
-    function saveProgress() { localStorage.setItem('brickBallPro', JSON.stringify({ unlockedLevel: currentUnlockedLevel })); }
-    
-    function isNetworkOnline() { return navigator.onLine; }
-    function showOfflineExitAndCloseGame(msg = "📡 No internet. Returning to menu.") {
-        const toast = document.createElement('div'); toast.className = 'offline-toast'; toast.innerText = msg;
-        document.body.appendChild(toast); setTimeout(() => toast.remove(), 3500);
-        forceExitAllGameScreens();
-    }
-    function forceExitAllGameScreens() {
-        document.getElementById('gamePanel').style.display = 'none';
-        document.getElementById('adSequencePanel').style.display = 'none';
-        document.getElementById('countdownOverlay').style.display = 'none';
-        document.getElementById('levelCompleteScreen').style.display = 'none';
-        document.getElementById('rewardScreen').style.display = 'none';
-        if(pendingFallbackResolver) { pendingFallbackResolver(); pendingFallbackResolver = null; }
-        adSequenceActive = false; isProcessing = false; gameCompletedFlag = false; activeGameLevel = null;
-        removeVisibilityListener();
-    }
-    
-    // visibility listener for fallback return (auto-resume)
-    function onVisibilityChange() {
-        if(document.visibilityState === 'visible' && pendingFallbackResolver) {
-            const resolver = pendingFallbackResolver;
-            pendingFallbackResolver = null;
-            removeVisibilityListener();
-            resolver();
-        }
-    }
-    function addVisibilityListener() {
-        if(!visibilityListenerActive) {
-            document.addEventListener('visibilitychange', onVisibilityChange);
-            visibilityListenerActive = true;
-        }
-    }
-    function removeVisibilityListener() {
-        if(visibilityListenerActive) {
-            document.removeEventListener('visibilitychange', onVisibilityChange);
-            visibilityListenerActive = false;
-        }
-    }
-    
-    // Core: show ad with improved timeout and fallback (auto + manual)
-    async function showAdWithFallback(adPromiseFactory, networkName, stepDesc) {
-        if(!isNetworkOnline()) throw new Error("offline");
+    <div class="app-container">
+        <!-- Auth Screens -->
+        <div id="login-screen" class="auth-screen" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-header"><div class="app-logo"><i class="fas fa-wallet"></i></div><h1 class="auth-title">Earn For Earn</h1><p class="auth-subtitle">Login to your account</p></div>
+                <form id="login-form" class="auth-form">
+                    <div class="form-group"><label class="form-label">Email Address</label><input type="email" id="login-email" class="form-input" placeholder="your@email.com" required></div>
+                    <div class="form-group"><label class="form-label">Password</label><input type="password" id="login-password" class="form-input" placeholder="••••••••" required></div>
+                    <button type="submit" class="auth-button"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </form>
+                <div class="auth-switch">Don't have an account? <a class="auth-link" id="go-to-signup">Sign Up</a></div>
+            </div>
+        </div>
         
-        let timeoutId;
-        const timeoutPromise = new Promise((_, reject) => {
-            timeoutId = setTimeout(() => reject(new Error(`Timeout (${networkName}) after ${AD_TIMEOUT_MS/1000}s`)), AD_TIMEOUT_MS);
-        });
+        <div id="signup-screen" class="auth-screen" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-header"><div class="app-logo"><i class="fas fa-user-plus"></i></div><h1 class="auth-title">Create Account</h1><p class="auth-subtitle">Join and start earning</p></div>
+                <form id="signup-form" class="auth-form">
+                    <div class="form-group"><label class="form-label">Email Address</label><input type="email" id="signup-email" class="form-input" placeholder="your@email.com" required></div>
+                    <div class="form-group"><label class="form-label">Password</label><input type="password" id="signup-password" class="form-input" placeholder="••••••••" required></div>
+                    <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" id="signup-confirm-password" class="form-input" placeholder="••••••••" required></div>
+                    <div class="form-group">
+                        <label class="form-label">Referral Code (Optional)</label>
+                        <div class="referral-input-container"><input type="text" id="signup-referral" class="form-input" placeholder="Enter referral code"><div class="optional-badge">Optional</div></div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Get $0.05 bonus if you use a referral code</div>
+                    </div>
+                    <button type="submit" class="auth-button"><i class="fas fa-user-plus"></i> Create Account</button>
+                </form>
+                <div class="auth-switch">Already have an account? <a class="auth-link" id="go-to-login">Login</a></div>
+            </div>
+        </div>
         
-        let adPromise;
-        try {
-            adPromise = adPromiseFactory();
-        } catch(e) {
-            clearTimeout(timeoutId);
-            return await triggerFallbackAndWait(networkName, stepDesc);
-        }
+        <!-- Main App -->
+        <div id="main-app" style="display: none;">
+            <div class="header">
+                <div class="app-title">Earn For Earn</div>
+                <div class="user-profile" id="userProfile"><span id="userInitial">U</span></div>
+            </div>
+            <div class="user-menu" id="userMenu">
+                <div class="user-info"><div style="font-weight: 600;" id="menuUserEmail">user@email.com</div><div class="user-referral">Referral Code: <span id="menuReferralCode">XXXXXX</span></div></div>
+                <div class="menu-item" id="changePassword"><i class="fas fa-key"></i><span>Change Password</span></div>
+                <div class="menu-item" id="menuInfo"><i class="fas fa-info-circle"></i><span>Information</span></div>
+                <div class="menu-divider"></div>
+                <div class="menu-item privacy" id="privacyPolicy"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></div>
+                <div class="menu-item terms" id="termsConditions"><i class="fas fa-file-contract"></i><span>Terms & Conditions</span></div>
+            </div>
+            
+            <div class="main-content">
+                <!-- Home Section -->
+                <div id="home-section" class="content-section active">
+                    <div class="balance-card">
+                        <div class="balance-label">Your Balance</div>
+                        <div class="balance-amount" id="balanceAmount">0.000</div>
+                        <div class="balance-usd">USD Balance (3 Decimal Precision)</div>
+                        <div class="coin-info"><i class="fas fa-info-circle"></i> Earn USD directly - 3 decimal precision</div>
+                        <button class="earn-button" id="earnBtn"><i class="fas fa-headset"></i> Get Support</button>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-value" id="referralsCount">0</div><div class="stat-label">Referrals</div></div>
+                        <div class="stat-card"><div class="stat-value usd" id="totalEarned">0.000</div><div class="stat-label">Total Earned</div></div>
+                        <div class="stat-card"><div class="stat-value usd" id="referralBonus">0.000</div><div class="stat-label">Ref. Bonus</div></div>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-title"><i class="fas fa-gavel"></i><span>Important Rules</span></div>
+                        <ul class="rules-list">
+                            <li class="rule-item"><div class="rule-icon"><i class="fas fa-ban"></i></div><div class="rule-text"><span class="rule-highlight">No Cheating</span> - Using any automated tools or unfair methods will result in permanent ban.</div></li>
+                            <li class="rule-item"><div class="rule-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="rule-text"><span class="rule-highlight">Age Requirement</span> - You must be at least 18 years old to use this app and withdraw.</div></li>
+                            <li class="rule-item"><div class="rule-icon"><i class="fas fa-wallet"></i></div><div class="rule-text"><span class="rule-highlight">Payment</span> - Withdraw anytime (no monthly limit) if you have $2.000 and 3 referrals.</div></li>
+                            <li class="rule-item"><div class="rule-icon"><i class="fas fa-calendar-alt"></i></div><div class="rule-text"><span class="rule-highlight">Unlimited Withdrawals</span> - You can withdraw as many times as you meet the requirements.</div></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Game Tasks Section (7 games, updated rewards 0.07 except SOS 0.004) -->
+                <div id="game-section" class="content-section">
+                    <div class="back-button" id="gameBackBtn"><i class="fas fa-arrow-left"></i><span>Back to Home</span></div>
+                    <div class="section-title" style="margin-bottom: 20px;"><h2 style="font-size: 1.3rem; color: white;">Game Tasks</h2></div>
+                    
+                    <!-- Game 1 -->
+                    <div class="game-task-container" id="gameTaskContainer1"><div class="task-card"><div class="task-image"><i class="fas fa-car" style="font-size: 3rem; color: var(--racing-green);"></i></div><div class="task-header"><div class="task-title">Green Road: Car Racing</div><div class="task-reward racing">0.1</div></div><div class="task-description">Play the game, complete 10 levels and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play Green Road: Car Racing from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete 10 levels and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3: click on minimum 4 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button racing" id="playGameBtn1"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput1" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn1">Submit</button></div><div class="form-note">Paste the code you received from the game</div></div><div id="gameTaskStatus1" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress1">Status: Ready to start</div></div></div>
+                    <!-- Game 2 -->
+                    <div class="game-task-container" id="gameTaskContainer2"><div class="task-card"><div class="task-image"><i class="fas fa-basketball-ball" style="font-size: 3rem; color: var(--ball-game);"></i></div><div class="task-header"><div class="task-title">Lunch The Ball Game</div><div class="task-reward ball">0.1</div></div><div class="task-description">Play the game, complete Level 10 and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play Lunch The Ball Game from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete Level 10 and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3: click on minimum 4 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button ball" id="playGameBtn2"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput2" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn2">Submit</button></div><div class="form-note">Paste the code you received after completing Level 10</div></div><div id="gameTaskStatus2" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress2">Status: Ready to start</div></div></div>
+                    <!-- Game 3 -->
+                    <div class="game-task-container" id="gameTaskContainer3"><div class="task-card"><div class="task-image"><i class="fas fa-puzzle-piece" style="font-size: 3rem; color: var(--puzzle);"></i></div><div class="task-header"><div class="task-title">All Sort - Puzzle Game</div><div class="task-reward puzzle">0.1</div></div><div class="task-description">Play the game, complete Level 10 and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play All Sort from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete Level 10 and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3:click on minimum 4 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button puzzle" id="playGameBtn3"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput3" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn3">Submit</button></div><div class="form-note">Paste the code you received after completing Level 10</div></div><div id="gameTaskStatus3" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress3">Status: Ready to start</div></div></div>
+                    <!-- Game 4 -->
+                    <div class="game-task-container" id="gameTaskContainer4"><div class="task-card"><div class="task-image"><i class="fas fa-cubes" style="font-size: 3rem; color: var(--block);"></i></div><div class="task-header"><div class="task-title">Block Blast</div><div class="task-reward block">0.1</div></div><div class="task-description">Play the game, complete Level 10 and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play Block Blast from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete Level 10 and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3:click on minimum 4 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button block" id="playGameBtn4"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput4" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn4">Submit</button></div><div class="form-note">Paste the code you received after completing Level 10</div></div><div id="gameTaskStatus4" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress4">Status: Ready to start</div></div></div>
+                    <!-- Game 5 (SOS unchanged) -->
+                    <div class="game-task-container" id="gameTaskContainer5"><div class="task-card"><div class="task-image"><i class="fas fa-robot" style="font-size: 3rem; color: var(--ai-hard);"></i></div><div class="task-header"><div class="task-title">SOS Game - AI Hard</div><div class="task-reward ai-hard">0.004</div></div><div class="task-description">Play the game against AI in hard mode and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play SOS Game from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Play against AI in hard mode and complete the game</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3:click on minimum 3 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Get the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button ai-hard" id="playGameBtn5"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput5" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn5">Submit</button></div><div class="form-note">Paste the code you received from the game</div></div><div id="gameTaskStatus5" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress5">Status: Ready to start</div></div></div>
+                    <!-- Game 6 -->
+                    <div class="game-task-container" id="gameTaskContainer6"><div class="task-card"><div class="task-image"><i class="fas fa-skull" style="font-size: 3rem; color: var(--zombie);"></i></div><div class="task-header"><div class="task-title">Zombie Road</div><div class="task-reward zombie">0.1</div></div><div class="task-description">Play the game, Complete 10 levels and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play Zombie Road from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete 10 levels and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3:click on minimum 4 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button zombie" id="playGameBtn6"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput6" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn6">Submit</button></div><div class="form-note">Paste the code you received after Complete 10 levels</div></div><div id="gameTaskStatus6" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress6">Status: Ready to start</div></div></div>
+                    <!-- Game 7 -->
+                    <div class="game-task-container" id="gameTaskContainer7"><div class="task-card"><div class="task-image"><i class="fas fa-cube" style="font-size: 3rem; color: var(--brick);"></i></div><div class="task-header"><div class="task-title">Brick Ball</div><div class="task-reward brick">0.1</div></div><div class="task-description">Play the game, complete 10 levels and submit the verification code.</div><div class="game-install-info"><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 1: Play Brick Ball from the link below</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 2: Complete 10 levels and get the verification code</span></div><div class="game-step"><i class="fas fa-gamepad"></i><span>Step 3:click on minimum 3 ads while completing the level</span></div><div class="game-step"><i class="fas fa-code"></i><span>Step 4: Enter the verification code and submit</span></div></div><div class="warning-box"><i class="fas fa-exclamation-triangle"></i><div class="warning-text"><strong>⚠️ WARNING:</strong> Fake codes will result in <strong>PERMANENT BAN</strong>. No cheating allowed!</div></div><button class="task-button brick" id="playGameBtn7"><i class="fas fa-gamepad"></i> Play Game</button><div class="code-submit-section"><label class="form-label">Enter Verification Code</label><div class="code-input-group"><input type="text" id="gameCodeInput7" class="code-input" placeholder="Enter code"><button class="submit-code-btn" id="submitGameCodeBtn7">Submit</button></div><div class="form-note">Paste the code you received after completing Level 10</div></div><div id="gameTaskStatus7" class="task-status pending" style="display: none;"></div><div class="task-progress" id="gameTaskProgress7">Status: Ready to start</div></div></div>
+                    
+                    <!-- Game Task History -->
+                    <div class="task-history-section"><div class="history-title"><i class="fas fa-history"></i><span>Game Task History</span></div><div id="gameTaskHistoryContainer"><div class="zero-history" id="zeroGameHistory"><i class="fas fa-clock"></i><p>No game tasks completed yet.</p></div><div id="gameTaskHistoryList" style="display: none;" class="history-list"></div></div></div>
+                </div>
+                
+                <!-- General Task Section: 3 original tasks (daily 20 each, 45 sec sequential) + 2 one-time Telegram tasks -->
+                <div id="general-task-section" class="content-section">
+                    <div class="back-button" id="generalBackBtn"><i class="fas fa-arrow-left"></i><span>Back to Home</span></div>
+                    <div class="section-title" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="font-size: 1.3rem; color: white;">General Tasks</h2>
+                        <div id="generalTaskLimitInfo" style="font-size: 0.9rem; color: white;">60 attempts left</div>
+                    </div>
+                    <div class="tasks-container" id="generalTasksContainer"></div>
+                    <div class="task-card" style="text-align: center; padding: 25px;">
+                        <i class="fas fa-sync-alt" style="font-size: 2rem; color: #cccccc; margin-bottom: 15px;"></i>
+                        <h3 style="margin-bottom: 10px; color: white;">Daily Task Limit</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                            You can complete each general task 20 times per day. Total 60 attempts per day (3 tasks × 20 attempts each). Each task pays $0.002. The limit resets every 24 hours.
+                        </p>
+                        <div id="resetTimer" style="font-size: 0.85rem; color: #cccccc; margin-top: 10px;">Next reset in: <span id="resetTime">24:00:00</span></div>
+                    </div>
+                    
+                    <!-- One-time Telegram tasks section -->
+                    <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-text">✨ One-Time Telegram Rewards ✨</div><div class="section-divider-line"></div></div>
+                    <div id="telegramTasksContainer"></div>
+                </div>
+                
+                <!-- Withdraw Section - unlimited withdrawals (no monthly limit), only requirements: $2 balance and 3 referrals -->
+                <div id="withdraw-section" class="content-section">
+                    <div class="back-button" id="withdrawBackBtn"><i class="fas fa-arrow-left"></i><span>Back to Home</span></div>
+                    <div class="section-title" style="margin-bottom: 20px;"><h2 style="color: white;">Withdraw Funds</h2></div>
+                    <div class="balance-card" style="margin-bottom: 25px;">
+                        <div class="balance-label">Available Balance</div>
+                        <div class="balance-amount" id="withdrawBalance">0.000</div>
+                        <div class="balance-usd">USD Balance (3 Decimal Precision)</div>
+                        <div class="coin-info"><i class="fas fa-info-circle"></i> Minimum withdrawal: $2.000 | No monthly limit | 3% service fee</div>
+                    </div>
+                    <div class="withdraw-method active" id="binanceMethodCard"><div class="method-icon binance"><i class="fab fa-bitcoin"></i></div><div class="method-title">Binance</div><div class="method-subtitle">Withdraw to your Binance wallet</div></div>
+                    <div class="requirements-list">
+                        <h4 style="margin-bottom: 15px; font-size: 1rem; color: white;">Withdrawal Requirements</h4>
+                        <div class="requirement-item" id="req1"><div class="requirement-icon pending"><i class="fas fa-dollar-sign"></i></div><div class="requirement-details"><div class="requirement-title">Minimum Balance: $2.000</div><div class="requirement-status" id="req1Status">Not met</div></div></div>
+                        <div class="requirement-item" id="req2"><div class="requirement-icon pending"><i class="fas fa-user-friends"></i></div><div class="requirement-details"><div class="requirement-title">Minimum 3 Referrals</div><div class="requirement-status" id="req2Status">Not met</div></div></div>
+                        <!-- No monthly limit requirement anymore -->
+                    </div>
+                    <button class="next-button" id="nextButton" disabled><i class="fas fa-arrow-right"></i> Continue to Withdraw</button>
+                    <div class="withdraw-form" id="binanceForm">
+                        <div class="withdraw-warning"><i class="fas fa-exclamation-triangle"></i><div style="font-size: 0.9rem; margin-top: 5px;">A 3% service fee will be deducted from your withdrawal amount.</div></div>
+                        <div class="form-group"><label class="form-label">Binance Email or UID</label><input type="text" id="binanceEmail" class="form-input" placeholder="email@binance.com or UID" required><div class="form-note">Your registered Binance email or user ID</div></div>
+                        <div class="form-group"><label class="form-label">Withdrawal Amount ($)</label><input type="number" id="withdrawAmountBinance" class="form-input" placeholder="2.000" min="2" step="0.001" required><div class="form-note">Minimum: $2.000, Maximum: Your balance. 3% fee will be deducted.</div></div>
+                        <div class="form-group"><label class="form-label">Binance Pay ID (Optional)</label><input type="text" id="binancePayId" class="form-input" placeholder="Binance Pay ID if available"><div class="form-note">For faster processing</div></div>
+                        <button class="auth-button" id="submitBinanceWithdrawBtn" style="background-color: var(--purple);"><i class="fas fa-paper-plane"></i> Submit Withdrawal Request</button>
+                    </div>
+                    <div class="success-message" id="successMessage"><div class="success-icon"><i class="fas fa-check"></i></div><div class="modal-title" style="color: white;">Withdrawal Submitted!</div><div class="modal-message" style="text-align: center;">Your withdrawal request has been submitted. Payment will be processed after approval.</div></div>
+                    <div class="withdrawal-history-section"><div class="history-title"><i class="fas fa-clock"></i><span>Withdrawal History</span></div><div id="withdrawalHistoryContainer"><div class="zero-history" id="zeroWithdrawalHistory"><i class="fas fa-receipt"></i><p>No withdrawal requests yet.</p></div><div id="withdrawalHistoryList" style="display: none;" class="history-list"></div></div></div>
+                </div>
+                
+                <!-- Friends/Referral Section -->
+                <div id="friends-section" class="content-section">
+                    <div class="back-button" id="friendsBackBtn"><i class="fas fa-arrow-left"></i><span>Back to Home</span></div>
+                    <div class="referral-card"><div class="referral-title">Invite Friends & Earn</div><div class="referral-description">Share your referral code with friends. When they sign up using your code, you both get $0.05 bonus!</div><div class="referral-bonus"><i class="fas fa-gift"></i> Bonus: $0.05 per referral (both sides)</div><div class="referral-code-container"><div class="referral-code-label">Your Referral Code</div><div class="referral-code" id="referralCode">LOADING...</div></div><div class="referral-actions"><button class="referral-action-btn copy" id="copyReferralBtn"><i class="fas fa-copy"></i> Copy Code</button><button class="referral-action-btn share" id="shareReferralBtn"><i class="fas fa-share-alt"></i> Share Code</button></div><div class="referral-stats"><div class="referral-stat"><div class="referral-stat-value" id="totalReferralsCount">0</div><div class="referral-stat-label">Total Referrals</div></div><div class="referral-stat"><div class="referral-stat-value usd" id="totalReferralEarnings">0.000</div><div class="referral-stat-label">Total Earned</div></div></div></div>
+                    <div class="section-title" style="margin-bottom: 15px;"><h3 style="font-size: 1.1rem; color: white;">Your Referrals</h3><span style="color: white; font-size: 0.9rem;" id="totalReferrals">0 referrals</span></div>
+                    <div class="zero-friends" id="zeroReferrals"><i class="fas fa-user-friends"></i><h3>No Referrals Yet</h3><p>Share your referral code with friends to start earning bonuses!</p><button class="referral-action-btn share" id="zeroShareReferralBtn" style="margin-top: 25px;"><i class="fas fa-share-alt"></i> Share Referral Code</button></div>
+                    <div id="referralsList" style="display: none;"></div>
+                </div>
+                
+                <!-- Information Section -->
+                <div id="info-section" class="content-section">
+                    <div class="back-button" id="infoBackBtn"><i class="fas fa-arrow-left"></i><span>Back to Home</span></div>
+                    <div class="info-section"><div class="info-title"><i class="fas fa-info-circle"></i> Important Information</div>
+                        <div class="info-card"><div class="info-card-title"><i class="fas fa-calendar-alt"></i><span>Withdrawal System</span></div><div class="info-card-content"><p><strong>Withdrawal Time:</strong> Any time (no monthly limit)</p><p><strong>Processing Time:</strong> Within 7 days after approval</p><p><strong>Minimum Withdrawal:</strong> $2.000</p><p><strong>Service Fee:</strong> 3% deducted from withdrawal amount</p><p><strong>Requirements:</strong> $2.000 balance + 3 referrals (can withdraw unlimited times)</p><p><strong>Game Rewards:</strong> Most games $0.1 (SOS $0.004)</p><p><strong>General Tasks:</strong> 3 tasks, $0.002 each, 20 times per day (60 total daily)</p><p><strong>One-Time Telegram Tasks:</strong> $0.003 each (join & verify instantly)</p><p><strong>Referral Bonus:</strong> $0.05 for both referrer and referee</p></div></div>
+                        <div class="info-card"><div class="info-card-title"><i class="fas fa-exclamation-triangle"></i><span>Rules & Guidelines</span></div><div class="info-card-content"><p>1. No cheating – permanent ban.</p><p>2. Fake game codes = permanent ban.</p><p>3. Must be 18+ to withdraw.</p><p>4. One account per person.</p><p>5. Unlimited withdrawals if you meet requirements.</p></div></div>
+                        <div class="info-card"><div class="info-card-title"><i class="fas fa-comments"></i><span>Contact & Support</span></div><div class="info-card-content"><p>Telegram Support: @earnforearnsupport</p><p>Email: earnforearnsuportteam@gmail.com</p><p>Business: earnforearnbusinessteam@gmail.com</p></div></div>
+                        <div class="legal-options"><button class="support-button privacy-button" id="privacyPolicyBtn"><i class="fas fa-shield-alt"></i> Privacy Policy</button><button class="support-button terms-button" id="termsConditionsBtn"><i class="fas fa-file-contract"></i> Terms & Conditions</button></div>
+                        <div class="support-options"><button class="support-button chat" id="infoChatBtn"><i class="fab fa-telegram"></i> Telegram Chat</button><button class="support-button email" id="infoEmailBtn"><i class="fas fa-envelope"></i> Email Support</button></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-btn-container"><button class="nav-btn active" id="homeNavBtn" data-target="home-section"><i class="fas fa-home"></i><span>Home</span></button></div>
+                <div class="nav-btn-container"><button class="nav-btn" id="gameNavBtn" data-target="game-section"><i class="fas fa-gamepad"></i><span>Games</span></button></div>
+                <div class="nav-btn-container"><button class="nav-btn" id="generalTaskNavBtn" data-target="general-task-section"><i class="fas fa-tasks"></i><span>Tasks</span></button><div class="nav-badge" id="generalTaskBadge" style="display: none;">0</div></div>
+                <div class="nav-btn-container"><button class="nav-btn" id="withdrawNavBtn" data-target="withdraw-section"><i class="fas fa-wallet"></i><span>Cashout</span></button></div>
+                <div class="nav-btn-container"><button class="nav-btn" id="friendsNavBtn" data-target="friends-section"><i class="fas fa-user-friends"></i><span>Referral</span></button><div class="nav-badge" id="referralBadge" style="display: none;">0</div></div>
+            </div>
+        </div>
         
-        try {
-            const result = await Promise.race([adPromise, timeoutPromise]);
-            clearTimeout(timeoutId);
-            return result;
-        } catch(err) {
-            clearTimeout(timeoutId);
-            console.warn(`Ad ${networkName} failed/timeout:`, err);
-            return await triggerFallbackAndWait(networkName, stepDesc);
-        }
-    }
+        <!-- Modals -->
+        <div class="modal" id="successModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-check-circle"></i> Success!</div><div class="modal-message" id="successModalMessage">Operation completed.</div><div class="modal-actions"><button class="modal-btn primary" id="successOkBtn">OK</button></div></div></div>
+        <div class="modal" id="errorModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-exclamation-circle"></i> Error</div><div class="modal-message" id="errorMessage">An error occurred.</div><div class="modal-actions"><button class="modal-btn primary" id="errorOkBtn">OK</button></div></div></div>
+        <div class="modal" id="warningModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-exclamation-triangle"></i> ⚠️ WARNING</div><div class="modal-message" id="warningMessage">Fake codes will result in permanent ban!</div><div class="modal-actions"><button class="modal-btn orange" id="warningOkBtn">I Understand</button></div></div></div>
+        <div class="modal" id="gameCodeSubmittedModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-paper-plane"></i> Code Submitted!</div><div class="modal-message" id="gameCodeMessage">Your code has been submitted for verification.</div><div class="modal-actions"><button class="modal-btn primary" id="gameCodeOkBtn">OK</button></div></div></div>
+        <div class="modal" id="referralBonusModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-gift"></i> Referral Bonus!</div><div class="modal-message" id="referralBonusMessage">You received $0.05 referral bonus!</div><div class="modal-actions"><button class="modal-btn primary" id="referralBonusOkBtn">Awesome!</button></div></div></div>
+        <div class="modal" id="chatModal"><div class="modal-content"><div class="modal-title"><i class="fab fa-telegram"></i> Telegram Support</div><div class="modal-message">Click below to chat with our support team.<div style="margin-top:15px; padding:10px; background:#1a1a1a; border-radius:8px;"><strong>Telegram:</strong> @earnforearnsupport<br><strong>Email:</strong> earnforearnsuportteam@gmail.com</div></div><div class="modal-actions"><button class="modal-btn primary" id="startChatBtn"><i class="fab fa-telegram"></i> Open Telegram</button><button class="modal-btn secondary" id="cancelChatBtn">Cancel</button></div></div></div>
+        <div class="modal" id="verifyJoinModal"><div class="modal-content"><div class="modal-title"><i class="fab fa-telegram"></i> Verify Telegram Join</div><div class="modal-message" id="verifyJoinMessage"></div><div class="modal-actions"><button class="modal-btn primary" id="openTelegramBtn"><i class="fab fa-telegram"></i> Join Channel</button><button class="modal-btn primary" id="confirmJoinedBtn" style="background-color:var(--success);"><i class="fas fa-check"></i> I Have Joined</button><button class="modal-btn secondary" id="cancelVerifyBtn">Cancel</button></div></div></div>
+        <div class="modal" id="changePasswordModal"><div class="modal-content change-password-modal"><div class="modal-title"><i class="fas fa-key"></i> Change Password</div><form id="changePasswordForm"><div class="form-group"><label class="form-label">Current Password</label><input type="password" id="currentPassword" class="form-input" required></div><div class="form-group"><label class="form-label">New Password</label><input type="password" id="newPassword" class="form-input" required></div><div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" id="confirmNewPassword" class="form-input" required></div><div class="modal-actions"><button type="submit" class="modal-btn primary" id="changePasswordSubmitBtn">Change Password</button><button type="button" class="modal-btn secondary" id="cancelChangePasswordBtn">Cancel</button></div></form></div></div>
+        <div class="modal" id="sequentialUnlockModal"><div class="modal-content" style="max-width:800px; width:90%;"><div class="modal-title"><i class="fas fa-lock"></i> 4-Step Unlock (45 seconds)</div><div class="modal-message"><div style="text-align:center; margin-bottom:20px;"><div style="font-size:3rem; font-weight:bold; color:var(--orange);" id="seqTimerDisplay">45</div><div>Seconds remaining - MUST wait full 45 seconds!</div></div><div style="display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:20px 0;"><div class="seq-link-box" id="seqLink1" style="flex:1; background:#1a1a1a; border-radius:60px; padding:20px; text-align:center; border:2px solid #333; cursor:pointer;"><i class="fas fa-link" style="font-size:2rem; display:block; margin-bottom:10px;"></i><span>LINK 1</span><div id="seqDone1" style="display:none; background:var(--success); margin-top:10px; padding:5px; border-radius:50px;">✅ DONE</div></div><div class="seq-link-box" id="seqLink2" style="flex:1; background:#1a1a1a; border-radius:60px; padding:20px; text-align:center; border:2px solid #333; opacity:0.5; cursor:not-allowed;"><i class="fas fa-lock" style="font-size:2rem; display:block; margin-bottom:10px;"></i><span>LINK 2</span><div id="seqDone2" style="display:none;"></div></div><div class="seq-link-box" id="seqLink3" style="flex:1; background:#1a1a1a; border-radius:60px; padding:20px; text-align:center; border:2px solid #333; opacity:0.5; cursor:not-allowed;"><i class="fas fa-lock" style="font-size:2rem; display:block; margin-bottom:10px;"></i><span>LINK 3</span><div id="seqDone3" style="display:none;"></div></div><div class="seq-link-box" id="seqLink4" style="flex:1; background:#1a1a1a; border-radius:60px; padding:20px; text-align:center; border:2px solid #333; opacity:0.5; cursor:not-allowed;"><i class="fas fa-lock" style="font-size:2rem; display:block; margin-bottom:10px;"></i><span>LINK 4</span><div id="seqDone4" style="display:none;"></div></div></div><div style="text-align:center;"><div style="font-size:2rem; color:var(--gold);">$0.002</div><button class="modal-btn primary" id="claimRewardBtn" disabled style="background:var(--success);">Wait for timer</button></div><button class="modal-btn secondary" id="seqCloseBtn" style="margin-top:15px;">Cancel Task</button></div></div></div>
+        <div class="modal" id="cooldownModal"><div class="modal-content"><div class="modal-title"><i class="fas fa-hourglass-half"></i> Task Cooldown</div><div class="modal-message"><div id="cooldownTimerDisplay" style="font-size:3rem; text-align:center;">60</div><div style="text-align:center;">seconds before starting again</div></div><div class="modal-actions"><button class="modal-btn primary" id="cooldownOkBtn" disabled>Wait...</button></div></div></div>
+    </div>
     
-    async function triggerFallbackAndWait(networkName, stepDesc) {
-        const adStepMsgElem = document.getElementById('adStepMessage');
-        const adDescElem = document.getElementById('adDescription');
-        if(adStepMsgElem && adDescElem) {
-            adStepMsgElem.innerText = `⚠️ ${networkName} ad not loaded. Opening fallback...`;
-            adDescElem.innerText = `Complete the fallback page, then return here. Auto-continue.`;
-        }
-        window.open(FALLBACK_AD_URL, '_blank');
-        addVisibilityListener();
-        return new Promise((resolve) => {
-            pendingFallbackResolver = () => {
-                if(adStepMsgElem && adDescElem) {
-                    adStepMsgElem.innerText = `✅ ${networkName} step completed (fallback)`;
-                    adDescElem.innerText = `Moving to next ad automatically...`;
-                }
-                resolve();
-            };
-        });
-    }
-    
-    // ----- individual ad functions with robust checking -----
-    async function showAdsgramAd() {
-        if(!adInitialized || !adController) {
-            console.warn("Adsgram not ready, using fallback");
-            await triggerFallbackAndWait("Adsgram", "Adsgram unavailable");
-            return;
-        }
-        await showAdWithFallback(async () => {
-            return await adController.show();
-        }, "Adsgram", "Step 1/3");
-    }
-    
-    async function showMonetagAd() {
-        // Wait for monetag SDK
-        let attempts = 0;
-        while(typeof window.show_10866085 !== 'function' && attempts < 25) {
-            await new Promise(r => setTimeout(r, 150));
-            attempts++;
-        }
-        if(typeof window.show_10866085 !== 'function') {
-            console.warn("Monetag not ready, using fallback");
-            await triggerFallbackAndWait("Monetag", "Monetag SDK missing");
-            return;
-        }
-        await showAdWithFallback(async () => {
-            const result = window.show_10866085();
-            // If result is not a promise, wrap into a resolved promise after short delay
-            if(result && typeof result.then === 'function') return result;
-            return new Promise(resolve => setTimeout(resolve, 800));
-        }, "Monetag", "Step 2/3");
-    }
-    
-    async function showGigaAd() {
-        let attempts = 0;
-        while(typeof window.showGiga !== 'function' && attempts < 30) {
-            await new Promise(r => setTimeout(r, 100));
-            attempts++;
-        }
-        if(typeof window.showGiga !== 'function') {
-            console.warn("GigaPub SDK unavailable, using fallback");
-            await triggerFallbackAndWait("GigaPub", "GigaPub unavailable");
-            return;
-        }
-        await showAdWithFallback(async () => {
-            const result = window.showGiga();
-            if(result && typeof result.then === 'function') return result;
-            return new Promise(resolve => setTimeout(resolve, 800));
-        }, "GigaPub", "Step 3/3");
-    }
-    
-    // ----- Adsgram init -----
-    function initAdsgram() { 
-        try { 
-            if(window.Adsgram) { 
-                adController = window.Adsgram.init({ blockId: "int-25869" }); 
-                adInitialized = true; 
-            } 
-        } catch(e) { console.warn("Adsgram init warn"); } 
-    }
-    
-    // UI helpers for ad sequence (auto mode, no next-step)
-    const adSeqPanel = document.getElementById('adSequencePanel');
-    const adStepMsg = document.getElementById('adStepMessage');
-    const adDesc = document.getElementById('adDescription');
-    const adLoadingIndicator = document.getElementById('adLoadingIndicator');
-    const adStepIcon = document.getElementById('adStepIcon');
-    const manualFallbackBtn = document.getElementById('manualFallbackBtn');
-    
-    let currentManualResolver = null;
-    
-    function showAdUI(step, desc, icon = "🎬", loadingText = "⏳ Processing ad...") {
-        adStepMsg.innerText = step;
-        adDesc.innerText = desc;
-        adStepIcon.innerText = icon;
-        adLoadingIndicator.innerText = loadingText;
-        adSeqPanel.style.display = 'flex';
-    }
-    function hideAdUI() { 
-        adSeqPanel.style.display = 'none'; 
-        if(currentManualResolver) { currentManualResolver(); currentManualResolver = null; }
-    }
-    
-    // FULL AD SEQUENCE with auto-continue, no extra clicks
-    async function runFullAdSequence(level) {
-        if(!isNetworkOnline()) throw new Error("offline");
-        
-        // STEP 1: Adsgram
-        showAdUI("🎬 STEP 1/3", "Loading Adsgram ad... (fallback ready)", "📺", "Please wait, ad loading...");
-        await showAdsgramAd();
-        if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("✅ STEP 1 done", "Adsgram completed. Auto proceeding to Monetag...", "👍", "Moving to next ad...");
-        await new Promise(r => setTimeout(r, 800));
-        
-        // STEP 2: Monetag
-        showAdUI("💰 STEP 2/3", "Monetag ad - loading (fallback ready)", "📢", "Fetching monetization...");
-        await showMonetagAd();
-        if(!isNetworkOnline()) throw new Error("offline");
-        showAdUI("✅ STEP 2 done", "Monetag completed. Auto proceeding to GigaPub...", "⭐", "Finalizing...");
-        await new Promise(r => setTimeout(r, 800));
-        
-        // STEP 3: GigaPub
-        showAdUI("⚡ STEP 3/3", "Giga Pub ad — final step (fallback ready)", "🎮", "Loading last ad...");
-        await showGigaAd();
-        
-        // All done
-        hideAdUI();
-        await new Promise(r => setTimeout(r, 400));
-    }
-    
-    // Manual fallback handler inside ad panel
-    function setupManualFallback() {
-        manualFallbackBtn.onclick = () => {
-            if(pendingFallbackResolver) {
-                // already in fallback mode, just open again
-                window.open(FALLBACK_AD_URL, '_blank');
-            } else {
-                // force fallback for current step
-                if(adSeqPanel.style.display === 'flex') {
-                    const currentMsg = adStepMsg.innerText;
-                    const net = currentMsg.includes("Adsgram") ? "Adsgram" : (currentMsg.includes("Monetag") ? "Monetag" : "GigaPub");
-                    triggerFallbackAndWait(net, "Manual fallback").then(() => {
-                        if(pendingFallbackResolver) {
-                            const temp = pendingFallbackResolver;
-                            pendingFallbackResolver = null;
-                            temp();
-                        }
-                    });
-                }
-            }
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmTdb5ejQtgYxmkfLc575HcBN8pMhrBPM",
+            authDomain: "earn-for-earn-55d3e.firebaseapp.com",
+            databaseURL: "https://earn-for-earn-55d3e-default-rtdb.firebaseio.com",
+            projectId: "earn-for-earn-55d3e",
+            storageBucket: "earn-for-earn-55d3e.firebasestorage.app",
+            messagingSenderId: "109416949734",
+            appId: "1:109416949734:web:53f52de7899d65a04c9827",
+            measurementId: "G-NNTGVVJVRE"
         };
-    }
-    
-    // Ball smash effect
-    function createBallHitEffect(x, y) {
-        const effect = document.createElement('div'); effect.className = 'ball-hit-effect';
-        effect.style.left = x + 'px'; effect.style.top = y + 'px';
-        effect.style.position = 'fixed'; effect.style.zIndex = '20000';
-        document.body.appendChild(effect);
-        setTimeout(() => effect.remove(), 300);
-    }
-    
-    // Start level after full ad sequence
-    async function startLevelEntry(level) {
-        if(adSequenceActive || isProcessing) return false;
-        if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Internet required."); return false; }
-        adSequenceActive = true; isProcessing = true;
-        document.getElementById('gamePanel').style.display = 'none';
-        try {
-            await runFullAdSequence(level);
-            if(!isNetworkOnline()) throw new Error("offline");
-            activeGameLevel = level;
-            bricksBroken = [false, false, false, false, false];
-            gameCompletedFlag = false;
-            currentStreak = 0;
-            renderGameUI(level);
-            document.getElementById('gamePanel').style.display = 'flex';
-            adSequenceActive = false; isProcessing = false;
-            return true;
-        } catch(err) { 
-            hideAdUI(); adSequenceActive = false; isProcessing = false; 
-            showOfflineExitAndCloseGame("Ad sequence failed. Return to menu."); 
-            return false; 
-        }
-    }
-    
-    const brickNames = ["🧱 CORNER", "🏛️ WALL", "💎 CORE", "⚡ FLANK", "🏆 TOP"];
-    function renderGameUI(level) {
-        document.getElementById('gameLevelTitle').innerHTML = `🧱 BRICK SET ${level} 🏀`;
-        const brokenCount = bricksBroken.filter(v=>v).length;
-        const percent = (brokenCount/5)*100;
-        document.getElementById('progressFill').style.width = percent+'%';
-        document.getElementById('gameProgressText').innerHTML = `💥 ${brokenCount} / 5 smashed | 🏀 ${currentStreak} streak`;
-        document.getElementById('comboStreakDisplay').innerHTML = currentStreak > 0 ? `🔥 STREAK ${currentStreak} 🔥` : `⚡ STREAK 0`;
-        const grid = document.getElementById('bricksGrid'); grid.innerHTML = '';
-        for(let i=0;i<5;i++) {
-            const brickDiv = document.createElement('div'); brickDiv.className = 'brick';
-            if(bricksBroken[i]) { brickDiv.classList.add('broken'); brickDiv.innerHTML = `💀<br><span style="font-size:10px;">SMASHED</span>`; brickDiv.style.pointerEvents = 'none'; }
-            else {
-                brickDiv.innerHTML = `<span style="font-size:24px;">🧱</span><br>${brickNames[i]}`;
-                brickDiv.onclick = (e) => { if(gameCompletedFlag || bricksBroken[i]) return; smashBrick(i, e); };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        
+        // Game links and rewards
+        const GAME_LINKS = { game1:'https://t.me/greenroad_bot', game2:'https://t.me/lunchtheball_bot', game3:'https://t.me/allsortpuzzle_bot', game4:'https://t.me/Boxblastpro_bot', game5:'https://t.me/sosgameultra_bot', game6:'https://t.me/zombieroad_bot', game7:'https://t.me/brickball_bot' };
+        const GAME_REWARDS = { game1:0.1, game2:0.1, game3:0.1, game4:0.1, game5:0.004, game6:0.1, game7:0.1 };
+        const GAME_NAMES = { game1:'Green Road', game2:'Lunch The Ball', game3:'All Sort Puzzle', game4:'Block Blast', game5:'SOS Game', game6:'Zombie Road', game7:'Brick Ball' };
+        const PRIVACY_URL = 'https://earn-for-earn-privacy-police.vercel.app/';
+        const TERMS_URL = 'https://earn-for-earn-terms-condition.vercel.app/';
+        const TELEGRAM_TASKS = [
+            { id: 'telegram_update', title: 'Join Update Channel', reward: 0.003, link: 'https://t.me/earnforearnupdate', verifyKey: 'update_joined' },
+            { id: 'telegram_proof', title: 'Join Payment Proof Channel', reward: 0.003, link: 'https://t.me/earnforearnpaymentproof', verifyKey: 'proof_joined' }
+        ];
+        
+        // Loading Manager
+        class LoadingManager {
+            constructor() {
+                this.progress=0; this.totalSteps=5; this.currentStep=0;
+                this.loadingScreen=document.getElementById('loadingScreen');
+                this.progressFill=document.getElementById('progressFill');
+                this.progressPercent=document.getElementById('progressPercent');
+                this.steps=[document.getElementById('step1'),document.getElementById('step2'),document.getElementById('step3'),document.getElementById('step4'),document.getElementById('step5')];
             }
-            grid.appendChild(brickDiv);
+            updateProgress(p){ this.progress=Math.min(p,100); this.progressFill.style.width=this.progress+'%'; this.progressPercent.textContent=Math.round(this.progress)+'%'; }
+            animateProgress(target,duration=500){ return new Promise(resolve=>{ let start=this.progress, startTime=performance.now(); const animate=(t)=>{ let elapsed=t-startTime, prog=Math.min(elapsed/duration,1); this.updateProgress(start+(target-start)*prog); if(prog<1) requestAnimationFrame(animate); else { this.updateProgress(target); resolve(); } }; requestAnimationFrame(animate); }); }
+            completeStep(idx){ if(idx<this.totalSteps){ this.currentStep=idx+1; this.steps[idx].classList.remove('active'); this.steps[idx].classList.add('completed'); this.steps[idx].querySelector('.step-icon').innerHTML='<i class="fas fa-check"></i>'; if(idx+1<this.totalSteps) this.steps[idx+1].classList.add('active'); return this.animateProgress(((idx+1)/this.totalSteps)*100,300); } return Promise.resolve(); }
+            show(){ this.loadingScreen.classList.remove('hidden'); this.reset(); }
+            hide(){ this.animateProgress(100,300).then(()=>setTimeout(()=>this.loadingScreen.classList.add('hidden'),500)); }
+            reset(){ this.progress=0; this.currentStep=0; this.updateProgress(0); this.steps.forEach((s,i)=>{ s.classList.remove('active','completed'); if(i===0) s.classList.add('active'); }); }
         }
-        const remaining = 5 - brokenCount;
-        document.getElementById('completeStatusMsg').innerHTML = remaining===0 ? "🎉 ALL BRICKS SHATTERED! LEVEL CLEAR! 🎉" : `💢 ${remaining} brick${remaining!==1?'s':''} remaining — tap to smash!`;
-    }
-    
-    function smashBrick(index, event) {
-        if(gameCompletedFlag || bricksBroken[index]) return;
-        const rect = event.target.getBoundingClientRect();
-        const centerX = rect.left + rect.width/2, centerY = rect.top + rect.height/2;
-        createBallHitEffect(centerX, centerY);
-        bricksBroken[index] = true;
-        currentStreak++;
-        renderGameUI(activeGameLevel);
-        if(bricksBroken.every(v=>v===true) && !gameCompletedFlag) {
-            gameCompletedFlag = true;
-            handleLevelCompletion(activeGameLevel);
-        }
-    }
-    
-    async function handleLevelCompletion(level) {
-        if(isProcessing) return;
-        isProcessing = true;
-        document.getElementById('gamePanel').style.display = 'none';
-        if(level === currentUnlockedLevel && level < MAX_LEVEL) { currentUnlockedLevel = level+1; saveProgress(); buildLevelList(); }
-        else if(level > currentUnlockedLevel && level <= MAX_LEVEL) { currentUnlockedLevel = level; saveProgress(); buildLevelList(); }
-        if(level === MAX_LEVEL) { showRewardScreen(); isProcessing = false; }
-        else { showLevelComplete(level); isProcessing = false; }
-    }
-    
-    function showLevelComplete(level) {
-        const completeDiv = document.getElementById('levelCompleteScreen');
-        document.getElementById('completeLevelMsg').innerHTML = `✨ BRICK SET ${level} DESTROYED! ✨`;
-        completeDiv.dataset.currentLevel = level;
-        completeDiv.style.display = 'flex';
-    }
-    
-    function showCountdown(seconds, msgPrefix) {
-        return new Promise((resolve) => {
-            const overlay = document.getElementById('countdownOverlay');
-            const countdownNum = document.getElementById('countdownNum');
-            const msgSpan = document.getElementById('countdownMsg');
-            const circle = document.getElementById('countdownCircle');
-            msgSpan.innerHTML = msgPrefix || "Next Brick Set in...";
-            overlay.style.display = 'flex';
-            let remain = seconds;
-            countdownNum.textContent = remain;
-            const circumference = 2 * Math.PI * 45;
-            if(circle) circle.style.strokeDasharray = circumference;
-            const interval = setInterval(() => {
-                if(!isNetworkOnline()) { clearInterval(interval); overlay.style.display='none'; showOfflineExitAndCloseGame("Network lost."); resolve(); return; }
-                remain--;
-                if(remain >= 1) {
-                    countdownNum.textContent = remain;
-                    if(circle) {
-                        const offset = circumference * (remain / seconds);
-                        circle.style.strokeDashoffset = offset;
+        const loadingManager = new LoadingManager();
+        
+        // User Manager
+        class UserManager {
+            constructor(){ this.currentUser=null; this.userData=null; this.activeGameSubmissions={game1:false,game2:false,game3:false,game4:false,game5:false,game6:false,game7:false}; }
+            generateReferralCode(email){ let base=email.split('@')[0].toUpperCase(); let rand=Math.random().toString(36).substr(2,4).toUpperCase(); return (base.length>4?base.substr(0,4):base)+rand; }
+            async isUserBanned(uid){ try{ return (await database.ref('bannedUsers/'+uid).once('value')).exists(); }catch(e){ return false; } }
+            async getBanReason(uid){ try{ let snap=await database.ref('bannedUsers/'+uid).once('value'); return snap.exists()?snap.val().reason:null; }catch(e){ return null; } }
+            async createUser(email,password,refCode=null){
+                try{
+                    let uc=await auth.createUserWithEmailAndPassword(email,password);
+                    let user=uc.user;
+                    let userRefCode=this.generateReferralCode(email);
+                    let userData={ email:email.toLowerCase(), referralCode:userRefCode, balance:0, totalEarned:0, referralBonus:0, referrals:[], referredBy:refCode||null, createdAt:new Date().toISOString(), fairUseVerified:false, withdrawalHistory:[], tasksCompleted:[], gameTasks:{}, telegramTasksCompleted:[], dailyTaskCounts:{}, lastActive:new Date().toISOString(), lastWithdrawalMonth:null, activeGameSubmissions:{game1:false,game2:false,game3:false,game4:false,game5:false,game6:false,game7:false}, isBanned:false };
+                    await database.ref('users/'+user.uid).set(userData);
+                    if(refCode) await this.applyReferralBonus(user.uid,refCode,email);
+                    return { success:true, user, userData, hasReferralBonus:!!refCode };
+                }catch(e){ return { success:false, message:e.message }; }
+            }
+            async applyReferralBonus(userId,code,userEmail){
+                try{
+                    let snap=await database.ref('users').orderByChild('referralCode').equalTo(code).once('value');
+                    if(snap.exists()){
+                        let referrerId=Object.keys(snap.val())[0];
+                        let referrer=snap.val()[referrerId];
+                        let refBonus=0.05;
+                        await database.ref('users/'+referrerId).update({ referralBonus:(referrer.referralBonus||0)+refBonus, balance:(referrer.balance||0)+refBonus, totalEarned:(referrer.totalEarned||0)+refBonus, referrals:[...(referrer.referrals||[]), { email:userEmail.toLowerCase(), date:new Date().toISOString(), bonus:refBonus, userId:userId }] });
+                        await database.ref('users/'+userId).update({ balance:refBonus, totalEarned:refBonus, referralBonus:refBonus });
                     }
-                } else {
-                    clearInterval(interval); overlay.style.display='none'; resolve();
-                }
-            }, 1000);
-        });
-    }
-    
-    async function handleNextLevel(countCompletedLevel) {
-        if(isProcessing) return;
-        const nextLvl = countCompletedLevel + 1;
-        if(nextLvl > MAX_LEVEL) { document.getElementById('levelCompleteScreen').style.display = 'none'; showRewardScreen(); return; }
-        document.getElementById('levelCompleteScreen').style.display = 'none';
-        isProcessing = true;
-        await showCountdown(3, `🔥 NEXT: BRICK SET ${nextLvl}<br>Prepare to smash!`);
-        if(!isNetworkOnline()) { showOfflineExitAndCloseGame("Network lost before next level."); isProcessing = false; return; }
-        const success = await startLevelEntry(nextLvl);
-        isProcessing = false;
-        if(!success) forceExitAllGameScreens();
-    }
-    
-    function showRewardScreen() {
-        const code = `BALL10-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
-        document.getElementById('rewardCodeDisplay').textContent = code;
-        document.getElementById('rewardScreen').style.display = 'flex';
-    }
-    
-    function resetGameAndCopy() {
-        const code = document.getElementById('rewardCodeDisplay').textContent;
-        navigator.clipboard.writeText(code).catch(()=>{});
-        alert('🏆 Reward code copied! Progress reset to Level 1.');
-        currentUnlockedLevel = 1; saveProgress(); buildLevelList(); forceExitAllGameScreens();
-    }
-    window.copyRewardCodeGlobal = function() { const code = document.getElementById('rewardCodeDisplay').textContent; navigator.clipboard.writeText(code); alert('📋 Code copied: '+code); };
-    
-    function buildLevelList() {
-        const container = document.getElementById('levelListContainer'); container.innerHTML = '';
-        for(let i=1;i<=MAX_LEVEL;i++) {
-            const unlocked = i <= currentUnlockedLevel;
-            const card = document.createElement('div'); card.className = 'level-card' + (unlocked ? '' : ' locked');
-            if(unlocked) card.onclick = () => { if(!adSequenceActive && !isProcessing) startLevelEntry(i); };
-            const adType = "🎬 → 💰 → 🎮 (auto-fallback)";
-            const statusIcon = unlocked ? (i < currentUnlockedLevel ? '✓' : '🔓') : '🔒';
-            card.innerHTML = `<div class="level-number">${i}</div><div class="level-info"><div class="level-name">🧱 Brick Set ${i} <span style="font-size:8px;">${adType}</span></div><div class="level-requirement">💥 5 bricks smash (30s timeout + fallback)</div></div><div class="level-status">${statusIcon}</div>`;
-            container.appendChild(card);
+                }catch(e){}
+            }
+            async loginUser(email,password){
+                try{
+                    let uc=await auth.signInWithEmailAndPassword(email,password);
+                    let user=uc.user;
+                    if(await this.isUserBanned(user.uid)){ let r=await this.getBanReason(user.uid); return { success:false, isBanned:true, message:'Banned', banReason:r }; }
+                    let ud=await this.getUserData(user.uid);
+                    if(!ud){
+                        let rc=this.generateReferralCode(email);
+                        ud={ email:email.toLowerCase(), referralCode:rc, balance:0, totalEarned:0, referralBonus:0, referrals:[], referredBy:null, createdAt:new Date().toISOString(), fairUseVerified:false, withdrawalHistory:[], tasksCompleted:[], gameTasks:{}, telegramTasksCompleted:[], dailyTaskCounts:{}, lastActive:new Date().toISOString(), lastWithdrawalMonth:null, activeGameSubmissions:{game1:false,game2:false,game3:false,game4:false,game5:false,game6:false,game7:false}, isBanned:false };
+                        await database.ref('users/'+user.uid).set(ud);
+                    } else {
+                        if(!ud.telegramTasksCompleted) ud.telegramTasksCompleted=[];
+                        if(!ud.gameTasks) ud.gameTasks={};
+                        if(!ud.activeGameSubmissions) ud.activeGameSubmissions={game1:false,game2:false,game3:false,game4:false,game5:false,game6:false,game7:false};
+                        await database.ref('users/'+user.uid).update({ lastActive:new Date().toISOString() });
+                    }
+                    this.currentUser=user; this.userData=ud; this.activeGameSubmissions=ud.activeGameSubmissions||{};
+                    this.listenForGameTaskUpdates(user.uid);
+                    return { success:true, user, userData:ud };
+                }catch(e){ return { success:false, message:e.message }; }
+            }
+            async getUserData(uid){ try{ return (await database.ref('users/'+uid).once('value')).val(); }catch(e){ return null; } }
+            async updateUser(uid,updates){ try{ await database.ref('users/'+uid).update(updates); if(this.userData) this.userData={...this.userData,...updates}; return true; }catch(e){ return false; } }
+            async completeTelegramTask(uid,taskId,reward){
+                let ud=await this.getUserData(uid);
+                if(!ud) return false;
+                let completed=ud.telegramTasksCompleted||[];
+                if(completed.includes(taskId)) return false;
+                let newBalance=(ud.balance||0)+reward, newTotal=(ud.totalEarned||0)+reward;
+                await this.updateUser(uid,{ balance:newBalance, totalEarned:newTotal, telegramTasksCompleted:[...completed,taskId] });
+                if(this.userData){ this.userData.balance=newBalance; this.userData.totalEarned=newTotal; this.userData.telegramTasksCompleted=[...completed,taskId]; }
+                return true;
+            }
+            async submitGameTask(uid,code,gameType){
+                let ud=await this.getUserData(uid);
+                if(!ud) return { success:false, message:'User not found' };
+                if(this.activeGameSubmissions[gameType]||(ud.activeGameSubmissions&&ud.activeGameSubmissions[gameType])) return { success:false, message:'Pending submission exists' };
+                if(!code.trim()) return { success:false, message:'Enter code' };
+                let reward=GAME_REWARDS[gameType];
+                let taskId='GAME'+Date.now()+Math.random().toString(36).substr(2,6);
+                let gameTask={ id:taskId, userId:uid, userEmail:ud.email, code:code, status:'pending', reward:reward, submittedAt:new Date().toISOString(), gameType:gameType, gameName:GAME_NAMES[gameType], userReferralCode:ud.referralCode };
+                await database.ref('gameTasks/'+taskId).set(gameTask);
+                let gameTasks=ud.gameTasks||{};
+                gameTasks[taskId]=gameTask;
+                let activeSub={...(ud.activeGameSubmissions||{})}; activeSub[gameType]=true;
+                await this.updateUser(uid,{ gameTasks, activeGameSubmissions:activeSub });
+                this.activeGameSubmissions[gameType]=true;
+                if(this.userData){ this.userData.gameTasks=gameTasks; this.userData.activeGameSubmissions=activeSub; }
+                return { success:true, message:'Code submitted', taskId };
+            }
+            listenForGameTaskUpdates(uid){
+                database.ref('users/'+uid+'/gameTasks').on('value',async(snap)=>{
+                    let tasksObj=snap.val()||{};
+                    let tasks=Object.values(tasksObj);
+                    let active={...this.activeGameSubmissions};
+                    for(let g of Object.keys(active)) active[g]=tasks.some(t=>t&&t.gameType===g&&t.status==='pending');
+                    if(JSON.stringify(active)!==JSON.stringify(this.activeGameSubmissions)){
+                        this.activeGameSubmissions=active;
+                        if(this.userData) this.userData.activeGameSubmissions=active;
+                        await database.ref('users/'+uid).update({ activeGameSubmissions:active });
+                        if(typeof updateGameTaskStatus==='function') updateGameTaskStatus(this.userData);
+                        if(typeof displayGameTaskHistory==='function') displayGameTaskHistory(this.userData);
+                    }
+                    if(typeof displayGameTaskHistory==='function') displayGameTaskHistory(this.userData);
+                });
+            }
+            async getUserByReferralCode(code){ try{ let snap=await database.ref('users').orderByChild('referralCode').equalTo(code).once('value'); if(snap.exists()){ let id=Object.keys(snap.val())[0]; return { id, ...snap.val()[id] }; } return null; }catch(e){ return null; } }
+            async changePassword(uid,oldP,newP){
+                try{ let user=auth.currentUser; if(!user) return { success:false, message:'No user' }; let cred=firebase.auth.EmailAuthProvider.credential(user.email,oldP); await user.reauthenticateWithCredential(cred); await user.updatePassword(newP); return { success:true }; }catch(e){ return { success:false, message:e.message }; }
+            }
+            async submitWithdrawal(uid,amount,method,details){
+                let ud=await this.getUserData(uid);
+                if(!ud) return { success:false, message:'User not found' };
+                if(ud.balance<amount) return { success:false, message:'Insufficient balance' };
+                if(amount<2.0) return { success:false, message:'Minimum $2.000' };
+                if((ud.referrals||[]).length<3) return { success:false, message:'Need 3 referrals' };
+                // No monthly limit check
+                let fee=amount*0.03, net=amount-fee;
+                let wid='WD'+Date.now()+Math.random().toString(36).substr(2,6);
+                let req={ id:wid, userId:uid, email:ud.email, amount, fee, netAmount:net, method, details, status:'pending', submittedAt:new Date().toISOString() };
+                await database.ref('withdrawals/'+wid).set(req);
+                let newBalance=ud.balance-amount;
+                let history=ud.withdrawalHistory||[];
+                history.push({ id:wid, amount, fee, netAmount:net, date:new Date().toISOString(), status:'pending', method, details });
+                await this.updateUser(uid,{ balance:newBalance, withdrawalHistory:history, lastWithdrawalMonth:new Date().getMonth() });
+                if(this.userData){ this.userData.balance=newBalance; this.userData.withdrawalHistory=history; }
+                return { success:true, message:`Withdrawal submitted! Amount $${amount.toFixed(3)} (Fee $${fee.toFixed(3)}, Net $${net.toFixed(3)})` };
+            }
+            getDailyTotalCount(uid,date){ if(this.userData&&this.userData.dailyTaskCounts&&this.userData.dailyTaskCounts[date]) return Object.values(this.userData.dailyTaskCounts[date]).reduce((a,b)=>a+b,0); return 0; }
+            getTaskDailyCount(uid,taskId){ let today=new Date().toDateString(); if(this.userData&&this.userData.dailyTaskCounts&&this.userData.dailyTaskCounts[today]) return this.userData.dailyTaskCounts[today][taskId]||0; return 0; }
+            canCompleteTask(uid,taskId){ let today=new Date().toDateString(); let taskDaily=this.getTaskDailyCount(uid,taskId); let totalDaily=this.getDailyTotalCount(uid,today); if(taskDaily>=20) return { canComplete:false, reason:'task_daily_limit' }; if(totalDaily>=60) return { canComplete:false, reason:'total_daily_limit' }; return { canComplete:true }; }
+            async completeTask(uid,taskId,reward){
+                let ud=await this.getUserData(uid);
+                if(!ud) return false;
+                let today=new Date().toDateString();
+                let daily=ud.dailyTaskCounts||{};
+                if(!daily[today]) daily[today]={};
+                daily[today][taskId]=(daily[today][taskId]||0)+1;
+                let newBalance=(ud.balance||0)+reward, newTotal=(ud.totalEarned||0)+reward;
+                await this.updateUser(uid,{ balance:newBalance, totalEarned:newTotal, dailyTaskCounts:daily, tasksCompleted:[...(ud.tasksCompleted||[]), { taskId, completedAt:new Date().toISOString(), reward }] });
+                if(this.userData){ this.userData.balance=newBalance; this.userData.totalEarned=newTotal; this.userData.dailyTaskCounts=daily; }
+                return true;
+            }
+            getTimeUntilReset(){ let now=new Date(); let tomorrow=new Date(now); tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(0,0,0,0); return tomorrow-now; }
         }
-    }
-    
-    function exitGame() { if(adSequenceActive) { hideAdUI(); adSequenceActive=false; } document.getElementById('gamePanel').style.display='none'; isProcessing=false; removeVisibilityListener(); }
-    function backToRoad() { document.getElementById('levelCompleteScreen').style.display='none'; isProcessing=false; }
-    
-    function bindEvents() {
-        document.getElementById('nextLevelBtnFromComplete').onclick = () => { const lvl = parseInt(document.getElementById('levelCompleteScreen').dataset.currentLevel); if(!isNaN(lvl)) handleNextLevel(lvl); };
-        document.getElementById('backToRoadCompleteBtn').onclick = backToRoad;
-        document.getElementById('resetAllBtn').onclick = resetGameAndCopy;
-        document.getElementById('exitGameBtn').onclick = exitGame;
-        setupManualFallback();
-    }
-    
-    window.addEventListener('load', () => { loadProgress(); initAdsgram(); buildLevelList(); bindEvents(); });
-    window.addEventListener('beforeunload', () => saveProgress());
-</script>
+        const userManager = new UserManager();
+        
+        // Helper functions
+        function showLoading(msg){ document.getElementById('loadingText').textContent=msg; document.getElementById('loadingSpinner').classList.add('active'); }
+        function hideLoading(){ document.getElementById('loadingSpinner').classList.remove('active'); }
+        function showModal(modal,msg){ if(msg){ let m=modal.querySelector('.modal-message'); if(m) m.innerHTML=msg; } modal.classList.add('active'); }
+        function hideModal(modal){ modal.classList.remove('active'); }
+        function showBanScreen(msg,reason){ document.getElementById('banMessage').textContent=msg; document.getElementById('banReason').textContent=reason; document.getElementById('banScreen').classList.remove('hidden'); document.getElementById('login-screen').style.display='none'; document.getElementById('signup-screen').style.display='none'; document.getElementById('main-app').style.display='none'; document.getElementById('loadingScreen').classList.add('hidden'); }
+        
+        function updateUserInfo(ud){
+            if(!ud) return;
+            document.getElementById('userInitial').textContent=ud.email.charAt(0).toUpperCase();
+            document.getElementById('menuUserEmail').textContent=ud.email;
+            document.getElementById('menuReferralCode').textContent=ud.referralCode||'N/A';
+            let bal=ud.balance||0;
+            document.getElementById('balanceAmount').textContent=bal.toFixed(3);
+            document.getElementById('referralsCount').textContent=(ud.referrals||[]).length;
+            document.getElementById('totalEarned').textContent=(ud.totalEarned||0).toFixed(3);
+            document.getElementById('referralBonus').textContent=(ud.referralBonus||0).toFixed(3);
+            document.getElementById('withdrawBalance').textContent=bal.toFixed(3);
+            document.getElementById('referralCode').textContent=ud.referralCode||'N/A';
+            let rc=(ud.referrals||[]).length;
+            document.getElementById('totalReferrals').textContent=`${rc} ${rc===1?'referral':'referrals'}`;
+            document.getElementById('totalReferralsCount').textContent=rc;
+            let refEarn=(ud.referrals||[]).reduce((s,r)=>s+(r.bonus||0),0);
+            document.getElementById('totalReferralEarnings').textContent=refEarn.toFixed(3);
+            updateReferralsList(ud);
+            document.getElementById('withdrawAmountBinance').value=bal>=2.0?bal.toFixed(3):2.0;
+            document.getElementById('withdrawAmountBinance').max=bal;
+            checkWithdrawalRequirements(ud);
+            displayWithdrawalHistory(ud);
+            updateGameTaskStatus(ud);
+            displayGameTaskHistory(ud);
+        }
+        function updateReferralsList(ud){
+            let refs=ud.referrals||[];
+            let zero=document.getElementById('zeroReferrals');
+            let list=document.getElementById('referralsList');
+            if(refs.length){ zero.style.display='none'; list.style.display='block'; list.innerHTML=''; refs.forEach(r=>{ let div=document.createElement('div'); div.className='friend-item'; div.innerHTML=`<div class="friend-info"><div class="friend-avatar">${(r.email||'').charAt(0).toUpperCase()}</div><div class="friend-details"><h4>${r.email||'Unknown'}</h4><div class="friend-date">${new Date(r.date).toLocaleDateString()}</div></div></div><div class="friend-earned">$${(r.bonus||0).toFixed(3)}</div>`; list.appendChild(div); }); }
+            else{ zero.style.display='block'; list.style.display='none'; }
+        }
+        function displayWithdrawalHistory(ud){
+            let hist=ud.withdrawalHistory||[];
+            let zero=document.getElementById('zeroWithdrawalHistory');
+            let list=document.getElementById('withdrawalHistoryList');
+            if(!hist.length){ zero.style.display='block'; list.style.display='none'; return; }
+            zero.style.display='none'; list.style.display='flex'; list.innerHTML='';
+            hist.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            hist.forEach(w=>{ let d=new Date(w.date).toLocaleDateString(); let cls='status-pending', txt=(w.status||'pending').toUpperCase(); if(w.status==='approved'){ cls='status-approved'; txt='APPROVED'; }else if(w.status==='rejected') cls='status-rejected'; let fee=w.fee||0, net=w.netAmount||(w.amount*0.97); let div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<div class="history-header"><span class="history-id">ID: ${w.id}</span><span class="history-amount">$${(w.amount||0).toFixed(3)}</span></div><div class="history-details"><span class="history-date">${d}</span><span class="status-badge ${cls}">${txt}</span></div><div style="font-size:0.75rem;">Fee: $${fee.toFixed(3)} | Net: $${net.toFixed(3)}</div>`; list.appendChild(div); });
+        }
+        function displayGameTaskHistory(ud){
+            let tasks=[];
+            if(ud.gameTasks) tasks=Object.values(ud.gameTasks);
+            let zero=document.getElementById('zeroGameHistory');
+            let list=document.getElementById('gameTaskHistoryList');
+            if(!tasks.length){ zero.style.display='block'; list.style.display='none'; return; }
+            zero.style.display='none'; list.style.display='flex'; list.innerHTML='';
+            tasks.sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+            tasks.forEach(t=>{ let d=new Date(t.submittedAt).toLocaleString(); let cls='status-pending', txt=(t.status||'pending').toUpperCase(); if(t.status==='approved'){ cls='status-approved'; txt='APPROVED'; }else if(t.status==='rejected') cls='status-rejected'; let div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<div class="history-header"><span class="history-id">ID: ${t.id}</span><span class="history-amount">$${(t.reward||0).toFixed(3)}</span></div><div class="history-details"><span class="history-date">${d}</span><span class="status-badge ${cls}">${txt}</span></div><div style="font-size:0.75rem;">Game: ${t.gameName}</div><div style="font-size:0.75rem;">Code: ${t.code}</div>`; list.appendChild(div); });
+        }
+        function updateGameTaskStatus(ud){ if(!ud) return; for(let i=1;i<=7;i++){ let cont=document.getElementById(`gameTaskContainer${i}`); if(cont) cont.style.display=ud.activeGameSubmissions&&ud.activeGameSubmissions[`game${i}`]?'none':'block'; } }
+        function checkWithdrawalRequirements(ud){
+            let bal=ud.balance||0, refs=(ud.referrals||[]).length;
+            let req1=document.getElementById('req1Status'), req1Icon=document.querySelector('#req1 .requirement-icon');
+            let req2=document.getElementById('req2Status'), req2Icon=document.querySelector('#req2 .requirement-icon');
+            let all=true;
+            if(bal>=2){ req1.textContent='Met'; req1.className='requirement-status completed'; req1Icon.innerHTML='<i class="fas fa-check"></i>'; req1Icon.className='requirement-icon completed'; }else{ req1.textContent=`Need $${(2-bal).toFixed(3)} more`; req1.className='requirement-status'; req1Icon.innerHTML='<i class="fas fa-dollar-sign"></i>'; req1Icon.className='requirement-icon pending'; all=false; }
+            if(refs>=3){ req2.textContent='Met'; req2.className='requirement-status completed'; req2Icon.innerHTML='<i class="fas fa-check"></i>'; req2Icon.className='requirement-icon completed'; }else{ req2.textContent=`Need ${3-refs} more referrals`; req2.className='requirement-status'; req2Icon.innerHTML='<i class="fas fa-user-friends"></i>'; req2Icon.className='requirement-icon pending'; all=false; }
+            let next=document.getElementById('nextButton');
+            if(all){ next.disabled=false; next.classList.add('active'); }else{ next.disabled=true; next.classList.remove('active'); }
+            return all;
+        }
+        
+        // Sequential Unlock logic
+        let seqResolve=null, seqReject=null, seqTimer=null, seqTimeLeft=45, seqLinksDone={1:false,2:false,3:false,4:false}, seqUnlocked=1, seqAllDone=false;
+        function showSequentialUnlockModal(){
+            return new Promise((resolve,reject)=>{ seqResolve=resolve; seqReject=reject; seqTimeLeft=45; seqLinksDone={1:false,2:false,3:false,4:false}; seqUnlocked=1; seqAllDone=false; document.getElementById('seqTimerDisplay').textContent='45'; document.getElementById('claimRewardBtn').disabled=true; document.getElementById('claimRewardBtn').innerHTML='<i class="fas fa-hourglass-half"></i> Wait for timer'; for(let i=1;i<=4;i++){ let box=document.getElementById(`seqLink${i}`); if(i===1){ box.style.opacity='1'; box.style.cursor='pointer'; box.querySelector('i').className='fas fa-link'; }else{ box.style.opacity='0.5'; box.style.cursor='not-allowed'; box.querySelector('i').className='fas fa-lock'; } document.getElementById(`seqDone${i}`).style.display='none'; } document.getElementById('sequentialUnlockModal').classList.add('active'); if(seqTimer) clearInterval(seqTimer); seqTimer=setInterval(()=>{ seqTimeLeft--; document.getElementById('seqTimerDisplay').textContent=seqTimeLeft; if(seqTimeLeft<=0){ clearInterval(seqTimer); if(seqAllDone){ document.getElementById('claimRewardBtn').disabled=false; document.getElementById('claimRewardBtn').innerHTML='<i class="fas fa-gift"></i> Claim $0.002 Reward'; }else{ alert('Time expired! Task failed.'); if(seqReject) seqReject(new Error('Timeout')); hideModal(document.getElementById('sequentialUnlockModal')); } } },1000); });
+        }
+        function handleSeqLinkClick(link){
+            if(link>seqUnlocked){ alert('Complete previous links first!'); return; }
+            if(seqLinksDone[link]){ window.open(getSeqLink(link),'_blank'); return; }
+            window.open(getSeqLink(link),'_blank');
+            setTimeout(()=>{ if(!seqLinksDone[link]){ seqLinksDone[link]=true; document.getElementById(`seqDone${link}`).style.display='inline-block'; if(link<4){ seqUnlocked=link+1; let nextBox=document.getElementById(`seqLink${link+1}`); nextBox.style.opacity='1'; nextBox.style.cursor='pointer'; nextBox.querySelector('i').className='fas fa-link'; }else{ seqAllDone=true; if(seqTimeLeft<=0){ document.getElementById('claimRewardBtn').disabled=false; document.getElementById('claimRewardBtn').innerHTML='<i class="fas fa-gift"></i> Claim $0.002 Reward'; }else{ document.getElementById('claimRewardBtn').innerHTML='<i class="fas fa-hourglass-half"></i> Wait for timer to finish'; } } } },4000);
+        }
+        function getSeqLink(link){ const urls={1:'https://www.effectivegatecpm.com/gewesnb5e?key=d5843587772f12547c46a6d88d3f7d7d',2:'https://ukuleqasforsalesre.com?hTTVD=1246757',3:'https://omg10.com/4/10686606',4:'https://install-the-app-form-this-link.vercel.app/'}; return urls[link]; }
+        function claimSeqReward(){ if(seqAllDone && seqTimeLeft<=0){ if(seqResolve) seqResolve(true); hideModal(document.getElementById('sequentialUnlockModal')); }else{ alert('Complete all links and wait for timer to reach 0!'); } }
+        
+        // General tasks (3 original)
+        const generalTasksList = [
+            { id:'task3', title:'Task 1 - 4-Step Unlock (45 sec)', reward:0.002, dailyLimit:20, adType:'sequential' },
+            { id:'task7', title:'Task 2 - 4-Step Unlock (45 sec)', reward:0.002, dailyLimit:20, adType:'sequential' },
+            { id:'task10', title:'Task 3 - 4-Step Unlock (45 sec)', reward:0.002, dailyLimit:20, adType:'sequential' }
+        ];
+        function loadGeneralTasks(){
+            let container=document.getElementById('generalTasksContainer');
+            if(!container) return;
+            container.innerHTML='';
+            generalTasksList.forEach(task=>{
+                let dailyCount=userManager.getTaskDailyCount(userManager.currentUser?.uid,task.id);
+                let can=userManager.canCompleteTask(userManager.currentUser?.uid,task.id);
+                let btnDisabled=!can.canComplete;
+                let card=document.createElement('div'); card.className='task-card';
+                card.innerHTML=`<div class="task-header"><div class="task-title">${task.title}</div><div class="task-reward usd">${task.reward.toFixed(3)}</div></div><div class="task-description">Complete 4 steps and wait FULL 45 seconds to earn $${task.reward.toFixed(3)}!</div><button class="task-button usd" id="start-${task.id}" ${btnDisabled?'disabled':''}>${btnDisabled?'Limit Reached':'<i class="fas fa-play-circle"></i> Start Task'}</button><div class="task-progress">Today: ${dailyCount}/${task.dailyLimit}</div>`;
+                container.appendChild(card);
+                if(!btnDisabled) document.getElementById(`start-${task.id}`).addEventListener('click',()=>startGeneralTask(task));
+            });
+            updateGeneralTaskStatuses();
+        }
+        async function startGeneralTask(task){
+            let user=userManager.currentUser;
+            if(!user) return;
+            let can=userManager.canCompleteTask(user.uid,task.id);
+            if(!can.canComplete){ showModal(document.getElementById('errorModal'),'Daily limit reached for this task.'); return; }
+            try{
+                await showSequentialUnlockModal();
+                await userManager.completeTask(user.uid,task.id,task.reward);
+                updateUserInfo(userManager.userData);
+                loadGeneralTasks();
+                showModal(document.getElementById('successModal'),`Task completed! +$${task.reward.toFixed(3)}`);
+            }catch(e){ showModal(document.getElementById('errorModal'),'Task failed, please try again.'); }
+        }
+        function updateGeneralTaskStatuses(){
+            let user=userManager.currentUser;
+            if(!user) return;
+            let today=new Date().toDateString();
+            let totalDaily=userManager.getDailyTotalCount(user.uid,today);
+            let left=60-totalDaily;
+            document.getElementById('generalTaskLimitInfo').textContent=`${left} attempts left`;
+            let resetTimer=document.getElementById('resetTime');
+            if(resetTimer){
+                let update=()=>{ let ms=userManager.getTimeUntilReset(); let h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); resetTimer.textContent=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; };
+                update(); setInterval(update,1000);
+            }
+        }
+        
+        // Telegram one-time tasks
+        function loadTelegramTasks(){
+            let container=document.getElementById('telegramTasksContainer');
+            if(!container) return;
+            let completed=userManager.userData?.telegramTasksCompleted||[];
+            container.innerHTML='';
+            TELEGRAM_TASKS.forEach(t=>{
+                let done=completed.includes(t.id);
+                let card=document.createElement('div'); card.className='task-card';
+                card.innerHTML=`<div class="task-header"><div class="task-title">${t.title}</div><div class="task-reward usd">${t.reward.toFixed(3)}</div></div><div class="task-description">Join our Telegram channel and earn instantly!</div><button class="task-button ${done?'completed':'usd'}" id="telegram-${t.id}" ${done?'disabled':''}>${done?'<i class="fas fa-check"></i> Completed':'<i class="fab fa-telegram"></i> Join & Earn'}</button><div class="task-progress">${done?'Reward claimed':'One-time reward'}</div>`;
+                container.appendChild(card);
+                if(!done) document.getElementById(`telegram-${t.id}`).addEventListener('click',()=>showTelegramVerify(t));
+            });
+        }
+        function showTelegramVerify(task){
+            let modal=document.getElementById('verifyJoinModal');
+            document.getElementById('verifyJoinMessage').innerHTML=`Please join the Telegram channel first, then click "I Have Joined" to earn $${task.reward.toFixed(3)}.<br><strong>Channel:</strong> ${task.link}`;
+            modal.classList.add('active');
+            let openBtn=document.getElementById('openTelegramBtn');
+            let confirmBtn=document.getElementById('confirmJoinedBtn');
+            let cancelBtn=document.getElementById('cancelVerifyBtn');
+            let newOpen=openBtn.cloneNode(true); openBtn.parentNode.replaceChild(newOpen,openBtn);
+            let newConfirm=confirmBtn.cloneNode(true); confirmBtn.parentNode.replaceChild(newConfirm,confirmBtn);
+            let newCancel=cancelBtn.cloneNode(true); cancelBtn.parentNode.replaceChild(newCancel,cancelBtn);
+            newOpen.addEventListener('click',()=>window.open(task.link,'_blank'));
+            newConfirm.addEventListener('click',async()=>{
+                modal.classList.remove('active');
+                showLoading('Verifying...');
+                let success=await userManager.completeTelegramTask(userManager.currentUser.uid,task.id,task.reward);
+                hideLoading();
+                if(success){ updateUserInfo(userManager.userData); loadTelegramTasks(); showModal(document.getElementById('successModal'),`You earned $${task.reward.toFixed(3)}!`); }
+                else showModal(document.getElementById('errorModal'),'Already completed or error.');
+            });
+            newCancel.addEventListener('click',()=>modal.classList.remove('active'));
+        }
+        
+        // Navigation
+        function switchSection(targetId){
+            document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+            let activeBtn=document.querySelector(`.nav-btn[data-target="${targetId}"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+            if(targetId==='general-task-section'){ loadGeneralTasks(); loadTelegramTasks(); }
+            if(targetId==='game-section'){ updateGameTaskStatus(userManager.userData); displayGameTaskHistory(userManager.userData); }
+            if(targetId==='withdraw-section'){ checkWithdrawalRequirements(userManager.userData); displayWithdrawalHistory(userManager.userData); }
+        }
+        
+        // Game listeners
+        function setupGameListeners(){
+            for(let i=1;i<=7;i++){
+                let play=document.getElementById(`playGameBtn${i}`);
+                let submit=document.getElementById(`submitGameCodeBtn${i}`);
+                let input=document.getElementById(`gameCodeInput${i}`);
+                if(play) play.addEventListener('click',()=>{ window.open(GAME_LINKS[`game${i}`],'_blank'); showModal(document.getElementById('warningModal'),'⚠️ WARNING: Fake codes result in PERMANENT BAN!'); });
+                if(submit) submit.addEventListener('click',async()=>{
+                    let code=input.value.trim();
+                    if(!code){ showModal(document.getElementById('errorModal'),'Enter verification code'); return; }
+                    showLoading('Submitting...');
+                    let res=await userManager.submitGameTask(userManager.currentUser.uid,code,`game${i}`);
+                    hideLoading();
+                    if(res.success){ showModal(document.getElementById('gameCodeSubmittedModal'),'Code submitted for verification.'); updateUserInfo(userManager.userData); displayGameTaskHistory(userManager.userData); input.value=''; }
+                    else showModal(document.getElementById('errorModal'),res.message);
+                });
+            }
+        }
+        
+        // Auth & init
+        function initApp(){
+            loadingManager.show();
+            loadingManager.animateProgress(10).then(()=>loadingManager.completeStep(0)).then(()=>loadingManager.animateProgress(30)).then(()=>loadingManager.completeStep(1)).then(()=>loadingManager.animateProgress(50)).then(()=>loadingManager.completeStep(2)).then(()=>loadingManager.animateProgress(80)).then(()=>loadingManager.completeStep(3)).then(()=>{
+                auth.onAuthStateChanged(async(user)=>{
+                    if(user){
+                        let banned=await userManager.isUserBanned(user.uid);
+                        if(banned){ let reason=await userManager.getBanReason(user.uid); showBanScreen('Your ID is banned!',reason); loadingManager.hide(); return; }
+                        let ud=await userManager.getUserData(user.uid);
+                        if(!ud){
+                            let rc=userManager.generateReferralCode(user.email);
+                            ud={ email:user.email.toLowerCase(), referralCode:rc, balance:0, totalEarned:0, referralBonus:0, referrals:[], referredBy:null, createdAt:new Date().toISOString(), fairUseVerified:false, withdrawalHistory:[], tasksCompleted:[], gameTasks:{}, telegramTasksCompleted:[], dailyTaskCounts:{}, lastActive:new Date().toISOString(), lastWithdrawalMonth:null, activeGameSubmissions:{game1:false,game2:false,game3:false,game4:false,game5:false,game6:false,game7:false}, isBanned:false };
+                            await database.ref('users/'+user.uid).set(ud);
+                        }
+                        userManager.currentUser=user;
+                        userManager.userData=ud;
+                        userManager.activeGameSubmissions=ud.activeGameSubmissions||{};
+                        userManager.listenForGameTaskUpdates(user.uid);
+                        await loadingManager.animateProgress(100); await loadingManager.completeStep(4);
+                        setTimeout(()=>{ loadingManager.hide(); document.getElementById('login-screen').style.display='none'; document.getElementById('signup-screen').style.display='none'; document.getElementById('main-app').style.display='block'; updateUserInfo(ud); loadGeneralTasks(); loadTelegramTasks(); setupGameListeners(); initNavEvents(); },300);
+                    }else{
+                        await loadingManager.animateProgress(100); await loadingManager.completeStep(4);
+                        setTimeout(()=>{ loadingManager.hide(); document.getElementById('login-screen').style.display='flex'; document.getElementById('signup-screen').style.display='none'; document.getElementById('main-app').style.display='none'; },300);
+                    }
+                });
+            });
+        }
+        function initNavEvents(){
+            document.getElementById('homeNavBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('gameNavBtn').addEventListener('click',()=>switchSection('game-section'));
+            document.getElementById('generalTaskNavBtn').addEventListener('click',()=>switchSection('general-task-section'));
+            document.getElementById('withdrawNavBtn').addEventListener('click',()=>switchSection('withdraw-section'));
+            document.getElementById('friendsNavBtn').addEventListener('click',()=>switchSection('friends-section'));
+            document.getElementById('gameBackBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('generalBackBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('withdrawBackBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('friendsBackBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('infoBackBtn').addEventListener('click',()=>switchSection('home-section'));
+            document.getElementById('menuInfo').addEventListener('click',()=>{ document.getElementById('userMenu').classList.remove('active'); switchSection('info-section'); });
+            document.getElementById('privacyPolicy').addEventListener('click',()=>window.open(PRIVACY_URL,'_blank'));
+            document.getElementById('termsConditions').addEventListener('click',()=>window.open(TERMS_URL,'_blank'));
+            document.getElementById('privacyPolicyBtn').addEventListener('click',()=>window.open(PRIVACY_URL,'_blank'));
+            document.getElementById('termsConditionsBtn').addEventListener('click',()=>window.open(TERMS_URL,'_blank'));
+            document.getElementById('earnBtn').addEventListener('click',()=>showModal(document.getElementById('chatModal')));
+            document.getElementById('infoChatBtn').addEventListener('click',()=>window.open('https://t.me/earnforearnsupport','_blank'));
+            document.getElementById('infoEmailBtn').addEventListener('click',()=>{ navigator.clipboard.writeText('earnforearnsuportteam@gmail.com'); showModal(document.getElementById('successModal'),'Email copied!'); });
+            document.getElementById('startChatBtn').addEventListener('click',()=>{ window.open('https://t.me/earnforearnsupport','_blank'); hideModal(document.getElementById('chatModal')); });
+            document.getElementById('cancelChatBtn').addEventListener('click',()=>hideModal(document.getElementById('chatModal')));
+            document.getElementById('copyReferralBtn').addEventListener('click',()=>{ navigator.clipboard.writeText(document.getElementById('referralCode').textContent); showModal(document.getElementById('successModal'),'Referral code copied!'); });
+            document.getElementById('shareReferralBtn').addEventListener('click',()=>{ navigator.clipboard.writeText(document.getElementById('referralCode').textContent); showModal(document.getElementById('successModal'),'Code copied! Share it.'); });
+            document.getElementById('zeroShareReferralBtn').addEventListener('click',()=>{ navigator.clipboard.writeText(document.getElementById('referralCode').textContent); showModal(document.getElementById('successModal'),'Code copied!'); });
+            document.getElementById('userProfile').addEventListener('click',()=>document.getElementById('userMenu').classList.toggle('active'));
+            document.addEventListener('click',(e)=>{ if(!e.target.closest('#userProfile')&&!e.target.closest('#userMenu')) document.getElementById('userMenu').classList.remove('active'); });
+            document.getElementById('changePassword').addEventListener('click',()=>{ document.getElementById('userMenu').classList.remove('active'); showModal(document.getElementById('changePasswordModal')); });
+            document.getElementById('changePasswordForm').addEventListener('submit',async(e)=>{ e.preventDefault(); let cur=document.getElementById('currentPassword').value, newp=document.getElementById('newPassword').value, conf=document.getElementById('confirmNewPassword').value; if(newp!==conf){ showModal(document.getElementById('errorModal'),'Passwords mismatch'); return; } if(newp.length<6){ showModal(document.getElementById('errorModal'),'Min 6 chars'); return; } showLoading('Changing...'); let res=await userManager.changePassword(userManager.currentUser.uid,cur,newp); hideLoading(); if(res.success){ hideModal(document.getElementById('changePasswordModal')); showModal(document.getElementById('successModal'),'Password changed!'); document.getElementById('currentPassword').value=''; document.getElementById('newPassword').value=''; document.getElementById('confirmNewPassword').value=''; }else showModal(document.getElementById('errorModal'),res.message); });
+            document.getElementById('cancelChangePasswordBtn').addEventListener('click',()=>hideModal(document.getElementById('changePasswordModal')));
+            document.getElementById('nextButton').addEventListener('click',()=>{ document.getElementById('binanceForm').classList.add('active'); document.getElementById('nextButton').style.display='none'; });
+            document.getElementById('submitBinanceWithdrawBtn').addEventListener('click',async()=>{
+                let email=document.getElementById('binanceEmail').value.trim();
+                let amount=parseFloat(document.getElementById('withdrawAmountBinance').value);
+                let payId=document.getElementById('binancePayId').value.trim();
+                if(!email){ showModal(document.getElementById('errorModal'),'Enter Binance email/UID'); return; }
+                if(isNaN(amount)||amount<2.0){ showModal(document.getElementById('errorModal'),'Minimum $2.000'); return; }
+                if(amount>userManager.userData.balance){ showModal(document.getElementById('errorModal'),'Insufficient balance'); return; }
+                showLoading('Submitting...');
+                let res=await userManager.submitWithdrawal(userManager.currentUser.uid,amount,'Binance',{email,payId});
+                hideLoading();
+                if(res.success){ document.getElementById('binanceForm').classList.remove('active'); document.getElementById('nextButton').style.display='block'; updateUserInfo(userManager.userData); checkWithdrawalRequirements(userManager.userData); displayWithdrawalHistory(userManager.userData); showModal(document.getElementById('successModal'),res.message); document.getElementById('binanceEmail').value=''; document.getElementById('withdrawAmountBinance').value=''; document.getElementById('binancePayId').value=''; }
+                else showModal(document.getElementById('errorModal'),res.message);
+            });
+            document.getElementById('seqLink1').addEventListener('click',()=>handleSeqLinkClick(1));
+            document.getElementById('seqLink2').addEventListener('click',()=>handleSeqLinkClick(2));
+            document.getElementById('seqLink3').addEventListener('click',()=>handleSeqLinkClick(3));
+            document.getElementById('seqLink4').addEventListener('click',()=>handleSeqLinkClick(4));
+            document.getElementById('claimRewardBtn').addEventListener('click',claimSeqReward);
+            document.getElementById('seqCloseBtn').addEventListener('click',()=>{ if(seqTimer) clearInterval(seqTimer); if(seqReject) seqReject(new Error('Closed')); hideModal(document.getElementById('sequentialUnlockModal')); });
+            // Modal close handlers
+            document.querySelectorAll('.modal').forEach(m=>{ m.addEventListener('click',(e)=>{ if(e.target===m) hideModal(m); }); });
+            document.getElementById('successOkBtn').addEventListener('click',()=>hideModal(document.getElementById('successModal')));
+            document.getElementById('errorOkBtn').addEventListener('click',()=>hideModal(document.getElementById('errorModal')));
+            document.getElementById('warningOkBtn').addEventListener('click',()=>hideModal(document.getElementById('warningModal')));
+            document.getElementById('gameCodeOkBtn').addEventListener('click',()=>hideModal(document.getElementById('gameCodeSubmittedModal')));
+            document.getElementById('referralBonusOkBtn').addEventListener('click',()=>hideModal(document.getElementById('referralBonusModal')));
+            document.getElementById('cooldownOkBtn').addEventListener('click',()=>hideModal(document.getElementById('cooldownModal')));
+        }
+        // Auth form handlers
+        document.getElementById('go-to-signup').addEventListener('click',()=>{ document.getElementById('login-screen').style.display='none'; document.getElementById('signup-screen').style.display='flex'; });
+        document.getElementById('go-to-login').addEventListener('click',()=>{ document.getElementById('login-screen').style.display='flex'; document.getElementById('signup-screen').style.display='none'; });
+        document.getElementById('login-form').addEventListener('submit',async(e)=>{ e.preventDefault(); let email=document.getElementById('login-email').value.trim(), pass=document.getElementById('login-password').value; showLoading('Logging in...'); let res=await userManager.loginUser(email,pass); hideLoading(); if(res.isBanned) showBanScreen(res.message,res.banReason); else if(!res.success) showModal(document.getElementById('errorModal'),res.message); });
+        document.getElementById('signup-form').addEventListener('submit',async(e)=>{ e.preventDefault(); let email=document.getElementById('signup-email').value.trim(), pass=document.getElementById('signup-password').value, conf=document.getElementById('signup-confirm-password').value, ref=document.getElementById('signup-referral').value.trim().toUpperCase(); if(pass!==conf){ showModal(document.getElementById('errorModal'),'Passwords mismatch'); return; } if(pass.length<6){ showModal(document.getElementById('errorModal'),'Min 6 chars'); return; } if(ref){ showLoading('Checking referral...'); let r=await userManager.getUserByReferralCode(ref); hideLoading(); if(!r){ showModal(document.getElementById('errorModal'),'Invalid referral code'); return; } } showLoading('Creating account...'); let res=await userManager.createUser(email,pass,ref||null); hideLoading(); if(res.success){ if(res.hasReferralBonus) showModal(document.getElementById('referralBonusModal'),'You received $0.05 referral bonus!'); else showModal(document.getElementById('successModal'),'Account created!'); let loginRes=await userManager.loginUser(email,pass); if(!loginRes.success) showModal(document.getElementById('errorModal'),'Auto-login failed, please login.'); }else showModal(document.getElementById('errorModal'),res.message); });
+        
+        initApp();
+    </script>
 </body>
 </html>
